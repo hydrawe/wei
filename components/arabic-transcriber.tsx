@@ -187,6 +187,17 @@ export function ArabicTranscriber() {
                 <li><strong>q</strong> (ق) - deep in the throat</li>
                 <li><strong>r</strong> (ر) - like the &quot;t&quot; in American &quot;water&quot;</li>
               </ul>
+              <p className="mt-4">
+                Learn more at{" "}
+                <a
+                  href="https://hydrawe.org"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary underline underline-offset-4 hover:text-primary/80"
+                >
+                  hydrawe.org
+                </a>
+              </p>
             </CardContent>
           </Card>
         </TabsContent>
