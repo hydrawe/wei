@@ -190,12 +190,12 @@ export function ArabicTranscriber() {
               <p className="mt-4">
                 Learn more at{" "}
                 <a
-                  href="https://hydrawe.org"
+                  href="https://www.hydrawe.org/pathways/Wanji/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-primary underline underline-offset-4 hover:text-primary/80"
                 >
-                  hydrawe.org
+                  hydrawe.org/pathways/Wanji
                 </a>
               </p>
             </CardContent>
