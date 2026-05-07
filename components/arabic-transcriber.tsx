@@ -133,15 +133,39 @@ export function ArabicTranscriber() {
   }
 
   const handleCopyLatin = async () => {
-    await navigator.clipboard.writeText(latinText)
-    setCopiedLatin(true)
-    setTimeout(() => setCopiedLatin(false), 2000)
+    try {
+      await navigator.clipboard.writeText(latinText)
+      setCopiedLatin(true)
+      setTimeout(() => setCopiedLatin(false), 2000)
+    } catch (err) {
+      // Fallback for environments where clipboard API is not available
+      const textArea = document.createElement('textarea')
+      textArea.value = latinText
+      document.body.appendChild(textArea)
+      textArea.select()
+      document.execCommand('copy')
+      document.body.removeChild(textArea)
+      setCopiedLatin(true)
+      setTimeout(() => setCopiedLatin(false), 2000)
+    }
   }
 
   const handleCopyArabic = async () => {
-    await navigator.clipboard.writeText(arabicText)
-    setCopiedArabic(true)
-    setTimeout(() => setCopiedArabic(false), 2000)
+    try {
+      await navigator.clipboard.writeText(arabicText)
+      setCopiedArabic(true)
+      setTimeout(() => setCopiedArabic(false), 2000)
+    } catch (err) {
+      // Fallback for environments where clipboard API is not available
+      const textArea = document.createElement('textarea')
+      textArea.value = arabicText
+      document.body.appendChild(textArea)
+      textArea.select()
+      document.execCommand('copy')
+      document.body.removeChild(textArea)
+      setCopiedArabic(true)
+      setTimeout(() => setCopiedArabic(false), 2000)
+    }
   }
 
   const handleClear = () => {
@@ -319,9 +343,9 @@ export function ArabicTranscriber() {
                     variant="outline"
                     size="sm"
                     className="h-10 px-4"
-                    onClick={() => handleKeyPress('ة', 'ta')}
+                    onClick={() => handleKeyPress('ة', 'at')}
                   >
-                    <span className="font-mono text-xs mr-1">ta</span>
+                    <span className="font-mono text-xs mr-1">at</span>
                     <span className="font-arabic">ة</span>
                   </Button>
                   <Button
