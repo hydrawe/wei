@@ -6,11 +6,116 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { transcribeArabic, arabicMapping, arabicDescriptions } from "@/lib/arabic-mapping"
-import { Copy, Check, Trash2 } from "lucide-react"
+import { Copy, Check, Trash2, Keyboard } from "lucide-react"
+
+// Reverse mapping: Latin transliteration -> Arabic character
+const latinToArabic: Record<string, string> = {
+  // Multi-character mappings (digraphs) - order matters for matching
+  'eaa': 'آ',
+  'yee': 'ئ',
+  'wee': 'ؤ',
+  'aee': 'إ',
+  'ea': 'أ',
+  'dh': 'ذ',
+  'th': 'ث',
+  'sh': 'ش',
+  'gh': 'غ',
+  'an': 'ً',
+  'un': 'ٌ',
+  'in': 'ٍ',
+  // Single character mappings
+  'e': 'ء',
+  'a': 'ا',
+  'I': 'ى',
+  'y': 'ي',
+  'w': 'و',
+  'r': 'ر',
+  'z': 'ز',
+  'd': 'د',
+  't': 'ت',
+  's': 'س',
+  'l': 'ل',
+  'n': 'ن',
+  'S': 'ص',
+  'D': 'ض',
+  'T': 'ط',
+  'Z': 'ظ',
+  'b': 'ب',
+  'f': 'ف',
+  'k': 'ك',
+  'q': 'ق',
+  'g': 'ع',
+  'h': 'ه',
+  'j': 'ج',
+  'H': 'ح',
+  'K': 'خ',
+  'm': 'م',
+  // Vowel diacritics as standalone keys
+  'i': 'ِ',
+  'u': 'ُ',
+}
+
+// Keyboard layout with Latin keys grouped logically
+const keyboardRows = [
+  // Row 1: Digraphs
+  [
+    { latin: 'th', arabic: 'ث', label: 'th' },
+    { latin: 'dh', arabic: 'ذ', label: 'dh' },
+    { latin: 'sh', arabic: 'ش', label: 'sh' },
+    { latin: 'gh', arabic: 'غ', label: 'gh' },
+    { latin: 'eaa', arabic: 'آ', label: 'eaa' },
+    { latin: 'ea', arabic: 'أ', label: 'ea' },
+    { latin: 'aee', arabic: 'إ', label: 'aee' },
+  ],
+  // Row 2: Basic consonants
+  [
+    { latin: 'b', arabic: 'ب', label: 'b' },
+    { latin: 't', arabic: 'ت', label: 't' },
+    { latin: 'j', arabic: 'ج', label: 'j' },
+    { latin: 'd', arabic: 'د', label: 'd' },
+    { latin: 'r', arabic: 'ر', label: 'r' },
+    { latin: 'z', arabic: 'ز', label: 'z' },
+    { latin: 's', arabic: 'س', label: 's' },
+  ],
+  // Row 3: More consonants
+  [
+    { latin: 'f', arabic: 'ف', label: 'f' },
+    { latin: 'k', arabic: 'ك', label: 'k' },
+    { latin: 'l', arabic: 'ل', label: 'l' },
+    { latin: 'm', arabic: 'م', label: 'm' },
+    { latin: 'n', arabic: 'ن', label: 'n' },
+    { latin: 'h', arabic: 'ه', label: 'h' },
+    { latin: 'y', arabic: 'ي', label: 'y' },
+    { latin: 'w', arabic: 'و', label: 'w' },
+  ],
+  // Row 4: Emphatic consonants (capitals)
+  [
+    { latin: 'S', arabic: 'ص', label: 'S' },
+    { latin: 'D', arabic: 'ض', label: 'D' },
+    { latin: 'T', arabic: 'ط', label: 'T' },
+    { latin: 'Z', arabic: 'ظ', label: 'Z' },
+    { latin: 'H', arabic: 'ح', label: 'H' },
+    { latin: 'K', arabic: 'خ', label: 'K' },
+    { latin: 'q', arabic: 'ق', label: 'q' },
+    { latin: 'g', arabic: 'ع', label: 'g' },
+  ],
+  // Row 5: Vowels, hamza, special
+  [
+    { latin: 'a', arabic: 'ا', label: 'a' },
+    { latin: 'i', arabic: 'ِ', label: 'i' },
+    { latin: 'u', arabic: 'ُ', label: 'u' },
+    { latin: 'e', arabic: 'ء', label: 'e' },
+    { latin: 'I', arabic: 'ى', label: 'I' },
+    { latin: 'an', arabic: 'ً', label: 'an' },
+    { latin: 'un', arabic: 'ٌ', label: 'un' },
+    { latin: 'in', arabic: 'ٍ', label: 'in' },
+  ],
+]
 
 export function ArabicTranscriber() {
   const [arabicText, setArabicText] = useState("")
   const [copied, setCopied] = useState(false)
+  const [showKeyboard, setShowKeyboard] = useState(true)
 
   const transcription = useMemo(() => {
     return transcribeArabic(arabicText)
@@ -24,6 +129,18 @@ export function ArabicTranscriber() {
 
   const handleClear = () => {
     setArabicText("")
+  }
+
+  const handleKeyPress = (arabic: string) => {
+    setArabicText((prev) => prev + arabic)
+  }
+
+  const handleBackspace = () => {
+    setArabicText((prev) => [...prev].slice(0, -1).join(""))
+  }
+
+  const handleSpace = () => {
+    setArabicText((prev) => prev + " ")
   }
 
   // Sample texts for demonstration
@@ -111,6 +228,80 @@ export function ArabicTranscriber() {
                 </span>
               )}
             </div>
+          </div>
+
+          {/* Virtual Keyboard */}
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <label className="text-sm font-medium flex items-center gap-2">
+                <Keyboard className="h-4 w-4" />
+                Latin Keyboard
+              </label>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowKeyboard(!showKeyboard)}
+              >
+                {showKeyboard ? "Hide" : "Show"}
+              </Button>
+            </div>
+            {showKeyboard && (
+              <div className="p-4 border rounded-lg bg-muted/30 space-y-2">
+                {keyboardRows.map((row, rowIndex) => (
+                  <div key={rowIndex} className="flex flex-wrap gap-1 justify-center">
+                    {row.map((key) => (
+                      <Button
+                        key={key.latin}
+                        variant="outline"
+                        size="sm"
+                        className="min-w-10 h-12 flex flex-col items-center justify-center gap-0.5 px-2"
+                        onClick={() => handleKeyPress(key.arabic)}
+                      >
+                        <span className="font-mono text-sm font-semibold">{key.label}</span>
+                        <span className="text-lg font-arabic">{key.arabic}</span>
+                      </Button>
+                    ))}
+                  </div>
+                ))}
+                {/* Bottom row with space and backspace */}
+                <div className="flex gap-1 justify-center mt-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="h-10 px-4"
+                    onClick={() => handleKeyPress('ة')}
+                  >
+                    <span className="font-mono text-xs mr-1">ta</span>
+                    <span className="font-arabic">ة</span>
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="h-10 px-4"
+                    onClick={() => handleKeyPress('ّ')}
+                  >
+                    <span className="font-mono text-xs mr-1">×2</span>
+                    <span className="font-arabic">ّ</span>
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="h-10 px-8"
+                    onClick={handleSpace}
+                  >
+                    Space
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="h-10 px-4"
+                    onClick={handleBackspace}
+                  >
+                    ← Delete
+                  </Button>
+                </div>
+              </div>
+            )}
           </div>
         </CardContent>
       </Card>
