@@ -55,40 +55,39 @@ const latinToArabic: Record<string, string> = {
   'u': 'ُ',
 }
 
-// Keyboard layout with Latin keys grouped logically
+// Keyboard layout following QWERTY positions for mental model matching
 const keyboardRows = [
-  // Row 1: Digraphs
+  // Row 1: QWERTY top row (q w e r t y u i)
   [
-    { latin: 'th', arabic: 'ث', label: 'th' },
-    { latin: 'dh', arabic: 'ذ', label: 'dh' },
-    { latin: 'sh', arabic: 'ش', label: 'sh' },
-    { latin: 'gh', arabic: 'غ', label: 'gh' },
-    { latin: 'eaa', arabic: 'آ', label: 'eaa' },
-    { latin: 'ea', arabic: 'أ', label: 'ea' },
-    { latin: 'aee', arabic: 'إ', label: 'aee' },
-  ],
-  // Row 2: Basic consonants
-  [
-    { latin: 'b', arabic: 'ب', label: 'b' },
-    { latin: 't', arabic: 'ت', label: 't' },
-    { latin: 'j', arabic: 'ج', label: 'j' },
-    { latin: 'd', arabic: 'د', label: 'd' },
+    { latin: 'q', arabic: 'ق', label: 'q' },
+    { latin: 'w', arabic: 'و', label: 'w' },
+    { latin: 'e', arabic: 'ء', label: 'e' },
     { latin: 'r', arabic: 'ر', label: 'r' },
-    { latin: 'z', arabic: 'ز', label: 'z' },
-    { latin: 's', arabic: 'س', label: 's' },
+    { latin: 't', arabic: 'ت', label: 't' },
+    { latin: 'y', arabic: 'ي', label: 'y' },
+    { latin: 'u', arabic: 'ُ', label: 'u' },
+    { latin: 'i', arabic: 'ِ', label: 'i' },
   ],
-  // Row 3: More consonants
+  // Row 2: QWERTY home row (a s d f g h j k l)
   [
+    { latin: 'a', arabic: 'ا', label: 'a' },
+    { latin: 's', arabic: 'س', label: 's' },
+    { latin: 'd', arabic: 'د', label: 'd' },
     { latin: 'f', arabic: 'ف', label: 'f' },
+    { latin: 'g', arabic: 'ع', label: 'g' },
+    { latin: 'h', arabic: 'ه', label: 'h' },
+    { latin: 'j', arabic: 'ج', label: 'j' },
     { latin: 'k', arabic: 'ك', label: 'k' },
     { latin: 'l', arabic: 'ل', label: 'l' },
-    { latin: 'm', arabic: 'م', label: 'm' },
-    { latin: 'n', arabic: 'ن', label: 'n' },
-    { latin: 'h', arabic: 'ه', label: 'h' },
-    { latin: 'y', arabic: 'ي', label: 'y' },
-    { latin: 'w', arabic: 'و', label: 'w' },
   ],
-  // Row 4: Emphatic consonants (capitals)
+  // Row 3: QWERTY bottom row (z x c v b n m)
+  [
+    { latin: 'z', arabic: 'ز', label: 'z' },
+    { latin: 'b', arabic: 'ب', label: 'b' },
+    { latin: 'n', arabic: 'ن', label: 'n' },
+    { latin: 'm', arabic: 'م', label: 'm' },
+  ],
+  // Row 4: Emphatic consonants (Shift variants - capitals)
   [
     { latin: 'S', arabic: 'ص', label: 'S' },
     { latin: 'D', arabic: 'ض', label: 'D' },
@@ -96,16 +95,20 @@ const keyboardRows = [
     { latin: 'Z', arabic: 'ظ', label: 'Z' },
     { latin: 'H', arabic: 'ح', label: 'H' },
     { latin: 'K', arabic: 'خ', label: 'K' },
-    { latin: 'q', arabic: 'ق', label: 'q' },
-    { latin: 'g', arabic: 'ع', label: 'g' },
-  ],
-  // Row 5: Vowels, hamza, special
-  [
-    { latin: 'a', arabic: 'ا', label: 'a' },
-    { latin: 'i', arabic: 'ِ', label: 'i' },
-    { latin: 'u', arabic: 'ُ', label: 'u' },
-    { latin: 'e', arabic: 'ء', label: 'e' },
     { latin: 'I', arabic: 'ى', label: 'I' },
+  ],
+  // Row 5: Digraphs (two-letter combinations)
+  [
+    { latin: 'th', arabic: 'ث', label: 'th' },
+    { latin: 'dh', arabic: 'ذ', label: 'dh' },
+    { latin: 'sh', arabic: 'ش', label: 'sh' },
+    { latin: 'gh', arabic: 'غ', label: 'gh' },
+    { latin: 'ea', arabic: 'أ', label: 'ea' },
+    { latin: 'eaa', arabic: 'آ', label: 'eaa' },
+    { latin: 'aee', arabic: 'إ', label: 'aee' },
+  ],
+  // Row 6: Tanwin and special
+  [
     { latin: 'an', arabic: 'ً', label: 'an' },
     { latin: 'un', arabic: 'ٌ', label: 'un' },
     { latin: 'in', arabic: 'ٍ', label: 'in' },
