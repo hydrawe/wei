@@ -160,73 +160,80 @@ export function ArabicTranscriber() {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <label htmlFor="arabic-input" className="text-sm font-medium">
-              Arabic Text
-            </label>
-            <Textarea
-              id="arabic-input"
-              placeholder="اكتب النص العربي هنا..."
-              className="min-h-32 text-xl text-right font-arabic leading-relaxed"
-              dir="rtl"
-              value={arabicText}
-              onChange={(e) => setArabicText(e.target.value)}
-            />
-            <div className="flex gap-2 flex-wrap">
-              {sampleTexts.map((sample) => (
-                <Button
-                  key={sample.label}
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setArabicText(sample.arabic)}
-                >
-                  {sample.label}
-                </Button>
-              ))}
-              {arabicText && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={handleClear}
-                  className="text-muted-foreground"
-                >
-                  <Trash2 className="h-4 w-4 mr-1" />
-                  Clear
-                </Button>
-              )}
+          {/* Side by side: Latin on left, Arabic on right */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Left: Latin Transliteration Output */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <label htmlFor="transcription-output" className="text-sm font-medium">
+                  Latin Transliteration
+                </label>
+                {transcription && (
+                  <Button variant="ghost" size="sm" onClick={handleCopy}>
+                    {copied ? (
+                      <>
+                        <Check className="h-4 w-4 mr-1" />
+                        Copied
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="h-4 w-4 mr-1" />
+                        Copy
+                      </>
+                    )}
+                  </Button>
+                )}
+              </div>
+              <div
+                id="transcription-output"
+                className="min-h-32 p-3 border rounded-md bg-muted/50 text-xl font-mono leading-relaxed"
+              >
+                {transcription || (
+                  <span className="text-muted-foreground">
+                    Transliteration will appear here...
+                  </span>
+                )}
+              </div>
             </div>
-          </div>
 
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <label htmlFor="transcription-output" className="text-sm font-medium">
-                Transliteration
-              </label>
-              {transcription && (
-                <Button variant="ghost" size="sm" onClick={handleCopy}>
-                  {copied ? (
-                    <>
-                      <Check className="h-4 w-4 mr-1" />
-                      Copied
-                    </>
-                  ) : (
-                    <>
-                      <Copy className="h-4 w-4 mr-1" />
-                      Copy
-                    </>
-                  )}
-                </Button>
-              )}
-            </div>
-            <div
-              id="transcription-output"
-              className="min-h-32 p-3 border rounded-md bg-muted/50 text-xl font-mono leading-relaxed"
-            >
-              {transcription || (
-                <span className="text-muted-foreground">
-                  Transliteration will appear here...
-                </span>
-              )}
+            {/* Right: Arabic Input */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <label htmlFor="arabic-input" className="text-sm font-medium">
+                  Arabic Text
+                </label>
+                {arabicText && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleClear}
+                    className="text-muted-foreground"
+                  >
+                    <Trash2 className="h-4 w-4 mr-1" />
+                    Clear
+                  </Button>
+                )}
+              </div>
+              <Textarea
+                id="arabic-input"
+                placeholder="اكتب النص العربي هنا..."
+                className="min-h-32 text-xl text-right font-arabic leading-relaxed"
+                dir="rtl"
+                value={arabicText}
+                onChange={(e) => setArabicText(e.target.value)}
+              />
+              <div className="flex gap-2 flex-wrap">
+                {sampleTexts.map((sample) => (
+                  <Button
+                    key={sample.label}
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setArabicText(sample.arabic)}
+                  >
+                    {sample.label}
+                  </Button>
+                ))}
+              </div>
             </div>
           </div>
 
