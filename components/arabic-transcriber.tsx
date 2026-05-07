@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState } from "react"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -114,33 +114,45 @@ const keyboardRows = [
 
 export function ArabicTranscriber() {
   const [arabicText, setArabicText] = useState("")
-  const [copied, setCopied] = useState(false)
+  const [latinText, setLatinText] = useState("")
+  const [copiedLatin, setCopiedLatin] = useState(false)
+  const [copiedArabic, setCopiedArabic] = useState(false)
   const [showKeyboard, setShowKeyboard] = useState(true)
 
-  const transcription = useMemo(() => {
-    return transcribeArabic(arabicText)
-  }, [arabicText])
+  const handleCopyLatin = async () => {
+    await navigator.clipboard.writeText(latinText)
+    setCopiedLatin(true)
+    setTimeout(() => setCopiedLatin(false), 2000)
+  }
 
-  const handleCopy = async () => {
-    await navigator.clipboard.writeText(transcription)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
+  const handleCopyArabic = async () => {
+    await navigator.clipboard.writeText(arabicText)
+    setCopiedArabic(true)
+    setTimeout(() => setCopiedArabic(false), 2000)
   }
 
   const handleClear = () => {
     setArabicText("")
+    setLatinText("")
   }
 
-  const handleKeyPress = (arabic: string) => {
+  const handleKeyPress = (arabic: string, latin: string) => {
     setArabicText((prev) => prev + arabic)
+    setLatinText((prev) => prev + latin)
   }
 
   const handleBackspace = () => {
     setArabicText((prev) => [...prev].slice(0, -1).join(""))
+    // For latin, we need to handle multi-char sequences
+    setLatinText((prev) => {
+      // Simple approach: remove last character
+      return prev.slice(0, -1)
+    })
   }
 
   const handleSpace = () => {
     setArabicText((prev) => prev + " ")
+    setLatinText((prev) => prev + " ")
   }
 
   // Sample texts for demonstration
@@ -162,15 +174,15 @@ export function ArabicTranscriber() {
         <CardContent className="space-y-4">
           {/* Side by side: Latin on left, Arabic on right */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Left: Latin Transliteration Output */}
+            {/* Left: Latin Text Input */}
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <label htmlFor="transcription-output" className="text-sm font-medium">
-                  Latin Transliteration
+                <label htmlFor="latin-input" className="text-sm font-medium">
+                  Latin Text
                 </label>
-                {transcription && (
-                  <Button variant="ghost" size="sm" onClick={handleCopy}>
-                    {copied ? (
+                {latinText && (
+                  <Button variant="ghost" size="sm" onClick={handleCopyLatin}>
+                    {copiedLatin ? (
                       <>
                         <Check className="h-4 w-4 mr-1" />
                         Copied
@@ -184,33 +196,34 @@ export function ArabicTranscriber() {
                   </Button>
                 )}
               </div>
-              <div
-                id="transcription-output"
-                className="min-h-32 p-3 border rounded-md bg-muted/50 text-xl font-mono leading-relaxed"
-              >
-                {transcription || (
-                  <span className="text-muted-foreground">
-                    Transliteration will appear here...
-                  </span>
-                )}
-              </div>
+              <Textarea
+                id="latin-input"
+                placeholder="Type Latin transliteration here..."
+                className="min-h-32 text-xl font-mono leading-relaxed"
+                value={latinText}
+                onChange={(e) => setLatinText(e.target.value)}
+              />
             </div>
 
-            {/* Right: Arabic Input */}
+            {/* Right: Arabic Text Input */}
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <label htmlFor="arabic-input" className="text-sm font-medium">
                   Arabic Text
                 </label>
                 {arabicText && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={handleClear}
-                    className="text-muted-foreground"
-                  >
-                    <Trash2 className="h-4 w-4 mr-1" />
-                    Clear
+                  <Button variant="ghost" size="sm" onClick={handleCopyArabic}>
+                    {copiedArabic ? (
+                      <>
+                        <Check className="h-4 w-4 mr-1" />
+                        Copied
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="h-4 w-4 mr-1" />
+                        Copy
+                      </>
+                    )}
                   </Button>
                 )}
               </div>
@@ -222,19 +235,36 @@ export function ArabicTranscriber() {
                 value={arabicText}
                 onChange={(e) => setArabicText(e.target.value)}
               />
-              <div className="flex gap-2 flex-wrap">
-                {sampleTexts.map((sample) => (
-                  <Button
-                    key={sample.label}
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setArabicText(sample.arabic)}
-                  >
-                    {sample.label}
-                  </Button>
-                ))}
-              </div>
             </div>
+          </div>
+
+          {/* Sample texts and clear button */}
+          <div className="flex gap-2 flex-wrap items-center">
+            <span className="text-sm text-muted-foreground">Try:</span>
+            {sampleTexts.map((sample) => (
+              <Button
+                key={sample.label}
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  setArabicText(sample.arabic)
+                  setLatinText(transcribeArabic(sample.arabic))
+                }}
+              >
+                {sample.label}
+              </Button>
+            ))}
+            {(arabicText || latinText) && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleClear}
+                className="text-muted-foreground ml-auto"
+              >
+                <Trash2 className="h-4 w-4 mr-1" />
+                Clear Both
+              </Button>
+            )}
           </div>
 
           {/* Virtual Keyboard */}
@@ -262,7 +292,7 @@ export function ArabicTranscriber() {
                         variant="outline"
                         size="sm"
                         className="min-w-10 h-12 flex flex-col items-center justify-center gap-0.5 px-2"
-                        onClick={() => handleKeyPress(key.arabic)}
+                        onClick={() => handleKeyPress(key.arabic, key.latin)}
                       >
                         <span className="font-mono text-sm font-semibold">{key.label}</span>
                         <span className="text-lg font-arabic">{key.arabic}</span>
@@ -276,7 +306,7 @@ export function ArabicTranscriber() {
                     variant="outline"
                     size="sm"
                     className="h-10 px-4"
-                    onClick={() => handleKeyPress('ة')}
+                    onClick={() => handleKeyPress('ة', 'ta')}
                   >
                     <span className="font-mono text-xs mr-1">ta</span>
                     <span className="font-arabic">ة</span>
@@ -285,7 +315,7 @@ export function ArabicTranscriber() {
                     variant="outline"
                     size="sm"
                     className="h-10 px-4"
-                    onClick={() => handleKeyPress('ّ')}
+                    onClick={() => handleKeyPress('ّ', '~')}
                   >
                     <span className="font-mono text-xs mr-1">×2</span>
                     <span className="font-arabic">ّ</span>
