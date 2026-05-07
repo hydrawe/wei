@@ -1,29 +1,168 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState } from "react"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { transcribeArabic, arabicMapping, arabicDescriptions } from "@/lib/arabic-mapping"
-import { Copy, Check, Trash2 } from "lucide-react"
+import { transcribeArabic, transcribeLatin, arabicMapping, arabicDescriptions } from "@/lib/arabic-mapping"
+import { Copy, Check, Trash2, Keyboard } from "lucide-react"
+
+// Reverse mapping: Latin transliteration -> Arabic character
+const latinToArabic: Record<string, string> = {
+  // Multi-character mappings (digraphs) - order matters for matching
+  'eaa': 'آ',
+  'yee': 'ئ',
+  'wee': 'ؤ',
+  'aee': 'إ',
+  'ea': 'أ',
+  'dh': 'ذ',
+  'th': 'ث',
+  'sh': 'ش',
+  'gh': 'غ',
+  'an': 'ً',
+  'un': 'ٌ',
+  'in': 'ٍ',
+  // Single character mappings
+  'e': 'ء',
+  'a': 'ا',
+  'I': 'ى',
+  'y': 'ي',
+  'w': 'و',
+  'r': 'ر',
+  'z': 'ز',
+  'd': 'د',
+  't': 'ت',
+  's': 'س',
+  'l': 'ل',
+  'n': 'ن',
+  'S': 'ص',
+  'D': 'ض',
+  'T': 'ط',
+  'Z': 'ظ',
+  'b': 'ب',
+  'f': 'ف',
+  'k': 'ك',
+  'q': 'ق',
+  'g': 'ع',
+  'h': 'ه',
+  'j': 'ج',
+  'H': 'ح',
+  'K': 'خ',
+  'm': 'م',
+  // Vowel diacritics as standalone keys
+  'i': 'ِ',
+  'u': 'ُ',
+}
+
+// Keyboard layout with Latin keys grouped logically
+const keyboardRows = [
+  // Row 1: Digraphs
+  [
+    { latin: 'th', arabic: 'ث', label: 'th' },
+    { latin: 'dh', arabic: 'ذ', label: 'dh' },
+    { latin: 'sh', arabic: 'ش', label: 'sh' },
+    { latin: 'gh', arabic: 'غ', label: 'gh' },
+    { latin: 'eaa', arabic: 'آ', label: 'eaa' },
+    { latin: 'ea', arabic: 'أ', label: 'ea' },
+    { latin: 'aee', arabic: 'إ', label: 'aee' },
+  ],
+  // Row 2: Basic consonants
+  [
+    { latin: 'b', arabic: 'ب', label: 'b' },
+    { latin: 't', arabic: 'ت', label: 't' },
+    { latin: 'j', arabic: 'ج', label: 'j' },
+    { latin: 'd', arabic: 'د', label: 'd' },
+    { latin: 'r', arabic: 'ر', label: 'r' },
+    { latin: 'z', arabic: 'ز', label: 'z' },
+    { latin: 's', arabic: 'س', label: 's' },
+  ],
+  // Row 3: More consonants
+  [
+    { latin: 'f', arabic: 'ف', label: 'f' },
+    { latin: 'k', arabic: 'ك', label: 'k' },
+    { latin: 'l', arabic: 'ل', label: 'l' },
+    { latin: 'm', arabic: 'م', label: 'm' },
+    { latin: 'n', arabic: 'ن', label: 'n' },
+    { latin: 'h', arabic: 'ه', label: 'h' },
+    { latin: 'y', arabic: 'ي', label: 'y' },
+    { latin: 'w', arabic: 'و', label: 'w' },
+  ],
+  // Row 4: Emphatic consonants (capitals)
+  [
+    { latin: 'S', arabic: 'ص', label: 'S' },
+    { latin: 'D', arabic: 'ض', label: 'D' },
+    { latin: 'T', arabic: 'ط', label: 'T' },
+    { latin: 'Z', arabic: 'ظ', label: 'Z' },
+    { latin: 'H', arabic: 'ح', label: 'H' },
+    { latin: 'K', arabic: 'خ', label: 'K' },
+    { latin: 'q', arabic: 'ق', label: 'q' },
+    { latin: 'g', arabic: 'ع', label: 'g' },
+  ],
+  // Row 5: Vowels, hamza, special
+  [
+    { latin: 'a', arabic: 'ا', label: 'a' },
+    { latin: 'i', arabic: 'ِ', label: 'i' },
+    { latin: 'u', arabic: 'ُ', label: 'u' },
+    { latin: 'e', arabic: 'ء', label: 'e' },
+    { latin: 'I', arabic: 'ى', label: 'I' },
+    { latin: 'an', arabic: 'ً', label: 'an' },
+    { latin: 'un', arabic: 'ٌ', label: 'un' },
+    { latin: 'in', arabic: 'ٍ', label: 'in' },
+  ],
+]
 
 export function ArabicTranscriber() {
   const [arabicText, setArabicText] = useState("")
-  const [copied, setCopied] = useState(false)
+  const [latinText, setLatinText] = useState("")
+  const [copiedLatin, setCopiedLatin] = useState(false)
+  const [copiedArabic, setCopiedArabic] = useState(false)
+  const [showKeyboard, setShowKeyboard] = useState(true)
 
-  const transcription = useMemo(() => {
-    return transcribeArabic(arabicText)
-  }, [arabicText])
+  const handleLatinChange = (value: string) => {
+    setLatinText(value)
+    setArabicText(transcribeLatin(value))
+  }
 
-  const handleCopy = async () => {
-    await navigator.clipboard.writeText(transcription)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
+  const handleArabicChange = (value: string) => {
+    setArabicText(value)
+    setLatinText(transcribeArabic(value))
+  }
+
+  const handleCopyLatin = async () => {
+    await navigator.clipboard.writeText(latinText)
+    setCopiedLatin(true)
+    setTimeout(() => setCopiedLatin(false), 2000)
+  }
+
+  const handleCopyArabic = async () => {
+    await navigator.clipboard.writeText(arabicText)
+    setCopiedArabic(true)
+    setTimeout(() => setCopiedArabic(false), 2000)
   }
 
   const handleClear = () => {
     setArabicText("")
+    setLatinText("")
+  }
+
+  const handleKeyPress = (arabic: string, latin: string) => {
+    setArabicText((prev) => prev + arabic)
+    setLatinText((prev) => prev + latin)
+  }
+
+  const handleBackspace = () => {
+    setArabicText((prev) => [...prev].slice(0, -1).join(""))
+    // For latin, we need to handle multi-char sequences
+    setLatinText((prev) => {
+      // Simple approach: remove last character
+      return prev.slice(0, -1)
+    })
+  }
+
+  const handleSpace = () => {
+    setArabicText((prev) => prev + " ")
+    setLatinText((prev) => prev + " ")
   }
 
   // Sample texts for demonstration
@@ -43,74 +182,173 @@ export function ArabicTranscriber() {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <label htmlFor="arabic-input" className="text-sm font-medium">
-              Arabic Text
-            </label>
-            <Textarea
-              id="arabic-input"
-              placeholder="اكتب النص العربي هنا..."
-              className="min-h-32 text-xl text-right font-arabic leading-relaxed"
-              dir="rtl"
-              value={arabicText}
-              onChange={(e) => setArabicText(e.target.value)}
-            />
-            <div className="flex gap-2 flex-wrap">
-              {sampleTexts.map((sample) => (
-                <Button
-                  key={sample.label}
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setArabicText(sample.arabic)}
-                >
-                  {sample.label}
-                </Button>
-              ))}
-              {arabicText && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={handleClear}
-                  className="text-muted-foreground"
-                >
-                  <Trash2 className="h-4 w-4 mr-1" />
-                  Clear
-                </Button>
-              )}
+          {/* Side by side: Latin on left, Arabic on right */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Left: Latin Text Input */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <label htmlFor="latin-input" className="text-sm font-medium">
+                  Latin Text
+                </label>
+                {latinText && (
+                  <Button variant="ghost" size="sm" onClick={handleCopyLatin}>
+                    {copiedLatin ? (
+                      <>
+                        <Check className="h-4 w-4 mr-1" />
+                        Copied
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="h-4 w-4 mr-1" />
+                        Copy
+                      </>
+                    )}
+                  </Button>
+                )}
+              </div>
+              <Textarea
+                id="latin-input"
+                placeholder="Type Latin transliteration here..."
+                className="min-h-32 text-xl font-mono leading-relaxed"
+                value={latinText}
+                onChange={(e) => handleLatinChange(e.target.value)}
+              />
+            </div>
+
+            {/* Right: Arabic Text Input */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <label htmlFor="arabic-input" className="text-sm font-medium">
+                  Arabic Text
+                </label>
+                {arabicText && (
+                  <Button variant="ghost" size="sm" onClick={handleCopyArabic}>
+                    {copiedArabic ? (
+                      <>
+                        <Check className="h-4 w-4 mr-1" />
+                        Copied
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="h-4 w-4 mr-1" />
+                        Copy
+                      </>
+                    )}
+                  </Button>
+                )}
+              </div>
+              <Textarea
+                id="arabic-input"
+                placeholder="اكتب النص العربي هنا..."
+                className="min-h-32 text-xl text-right font-arabic leading-relaxed"
+                dir="rtl"
+                value={arabicText}
+                onChange={(e) => handleArabicChange(e.target.value)}
+              />
             </div>
           </div>
 
+          {/* Sample texts and clear button */}
+          <div className="flex gap-2 flex-wrap items-center">
+            <span className="text-sm text-muted-foreground">Try:</span>
+            {sampleTexts.map((sample) => (
+              <Button
+                key={sample.label}
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  setArabicText(sample.arabic)
+                  setLatinText(transcribeArabic(sample.arabic))
+                }}
+              >
+                {sample.label}
+              </Button>
+            ))}
+            {(arabicText || latinText) && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleClear}
+                className="text-muted-foreground ml-auto"
+              >
+                <Trash2 className="h-4 w-4 mr-1" />
+                Clear Both
+              </Button>
+            )}
+          </div>
+
+          {/* Virtual Keyboard */}
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <label htmlFor="transcription-output" className="text-sm font-medium">
-                Transliteration
+              <label className="text-sm font-medium flex items-center gap-2">
+                <Keyboard className="h-4 w-4" />
+                Latin Keyboard
               </label>
-              {transcription && (
-                <Button variant="ghost" size="sm" onClick={handleCopy}>
-                  {copied ? (
-                    <>
-                      <Check className="h-4 w-4 mr-1" />
-                      Copied
-                    </>
-                  ) : (
-                    <>
-                      <Copy className="h-4 w-4 mr-1" />
-                      Copy
-                    </>
-                  )}
-                </Button>
-              )}
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowKeyboard(!showKeyboard)}
+              >
+                {showKeyboard ? "Hide" : "Show"}
+              </Button>
             </div>
-            <div
-              id="transcription-output"
-              className="min-h-32 p-3 border rounded-md bg-muted/50 text-xl font-mono leading-relaxed"
-            >
-              {transcription || (
-                <span className="text-muted-foreground">
-                  Transliteration will appear here...
-                </span>
-              )}
-            </div>
+            {showKeyboard && (
+              <div className="p-4 border rounded-lg bg-muted/30 space-y-2">
+                {keyboardRows.map((row, rowIndex) => (
+                  <div key={rowIndex} className="flex flex-wrap gap-1 justify-center">
+                    {row.map((key) => (
+                      <Button
+                        key={key.latin}
+                        variant="outline"
+                        size="sm"
+                        className="min-w-10 h-12 flex flex-col items-center justify-center gap-0.5 px-2"
+                        onClick={() => handleKeyPress(key.arabic, key.latin)}
+                      >
+                        <span className="font-mono text-sm font-semibold">{key.label}</span>
+                        <span className="text-lg font-arabic">{key.arabic}</span>
+                      </Button>
+                    ))}
+                  </div>
+                ))}
+                {/* Bottom row with space and backspace */}
+                <div className="flex gap-1 justify-center mt-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="h-10 px-4"
+                    onClick={() => handleKeyPress('ة', 'ta')}
+                  >
+                    <span className="font-mono text-xs mr-1">ta</span>
+                    <span className="font-arabic">ة</span>
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="h-10 px-4"
+                    onClick={() => handleKeyPress('ّ', '~')}
+                  >
+                    <span className="font-mono text-xs mr-1">×2</span>
+                    <span className="font-arabic">ّ</span>
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="h-10 px-8"
+                    onClick={handleSpace}
+                  >
+                    Space
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="h-10 px-4"
+                    onClick={handleBackspace}
+                  >
+                    ← Delete
+                  </Button>
+                </div>
+              </div>
+            )}
           </div>
         </CardContent>
       </Card>
