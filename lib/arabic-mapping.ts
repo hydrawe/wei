@@ -116,6 +116,88 @@ export function transcribeArabic(text: string): string {
   return result
 }
 
+// Reverse mapping: Latin transliteration -> Arabic character
+const latinToArabicMap: Record<string, string> = {
+  // Multi-character mappings (digraphs) - must be checked first (longest match)
+  'eaa': 'آ',
+  'yee': 'ئ',
+  'wee': 'ؤ',
+  'aee': 'إ',
+  'leaa': 'لآ',
+  'laee': 'لإ',
+  'lea': 'لأ',
+  'ea': 'أ',
+  'la': 'لا',
+  'dh': 'ذ',
+  'th': 'ث',
+  'sh': 'ش',
+  'gh': 'غ',
+  'an': 'ً',
+  'un': 'ٌ',
+  'in': 'ٍ',
+  'ta': 'ة',
+  'aa': 'اٰ',
+  // Single character mappings
+  'e': 'ء',
+  'a': 'ا',
+  'I': 'ى',
+  'y': 'ي',
+  'w': 'و',
+  'r': 'ر',
+  'z': 'ز',
+  'd': 'د',
+  't': 'ت',
+  's': 'س',
+  'l': 'ل',
+  'n': 'ن',
+  'S': 'ص',
+  'D': 'ض',
+  'T': 'ط',
+  'Z': 'ظ',
+  'b': 'ب',
+  'f': 'ف',
+  'k': 'ك',
+  'q': 'ق',
+  'g': 'ع',
+  'h': 'ه',
+  'j': 'ج',
+  'H': 'ح',
+  'K': 'خ',
+  'm': 'م',
+  'i': 'ِ',
+  'u': 'ُ',
+}
+
+// Sort keys by length (longest first) for greedy matching
+const sortedLatinKeys = Object.keys(latinToArabicMap).sort((a, b) => b.length - a.length)
+
+export function transcribeLatin(text: string): string {
+  let result = ''
+  let i = 0
+
+  while (i < text.length) {
+    let matched = false
+
+    // Try to match the longest possible sequence first
+    for (const key of sortedLatinKeys) {
+      if (text.slice(i, i + key.length) === key) {
+        result += latinToArabicMap[key]
+        i += key.length
+        matched = true
+        break
+      }
+    }
+
+    if (!matched) {
+      // Keep non-mapped characters as-is (spaces, punctuation, etc.)
+      result += text[i]
+      i++
+    }
+  }
+
+  return result
+}
+
 // Get description for an Arabic character
 export const arabicDescriptions: Record<string, string> = {
   'آ': 'Alif with madda - eaa',

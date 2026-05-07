@@ -5,7 +5,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { transcribeArabic, arabicMapping, arabicDescriptions } from "@/lib/arabic-mapping"
+import { transcribeArabic, transcribeLatin, arabicMapping, arabicDescriptions } from "@/lib/arabic-mapping"
 import { Copy, Check, Trash2, Keyboard } from "lucide-react"
 
 // Reverse mapping: Latin transliteration -> Arabic character
@@ -119,6 +119,16 @@ export function ArabicTranscriber() {
   const [copiedArabic, setCopiedArabic] = useState(false)
   const [showKeyboard, setShowKeyboard] = useState(true)
 
+  const handleLatinChange = (value: string) => {
+    setLatinText(value)
+    setArabicText(transcribeLatin(value))
+  }
+
+  const handleArabicChange = (value: string) => {
+    setArabicText(value)
+    setLatinText(transcribeArabic(value))
+  }
+
   const handleCopyLatin = async () => {
     await navigator.clipboard.writeText(latinText)
     setCopiedLatin(true)
@@ -201,7 +211,7 @@ export function ArabicTranscriber() {
                 placeholder="Type Latin transliteration here..."
                 className="min-h-32 text-xl font-mono leading-relaxed"
                 value={latinText}
-                onChange={(e) => setLatinText(e.target.value)}
+                onChange={(e) => handleLatinChange(e.target.value)}
               />
             </div>
 
@@ -233,7 +243,7 @@ export function ArabicTranscriber() {
                 className="min-h-32 text-xl text-right font-arabic leading-relaxed"
                 dir="rtl"
                 value={arabicText}
-                onChange={(e) => setArabicText(e.target.value)}
+                onChange={(e) => handleArabicChange(e.target.value)}
               />
             </div>
           </div>
