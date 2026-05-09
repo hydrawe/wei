@@ -236,7 +236,7 @@ export function ArabicTranscriber() {
               <Textarea
                 id="latin-input"
                 placeholder="Type Latin transliteration here..."
-                className="min-h-32 text-xl font-mono leading-relaxed"
+                className="min-h-32 text-3xl font-mono leading-relaxed"
                 value={latinText}
                 onChange={(e) => handleLatinChange(e.target.value)}
               />
@@ -267,7 +267,7 @@ export function ArabicTranscriber() {
               <Textarea
                 id="arabic-input"
                 placeholder="اكتب النص العربي هنا..."
-                className="min-h-32 text-xl text-right font-arabic leading-relaxed"
+                className="min-h-32 text-3xl text-right font-arabic leading-relaxed"
                 dir="rtl"
                 value={arabicText}
                 onChange={(e) => handleArabicChange(e.target.value)}
