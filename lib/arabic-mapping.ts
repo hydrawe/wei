@@ -5,7 +5,7 @@ export const arabicMapping: Record<string, string> = {
   'آ': 'eaa',
   'ء': 'e',
   'أ': 'ea',
-  'ئ': 'yee',
+  'ئ': 'ye',
   'ؤ': 'wee',
   'إ': 'aee',
   'ٱ': 'o', // alif wasl
@@ -120,7 +120,7 @@ export function transcribeArabic(text: string): string {
 const latinToArabicMap: Record<string, string> = {
   // Multi-character mappings (digraphs) - must be checked first (longest match)
   'eaa': 'آ',
-  'yee': 'ئ',
+  'ye': 'ئ',
   'wee': 'ؤ',
   'aee': 'إ',
   'leaa': 'لآ',
@@ -204,7 +204,7 @@ export const arabicDescriptions: Record<string, string> = {
   'آ': 'Alif with madda - eaa',
   'ء': 'Hamza - glottal stop (e)',
   'أ': 'Alif with hamza above - ea',
-  'ئ': 'Ya with hamza - yee',
+  'ئ': 'Ya with hamza - ye',
   'ؤ': 'Waw with hamza - wee',
   'إ': 'Alif with hamza below - aee',
   'ٱ': 'Alif wasl - o',

@@ -12,7 +12,7 @@ import { Copy, Check, Trash2, Keyboard } from "lucide-react"
 const latinToArabic: Record<string, string> = {
   // Multi-character mappings (digraphs) - order matters for matching
   'eaa': 'آ',
-  'yee': 'ئ',
+  'ye': 'ئ',
   'wee': 'ؤ',
   'aee': 'إ',
   'ea': 'أ',
@@ -88,6 +88,7 @@ const keyboardRows = [
     { latin: 'ea', arabic: 'أ', label: 'ea' },
     { latin: 'eaa', arabic: 'آ', label: 'eaa' },
     { latin: 'aee', arabic: 'إ', label: 'aee' },
+    { latin: 'ye', arabic: 'ئ', label: 'ye' },
     { latin: 'an', arabic: 'ً', label: 'an' },
     { latin: 'un', arabic: 'ٌ', label: 'un' },
     { latin: 'in', arabic: 'ٍ', label: 'in' },
