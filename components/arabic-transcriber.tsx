@@ -26,6 +26,7 @@ const latinToArabic: Record<string, string> = {
   // Single character mappings
   'e': 'ء',
   'a': 'ا',
+  'o': 'ٱ',
   'aa': 'ى',
   'y': 'ي',
   'w': 'و',
@@ -67,6 +68,7 @@ const keyboardRows = [
     { latin: 'u', arabic: 'ُ', label: 'u' },
     { latin: 'i', arabic: 'ِ', label: 'i' },
     { latin: 'a', arabic: 'ا', label: 'a' },
+    { latin: 'o', arabic: 'ٱ', label: 'o' },
     { latin: 'f', arabic: 'ف', label: 'f' },
     { latin: 'j', arabic: 'ج', label: 'j' },
     { latin: 'k', arabic: 'ك', label: 'k' },
