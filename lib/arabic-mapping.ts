@@ -53,7 +53,7 @@ export const arabicMapping: Record<string, string> = {
   'ٌ': 'un', // tanwin damma (nominative)
   'ٍ': 'in', // tanwin kasra (genitive)
   'ْ': '', // sukun (silent)
-  'َ': 'a', // fatha
+  'َ': 'v', // fatha
   'ِ': 'i', // kasra
   'ُ': 'u', // damma
   'ّ': '', // shadda (handled specially - doubles the consonant)
@@ -167,6 +167,7 @@ const latinToArabicMap: Record<string, string> = {
   'm': 'م',
   'i': 'ِ',
   'u': 'ُ',
+  'v': 'َ',
 }
 
 // Sort keys by length (longest first) for greedy matching

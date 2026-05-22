@@ -54,6 +54,7 @@ const latinToArabic: Record<string, string> = {
   // Vowel diacritics as standalone keys
   'i': 'ِ',
   'u': 'ُ',
+  'v': 'َ',
 }
 
 // Keyboard layout with 3 rows (letters with h-suffix pairs grouped together)
@@ -67,6 +68,7 @@ const keyboardRows = [
     { latin: 'y', arabic: 'ي', label: 'y' },
     { latin: 'u', arabic: 'ُ', label: 'u' },
     { latin: 'i', arabic: 'ِ', label: 'i' },
+    { latin: 'v', arabic: 'َ', label: 'v' },
     { latin: 'a', arabic: 'ا', label: 'a' },
     { latin: 'o', arabic: 'ٱ', label: 'o' },
     { latin: 'f', arabic: 'ف', label: 'f' },
