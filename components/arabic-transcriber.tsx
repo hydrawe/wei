@@ -57,43 +57,44 @@ const latinToArabic: Record<string, string> = {
   'v': 'َ',
 }
 
-// Keyboard layout with 3 rows (letters with h-suffix pairs grouped together)
+// Keyboard layout with 3 rows
 const keyboardRows = [
-  // Row 1: Basic consonants and vowels
+  // Row 1: Vowels and vowel-related letters grouped together
   [
-    { latin: 'q', arabic: 'ق', label: 'q' },
-    { latin: 'w', arabic: 'و', label: 'w' },
-    { latin: 'e', arabic: 'ء', label: 'e' },
-    { latin: 'r', arabic: 'ر', label: 'r' },
-    { latin: 'y', arabic: 'ي', label: 'y' },
-    { latin: 'u', arabic: 'ُ', label: 'u' },
-    { latin: 'i', arabic: 'ِ', label: 'i' },
-    { latin: 'v', arabic: 'َ', label: 'v' },
     { latin: 'a', arabic: 'ا', label: 'a' },
+    { latin: 'y', arabic: 'ي', label: 'y' },
+    { latin: 'w', arabic: 'و', label: 'w' },
+    { latin: 'v', arabic: 'َ', label: 'v' },
+    { latin: 'i', arabic: 'ِ', label: 'i' },
+    { latin: 'u', arabic: 'ُ', label: 'u' },
     { latin: 'o', arabic: 'ٱ', label: 'o' },
-    { latin: 'f', arabic: 'ف', label: 'f' },
-    { latin: 'j', arabic: 'ج', label: 'j' },
-    { latin: 'k', arabic: 'ك', label: 'k' },
-    { latin: 'l', arabic: 'ل', label: 'l' },
-  ],
-  // Row 2: More consonants + emphatics + hamza variants + tanwin
-  [
-    { latin: 'z', arabic: 'ز', label: 'z' },
-    { latin: 'b', arabic: 'ب', label: 'b' },
-    { latin: 'n', arabic: 'ن', label: 'n' },
-    { latin: 'm', arabic: 'م', label: 'm' },
     { latin: 'aa', arabic: 'ى', label: 'aa' },
-    { latin: 'sr', arabic: 'ص', label: 'sr' },
-    { latin: 'dr', arabic: 'ض', label: 'dr' },
-    { latin: 'tr', arabic: 'ط', label: 'tr' },
-    { latin: 'zr', arabic: 'ظ', label: 'zr' },
     { latin: 'ea', arabic: 'أ', label: 'ea' },
     { latin: 'ao', arabic: 'آ', label: 'ao' },
     { latin: 'ae', arabic: 'إ', label: 'ae' },
     { latin: 'ye', arabic: 'ئ', label: 'ye' },
+    { latin: 'we', arabic: 'ؤ', label: 'we' },
     { latin: 'an', arabic: 'ً', label: 'an' },
     { latin: 'un', arabic: 'ٌ', label: 'un' },
     { latin: 'in', arabic: 'ٍ', label: 'in' },
+  ],
+  // Row 2: Consonants
+  [
+    { latin: 'b', arabic: 'ب', label: 'b' },
+    { latin: 'f', arabic: 'ف', label: 'f' },
+    { latin: 'j', arabic: 'ج', label: 'j' },
+    { latin: 'k', arabic: 'ك', label: 'k' },
+    { latin: 'l', arabic: 'ل', label: 'l' },
+    { latin: 'm', arabic: 'م', label: 'm' },
+    { latin: 'n', arabic: 'ن', label: 'n' },
+    { latin: 'q', arabic: 'ق', label: 'q' },
+    { latin: 'r', arabic: 'ر', label: 'r' },
+    { latin: 'z', arabic: 'ز', label: 'z' },
+    { latin: 'e', arabic: 'ء', label: 'e' },
+    { latin: 'sr', arabic: 'ص', label: 'sr' },
+    { latin: 'dr', arabic: 'ض', label: 'dr' },
+    { latin: 'tr', arabic: 'ط', label: 'tr' },
+    { latin: 'zr', arabic: 'ظ', label: 'zr' },
   ],
   // Row 3: Letters with "h" suffix paired (base, h-variant)
   [
