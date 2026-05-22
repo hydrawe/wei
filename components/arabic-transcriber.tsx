@@ -315,90 +315,90 @@ export function ArabicTranscriber() {
             {showKeyboard && (
               <div className="p-2 sm:p-4 border rounded-lg bg-muted/30 space-y-1.5 sm:space-y-2">
                 {keyboardRows.map((row, rowIndex) => (
-                  <div key={rowIndex} className="flex flex-wrap gap-0.5 sm:gap-1 justify-center">
+                  <div key={rowIndex} className="flex flex-wrap gap-1 sm:gap-1.5 justify-center">
                     {row.map((key) => (
                       <Button
                         key={key.latin}
                         variant="outline"
                         size="sm"
-                        className="min-w-8 sm:min-w-10 h-10 sm:h-12 flex flex-col items-center justify-center gap-0 sm:gap-0.5 px-1 sm:px-2 text-xs sm:text-sm"
+                        className="min-w-10 sm:min-w-11 h-12 sm:h-14 flex flex-col items-center justify-center gap-0.5 px-1.5 sm:px-2.5"
                         onClick={() => handleKeyPress(key.arabic, key.latin)}
                       >
-                        <span className="font-mono text-[10px] sm:text-sm font-semibold">{key.label}</span>
-                        <span className="text-sm sm:text-lg font-arabic">{key.arabic}</span>
+                        <span className="font-mono text-xs sm:text-sm font-semibold">{key.label}</span>
+                        <span className="text-base sm:text-xl font-arabic">{key.arabic}</span>
                       </Button>
                     ))}
                   </div>
                 ))}
                 {/* Bottom row with diacritics, c, space, and delete */}
-                <div className="flex flex-wrap gap-0.5 sm:gap-1 justify-center mt-1.5 sm:mt-2">
+                <div className="flex flex-wrap gap-1 sm:gap-1.5 justify-center mt-2 sm:mt-2.5">
                   <Button
                     variant="outline"
                     size="sm"
-                    className="min-w-8 sm:min-w-10 h-10 sm:h-12 flex flex-col items-center justify-center gap-0 sm:gap-0.5 px-1 sm:px-2"
+                    className="min-w-10 sm:min-w-11 h-12 sm:h-14 flex flex-col items-center justify-center gap-0.5 px-1.5 sm:px-2.5"
                     onClick={() => handleKeyPress('َ', 'v')}
                   >
-                    <span className="font-mono text-[10px] sm:text-sm font-semibold">v</span>
-                    <span className="text-sm sm:text-lg font-arabic">َ</span>
+                    <span className="font-mono text-xs sm:text-sm font-semibold">v</span>
+                    <span className="text-base sm:text-xl font-arabic">َ</span>
                   </Button>
                   <Button
                     variant="outline"
                     size="sm"
-                    className="min-w-8 sm:min-w-10 h-10 sm:h-12 flex flex-col items-center justify-center gap-0 sm:gap-0.5 px-1 sm:px-2"
+                    className="min-w-10 sm:min-w-11 h-12 sm:h-14 flex flex-col items-center justify-center gap-0.5 px-1.5 sm:px-2.5"
                     onClick={() => handleKeyPress('ِ', 'i')}
                   >
-                    <span className="font-mono text-[10px] sm:text-sm font-semibold">i</span>
-                    <span className="text-sm sm:text-lg font-arabic">ِ</span>
+                    <span className="font-mono text-xs sm:text-sm font-semibold">i</span>
+                    <span className="text-base sm:text-xl font-arabic">ِ</span>
                   </Button>
                   <Button
                     variant="outline"
                     size="sm"
-                    className="min-w-8 sm:min-w-10 h-10 sm:h-12 flex flex-col items-center justify-center gap-0 sm:gap-0.5 px-1 sm:px-2"
+                    className="min-w-10 sm:min-w-11 h-12 sm:h-14 flex flex-col items-center justify-center gap-0.5 px-1.5 sm:px-2.5"
                     onClick={() => handleKeyPress('ُ', 'u')}
                   >
-                    <span className="font-mono text-[10px] sm:text-sm font-semibold">u</span>
-                    <span className="text-sm sm:text-lg font-arabic">ُ</span>
+                    <span className="font-mono text-xs sm:text-sm font-semibold">u</span>
+                    <span className="text-base sm:text-xl font-arabic">ُ</span>
                   </Button>
                   <Button
                     variant="outline"
                     size="sm"
-                    className="min-w-8 sm:min-w-10 h-10 sm:h-12 flex flex-col items-center justify-center gap-0 sm:gap-0.5 px-1 sm:px-2"
+                    className="min-w-10 sm:min-w-11 h-12 sm:h-14 flex flex-col items-center justify-center gap-0.5 px-1.5 sm:px-2.5"
                     onClick={() => handleKeyPress('ً', 'vn')}
                   >
-                    <span className="font-mono text-[10px] sm:text-sm font-semibold">vn</span>
-                    <span className="text-sm sm:text-lg font-arabic">ً</span>
+                    <span className="font-mono text-xs sm:text-sm font-semibold">vn</span>
+                    <span className="text-base sm:text-xl font-arabic">ً</span>
                   </Button>
                   <Button
                     variant="outline"
                     size="sm"
-                    className="min-w-8 sm:min-w-10 h-10 sm:h-12 flex flex-col items-center justify-center gap-0 sm:gap-0.5 px-1 sm:px-2"
+                    className="min-w-10 sm:min-w-11 h-12 sm:h-14 flex flex-col items-center justify-center gap-0.5 px-1.5 sm:px-2.5"
                     onClick={() => handleKeyPress('ٍ', 'in')}
                   >
-                    <span className="font-mono text-[10px] sm:text-sm font-semibold">in</span>
-                    <span className="text-sm sm:text-lg font-arabic">ٍ</span>
+                    <span className="font-mono text-xs sm:text-sm font-semibold">in</span>
+                    <span className="text-base sm:text-xl font-arabic">ٍ</span>
                   </Button>
                   <Button
                     variant="outline"
                     size="sm"
-                    className="min-w-8 sm:min-w-10 h-10 sm:h-12 flex flex-col items-center justify-center gap-0 sm:gap-0.5 px-1 sm:px-2"
+                    className="min-w-10 sm:min-w-11 h-12 sm:h-14 flex flex-col items-center justify-center gap-0.5 px-1.5 sm:px-2.5"
                     onClick={() => handleKeyPress('ٌ', 'un')}
                   >
-                    <span className="font-mono text-[10px] sm:text-sm font-semibold">un</span>
-                    <span className="text-sm sm:text-lg font-arabic">ٌ</span>
+                    <span className="font-mono text-xs sm:text-sm font-semibold">un</span>
+                    <span className="text-base sm:text-xl font-arabic">ٌ</span>
                   </Button>
                   <Button
                     variant="outline"
                     size="sm"
-                    className="min-w-8 sm:min-w-10 h-10 sm:h-12 flex flex-col items-center justify-center gap-0 sm:gap-0.5 px-1 sm:px-2"
+                    className="min-w-10 sm:min-w-11 h-12 sm:h-14 flex flex-col items-center justify-center gap-0.5 px-1.5 sm:px-2.5"
                     onClick={() => handleKeyPress('ّ', 'c')}
                   >
-                    <span className="font-mono text-[10px] sm:text-sm font-semibold">c</span>
-                    <span className="text-sm sm:text-lg font-arabic">ّ</span>
+                    <span className="font-mono text-xs sm:text-sm font-semibold">c</span>
+                    <span className="text-base sm:text-xl font-arabic">ّ</span>
                   </Button>
                   <Button
                     variant="outline"
                     size="sm"
-                    className="h-10 sm:h-12 px-3 sm:px-8 text-xs sm:text-sm"
+                    className="h-12 sm:h-14 px-4 sm:px-8 text-xs sm:text-sm"
                     onClick={handleSpace}
                   >
                     Space
@@ -406,7 +406,7 @@ export function ArabicTranscriber() {
                   <Button
                     variant="outline"
                     size="sm"
-                    className="h-10 sm:h-12 px-2 sm:px-4 text-xs sm:text-sm"
+                    className="h-12 sm:h-14 px-3 sm:px-4 text-xs sm:text-sm"
                     onClick={handleBackspace}
                   >
                     Del
