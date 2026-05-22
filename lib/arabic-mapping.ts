@@ -135,7 +135,7 @@ const latinToArabicMap: Record<string, string> = {
   'an': 'ً',
   'un': 'ٌ',
   'in': 'ٍ',
-  'at': 'ة',
+  'ah': 'ة',
   'aa': 'اٰ',
   // Single character mappings
   'e': 'ء',
@@ -207,7 +207,7 @@ export const arabicDescriptions: Record<string, string> = {
   'ؤ': 'Waw with hamza - wee',
   'إ': 'Alif with hamza below - aee',
   'ٱ': 'Alif wasl - silent when previous word ends in vowel',
-  'ة': 'Ta marbuta - feminine ending (a/ha/at)',
+  'ة': 'Ta marbuta - feminine ending (a/ha/ah)',
   'ا': 'Alif - a (beginning), I (end)',
   'ى': 'Alif maqsura - I (at end)',
   'ي': 'Ya - y',

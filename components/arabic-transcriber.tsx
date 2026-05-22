@@ -343,9 +343,9 @@ export function ArabicTranscriber() {
                     variant="outline"
                     size="sm"
                     className="h-10 px-4"
-                    onClick={() => handleKeyPress('ة', 'at')}
+                    onClick={() => handleKeyPress('ة', 'ah')}
                   >
-                    <span className="font-mono text-xs mr-1">at</span>
+                    <span className="font-mono text-xs mr-1">ah</span>
                     <span className="font-arabic">ة</span>
                   </Button>
                   <Button
