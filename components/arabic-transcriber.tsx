@@ -55,7 +55,7 @@ const latinToArabic: Record<string, string> = {
   'u': 'ُ',
 }
 
-// Keyboard layout following QWERTY positions for mental model matching (4 rows)
+// Keyboard layout following QWERTY positions for mental model matching (3 rows)
 const keyboardRows = [
   // Row 1: QWERTY top row + digraphs
   [
@@ -69,8 +69,10 @@ const keyboardRows = [
     { latin: 'i', arabic: 'ِ', label: 'i' },
     { latin: 'th', arabic: 'ث', label: 'th' },
     { latin: 'sh', arabic: 'ش', label: 'sh' },
+    { latin: 'dh', arabic: 'ذ', label: 'dh' },
+    { latin: 'gh', arabic: 'غ', label: 'gh' },
   ],
-  // Row 2: QWERTY home row + digraphs
+  // Row 2: QWERTY home row + emphatics + hamza variants
   [
     { latin: 'a', arabic: 'ا', label: 'a' },
     { latin: 's', arabic: 'س', label: 's' },
@@ -81,31 +83,28 @@ const keyboardRows = [
     { latin: 'j', arabic: 'ج', label: 'j' },
     { latin: 'k', arabic: 'ك', label: 'k' },
     { latin: 'l', arabic: 'ل', label: 'l' },
-    { latin: 'dh', arabic: 'ذ', label: 'dh' },
-    { latin: 'gh', arabic: 'غ', label: 'gh' },
-  ],
-  // Row 3: QWERTY bottom row + hamza variants
-  [
-    { latin: 'z', arabic: 'ز', label: 'z' },
-    { latin: 'b', arabic: 'ب', label: 'b' },
-    { latin: 'n', arabic: 'ن', label: 'n' },
-    { latin: 'm', arabic: 'م', label: 'm' },
-    { latin: 'ea', arabic: 'أ', label: 'ea' },
-    { latin: 'eaa', arabic: 'آ', label: 'eaa' },
-    { latin: 'aee', arabic: 'إ', label: 'aee' },
-    { latin: 'an', arabic: 'ً', label: 'an' },
-    { latin: 'un', arabic: 'ٌ', label: 'un' },
-    { latin: 'in', arabic: 'ٍ', label: 'in' },
-  ],
-  // Row 4: Emphatic consonants (capitals)
-  [
     { latin: 'S', arabic: 'ص', label: 'S' },
     { latin: 'D', arabic: 'ض', label: 'D' },
     { latin: 'T', arabic: 'ط', label: 'T' },
     { latin: 'Z', arabic: 'ظ', label: 'Z' },
     { latin: 'H', arabic: 'ح', label: 'H' },
     { latin: 'K', arabic: 'خ', label: 'K' },
+  ],
+  // Row 3: QWERTY bottom row + tanwin + special keys
+  [
+    { latin: 'z', arabic: 'ز', label: 'z' },
+    { latin: 'b', arabic: 'ب', label: 'b' },
+    { latin: 'n', arabic: 'ن', label: 'n' },
+    { latin: 'm', arabic: 'م', label: 'm' },
     { latin: 'I', arabic: 'ى', label: 'I' },
+    { latin: 'ea', arabic: 'أ', label: 'ea' },
+    { latin: 'eaa', arabic: 'آ', label: 'eaa' },
+    { latin: 'aee', arabic: 'إ', label: 'aee' },
+    { latin: 'an', arabic: 'ً', label: 'an' },
+    { latin: 'un', arabic: 'ٌ', label: 'un' },
+    { latin: 'in', arabic: 'ٍ', label: 'in' },
+    { latin: 'ah', arabic: 'ة', label: 'ah' },
+    { latin: '~', arabic: 'ّ', label: '×2' },
   ],
 ]
 
@@ -333,24 +332,6 @@ export function ArabicTranscriber() {
                 ))}
                 {/* Bottom row with space and backspace */}
                 <div className="flex gap-1 justify-center mt-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="h-10 px-4"
-                    onClick={() => handleKeyPress('ة', 'ah')}
-                  >
-                    <span className="font-mono text-xs mr-1">ah</span>
-                    <span className="font-arabic">ة</span>
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="h-10 px-4"
-                    onClick={() => handleKeyPress('ّ', '~')}
-                  >
-                    <span className="font-mono text-xs mr-1">×2</span>
-                    <span className="font-arabic">ّ</span>
-                  </Button>
                   <Button
                     variant="outline"
                     size="sm"
