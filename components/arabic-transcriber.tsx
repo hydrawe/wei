@@ -11,22 +11,23 @@ import { Copy, Check, Trash2, Keyboard } from "lucide-react"
 // Reverse mapping: Latin transliteration -> Arabic character
 const latinToArabic: Record<string, string> = {
   // Multi-character mappings (digraphs) - order matters for matching
-  'eaa': 'آ',
-  'yee': 'ئ',
-  'wee': 'ؤ',
-  'aee': 'إ',
+  'ao': 'آ',
+  'ye': 'ئ',
+  'we': 'ؤ',
+  'ae': 'إ',
   'ea': 'أ',
   'dh': 'ذ',
   'th': 'ث',
   'sh': 'ش',
   'gh': 'غ',
-  'an': 'ً',
-  'un': 'ٌ',
+  'vn': 'ً',
   'in': 'ٍ',
+  'un': 'ٌ',
   // Single character mappings
   'e': 'ء',
   'a': 'ا',
-  'I': 'ى',
+  'o': 'ٱ',
+  'aa': 'ى',
   'y': 'ي',
   'w': 'و',
   'r': 'ر',
@@ -36,10 +37,10 @@ const latinToArabic: Record<string, string> = {
   's': 'س',
   'l': 'ل',
   'n': 'ن',
-  'S': 'ص',
-  'D': 'ض',
-  'T': 'ط',
-  'Z': 'ظ',
+  'sr': 'ص',
+  'dr': 'ض',
+  'tr': 'ط',
+  'zr': 'ظ',
   'b': 'ب',
   'f': 'ف',
   'k': 'ك',
@@ -47,71 +48,63 @@ const latinToArabic: Record<string, string> = {
   'g': 'ع',
   'h': 'ه',
   'j': 'ج',
-  'H': 'ح',
-  'K': 'خ',
+  'x': 'ح',
+  'xh': 'خ',
   'm': 'م',
   // Vowel diacritics as standalone keys
   'i': 'ِ',
   'u': 'ُ',
+  'v': 'َ',
+  'c': 'ّ',
 }
 
-// Keyboard layout following QWERTY positions for mental model matching
+// Keyboard layout with 3 rows
 const keyboardRows = [
-  // Row 1: QWERTY top row (q w e r t y u i)
+  // Row 1: Vowels and vowel-related letters grouped together
   [
-    { latin: 'q', arabic: 'ق', label: 'q' },
-    { latin: 'w', arabic: 'و', label: 'w' },
     { latin: 'e', arabic: 'ء', label: 'e' },
-    { latin: 'r', arabic: 'ر', label: 'r' },
-    { latin: 't', arabic: 'ت', label: 't' },
-    { latin: 'y', arabic: 'ي', label: 'y' },
-    { latin: 'u', arabic: 'ُ', label: 'u' },
-    { latin: 'i', arabic: 'ِ', label: 'i' },
-  ],
-  // Row 2: QWERTY home row (a s d f g h j k l)
-  [
     { latin: 'a', arabic: 'ا', label: 'a' },
-    { latin: 's', arabic: 'س', label: 's' },
-    { latin: 'd', arabic: 'د', label: 'd' },
+    { latin: 'o', arabic: 'ٱ', label: 'o' },
+    { latin: 'ao', arabic: 'آ', label: 'ao' },
+    { latin: 'ea', arabic: 'أ', label: 'ea' },
+    { latin: 'ae', arabic: 'إ', label: 'ae' },
+    { latin: 'aa', arabic: 'ى', label: 'aa' },
+    { latin: 'ye', arabic: 'ئ', label: 'ye' },
+    { latin: 'we', arabic: 'ؤ', label: 'we' },
+    { latin: 'y', arabic: 'ي', label: 'y' },
+    { latin: 'w', arabic: 'و', label: 'w' },
+  ],
+  // Row 2: Consonants
+  [
+    { latin: 'b', arabic: 'ب', label: 'b' },
     { latin: 'f', arabic: 'ف', label: 'f' },
-    { latin: 'g', arabic: 'ع', label: 'g' },
-    { latin: 'h', arabic: 'ه', label: 'h' },
     { latin: 'j', arabic: 'ج', label: 'j' },
     { latin: 'k', arabic: 'ك', label: 'k' },
     { latin: 'l', arabic: 'ل', label: 'l' },
-  ],
-  // Row 3: QWERTY bottom row (z x c v b n m)
-  [
-    { latin: 'z', arabic: 'ز', label: 'z' },
-    { latin: 'b', arabic: 'ب', label: 'b' },
-    { latin: 'n', arabic: 'ن', label: 'n' },
     { latin: 'm', arabic: 'م', label: 'm' },
+    { latin: 'n', arabic: 'ن', label: 'n' },
+    { latin: 'q', arabic: 'ق', label: 'q' },
+    { latin: 'r', arabic: 'ر', label: 'r' },
+    { latin: 'z', arabic: 'ز', label: 'z' },
+    { latin: 'sr', arabic: 'ص', label: 'sr' },
+    { latin: 'dr', arabic: 'ض', label: 'dr' },
+    { latin: 'tr', arabic: 'ط', label: 'tr' },
+    { latin: 'zr', arabic: 'ظ', label: 'zr' },
   ],
-  // Row 4: Emphatic consonants (Shift variants - capitals)
+  // Row 3: Letters with "h" suffix paired (base, h-variant)
   [
-    { latin: 'S', arabic: 'ص', label: 'S' },
-    { latin: 'D', arabic: 'ض', label: 'D' },
-    { latin: 'T', arabic: 'ط', label: 'T' },
-    { latin: 'Z', arabic: 'ظ', label: 'Z' },
-    { latin: 'H', arabic: 'ح', label: 'H' },
-    { latin: 'K', arabic: 'خ', label: 'K' },
-    { latin: 'I', arabic: 'ى', label: 'I' },
-  ],
-  // Row 5: Digraphs (two-letter combinations)
-  [
+    { latin: 't', arabic: 'ت', label: 't' },
     { latin: 'th', arabic: 'ث', label: 'th' },
-    { latin: 'dh', arabic: 'ذ', label: 'dh' },
+    { latin: 's', arabic: 'س', label: 's' },
     { latin: 'sh', arabic: 'ش', label: 'sh' },
+    { latin: 'd', arabic: 'د', label: 'd' },
+    { latin: 'dh', arabic: 'ذ', label: 'dh' },
+    { latin: 'g', arabic: 'ع', label: 'g' },
     { latin: 'gh', arabic: 'غ', label: 'gh' },
-    { latin: 'ea', arabic: 'أ', label: 'ea' },
-    { latin: 'eaa', arabic: 'آ', label: 'eaa' },
-    { latin: 'aee', arabic: 'إ', label: 'aee' },
-  ],
-  // Row 6: Tanwin and special
-  [
-    { latin: 'an', arabic: 'ً', label: 'an' },
-    { latin: 'un', arabic: 'ٌ', label: 'un' },
-    { latin: 'in', arabic: 'ٍ', label: 'in' },
+    { latin: 'h', arabic: 'ه', label: 'h' },
+    { latin: 'ah', arabic: 'ة', label: 'ah' },
+    { latin: 'x', arabic: 'ح', label: 'x' },
+    { latin: 'xh', arabic: 'خ', label: 'xh' },
   ],
 ]
 
@@ -337,25 +330,70 @@ export function ArabicTranscriber() {
                     ))}
                   </div>
                 ))}
-                {/* Bottom row with space and backspace */}
+                {/* Bottom row with diacritics, x2, space, and delete */}
                 <div className="flex gap-1 justify-center mt-2">
                   <Button
                     variant="outline"
                     size="sm"
-                    className="h-10 px-4"
-                    onClick={() => handleKeyPress('ة', 'ah')}
+                    className="min-w-10 h-12 flex flex-col items-center justify-center gap-0.5 px-2"
+                    onClick={() => handleKeyPress('َ', 'v')}
                   >
-                    <span className="font-mono text-xs mr-1">ah</span>
-                    <span className="font-arabic">ة</span>
+                    <span className="font-mono text-sm font-semibold">v</span>
+                    <span className="text-lg font-arabic">َ</span>
                   </Button>
                   <Button
                     variant="outline"
                     size="sm"
-                    className="h-10 px-4"
-                    onClick={() => handleKeyPress('ّ', '~')}
+                    className="min-w-10 h-12 flex flex-col items-center justify-center gap-0.5 px-2"
+                    onClick={() => handleKeyPress('ِ', 'i')}
                   >
-                    <span className="font-mono text-xs mr-1">×2</span>
-                    <span className="font-arabic">ّ</span>
+                    <span className="font-mono text-sm font-semibold">i</span>
+                    <span className="text-lg font-arabic">ِ</span>
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="min-w-10 h-12 flex flex-col items-center justify-center gap-0.5 px-2"
+                    onClick={() => handleKeyPress('ُ', 'u')}
+                  >
+                    <span className="font-mono text-sm font-semibold">u</span>
+                    <span className="text-lg font-arabic">ُ</span>
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="min-w-10 h-12 flex flex-col items-center justify-center gap-0.5 px-2"
+                    onClick={() => handleKeyPress('ً', 'vn')}
+                  >
+                    <span className="font-mono text-sm font-semibold">vn</span>
+                    <span className="text-lg font-arabic">ً</span>
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="min-w-10 h-12 flex flex-col items-center justify-center gap-0.5 px-2"
+                    onClick={() => handleKeyPress('ٍ', 'in')}
+                  >
+                    <span className="font-mono text-sm font-semibold">in</span>
+                    <span className="text-lg font-arabic">ٍ</span>
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="min-w-10 h-12 flex flex-col items-center justify-center gap-0.5 px-2"
+                    onClick={() => handleKeyPress('ٌ', 'un')}
+                  >
+                    <span className="font-mono text-sm font-semibold">un</span>
+                    <span className="text-lg font-arabic">ٌ</span>
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="min-w-10 h-12 flex flex-col items-center justify-center gap-0.5 px-2"
+                    onClick={() => handleKeyPress('ّ', 'c')}
+                  >
+                    <span className="font-mono text-sm font-semibold">c</span>
+                    <span className="text-lg font-arabic">ّ</span>
                   </Button>
                   <Button
                     variant="outline"
@@ -371,7 +409,7 @@ export function ArabicTranscriber() {
                     className="h-10 px-4"
                     onClick={handleBackspace}
                   >
-                    ← Delete
+                    Delete
                   </Button>
                 </div>
               </div>
@@ -430,14 +468,14 @@ export function ArabicTranscriber() {
               <h4>Key Features:</h4>
               <ul>
                 <li>
-                  <strong>Capital letters</strong> (S, D, T, Z, H, K) represent emphatic/heavy
+                  <strong>Capital letters</strong> represent emphatic/heavy
                   consonants pronounced further back in the mouth
                 </li>
                 <li>
-                  <strong>Digraphs</strong> like &quot;th&quot;, &quot;dh&quot;, &quot;sh&quot;, &quot;gh&quot; represent specific Arabic sounds
+                  <strong>Digraphs</strong> like &quot;th&quot;, &quot;dh&quot;, &quot;sh&quot;, &quot;gh&quot;, &quot;sr&quot;, &quot;dr&quot;, &quot;tr&quot;, &quot;zr&quot; represent specific Arabic sounds
                 </li>
                 <li>
-                  <strong>Tanwin</strong> (nunation) is represented as &quot;an&quot;, &quot;un&quot;, &quot;in&quot;
+                  <strong>Tanwin</strong> (nunation) is represented as &quot;vn&quot;, &quot;in&quot;, &quot;un&quot;
                 </li>
                 <li>
                   <strong>Shadda</strong> (consonant doubling) doubles the previous consonant
@@ -447,8 +485,8 @@ export function ArabicTranscriber() {
               <ul>
                 <li><strong>g</strong> (ع) - like a surprised &quot;a&quot;</li>
                 <li><strong>gh</strong> (غ) - gargling sound</li>
-                <li><strong>H</strong> (ح) - like fogging up a window</li>
-                <li><strong>K</strong> (خ) - whispered gargle</li>
+                <li><strong>x</strong> (ح) - like fogging up a window</li>
+                <li><strong>xh</strong> (خ) - whispered gargle</li>
                 <li><strong>q</strong> (ق) - deep in the throat</li>
                 <li><strong>r</strong> (ر) - like the &quot;t&quot; in American &quot;water&quot;</li>
               </ul>

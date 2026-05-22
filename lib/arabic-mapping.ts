@@ -2,19 +2,19 @@
 
 export const arabicMapping: Record<string, string> = {
   // Hamza variants
-  'آ': 'eaa',
+  'آ': 'ao',
   'ء': 'e',
   'أ': 'ea',
-  'ئ': 'yee',
-  'ؤ': 'wee',
-  'إ': 'aee',
-  'ٱ': '', // silent when previous word ends in vowel
-  'ة': 'a', // ta marbuta - contextual, default to 'a'
+  'ئ': 'ye',
+  'ؤ': 'we',
+  'إ': 'ae',
+  'ٱ': 'o', // alif wasl
+  'ة': 'ah', // ta marbuta - feminine ending
 
   // Alif variants
   'ا': 'a',
-  'ى': 'I',
-  'اٰ': 'aa', // dagger alif
+  'ى': 'aa',
+  'اٰ': 'aaa', // dagger alif
 
   // Semi-vowels
   'ي': 'y',
@@ -31,10 +31,10 @@ export const arabicMapping: Record<string, string> = {
   'ل': 'l',
   'ن': 'n',
   'ش': 'sh',
-  'ص': 'S',
-  'ض': 'D',
-  'ط': 'T',
-  'ظ': 'Z',
+  'ص': 'sr',
+  'ض': 'dr',
+  'ط': 'tr',
+  'ظ': 'zr',
   'ب': 'b',
   'ف': 'f',
   'ك': 'k',
@@ -44,16 +44,16 @@ export const arabicMapping: Record<string, string> = {
   'ه': 'h',
   'ﻫ': 'h', // alternate form
   'ج': 'j',
-  'ح': 'H',
-  'خ': 'K',
+  'ح': 'x',
+  'خ': 'xh',
   'م': 'm',
 
   // Diacritics (vowel marks)
-  'ً': 'an', // tanwin fatha (accusative)
+  'ً': 'vn', // tanwin fatha (accusative)
   'ٌ': 'un', // tanwin damma (nominative)
   'ٍ': 'in', // tanwin kasra (genitive)
   'ْ': '', // sukun (silent)
-  'َ': 'a', // fatha
+  'َ': 'v', // fatha
   'ِ': 'i', // kasra
   'ُ': 'u', // damma
   'ّ': '', // shadda (handled specially - doubles the consonant)
@@ -61,8 +61,8 @@ export const arabicMapping: Record<string, string> = {
   // Common ligatures
   'لا': 'la',
   'لأ': 'lea',
-  'لإ': 'laee',
-  'لآ': 'leaa',
+  'لإ': 'lae',
+  'لآ': 'lao',
 }
 
 // Letters that can be doubled with shadda
@@ -119,12 +119,12 @@ export function transcribeArabic(text: string): string {
 // Reverse mapping: Latin transliteration -> Arabic character
 const latinToArabicMap: Record<string, string> = {
   // Multi-character mappings (digraphs) - must be checked first (longest match)
-  'eaa': 'آ',
-  'yee': 'ئ',
-  'wee': 'ؤ',
-  'aee': 'إ',
-  'leaa': 'لآ',
-  'laee': 'لإ',
+  'ao': 'آ',
+  'ye': 'ئ',
+  'we': 'ؤ',
+  'ae': 'إ',
+  'lao': 'لآ',
+  'lae': 'لإ',
   'lea': 'لأ',
   'ea': 'أ',
   'la': 'لا',
@@ -132,15 +132,16 @@ const latinToArabicMap: Record<string, string> = {
   'th': 'ث',
   'sh': 'ش',
   'gh': 'غ',
-  'an': 'ً',
-  'un': 'ٌ',
+  'vn': 'ً',
   'in': 'ٍ',
+  'un': 'ٌ',
   'ah': 'ة',
-  'aa': 'اٰ',
+  'aaa': 'اٰ',
+  'o': 'ٱ',
   // Single character mappings
   'e': 'ء',
   'a': 'ا',
-  'I': 'ى',
+  'aa': 'ى',
   'y': 'ي',
   'w': 'و',
   'r': 'ر',
@@ -150,10 +151,10 @@ const latinToArabicMap: Record<string, string> = {
   's': 'س',
   'l': 'ل',
   'n': 'ن',
-  'S': 'ص',
-  'D': 'ض',
-  'T': 'ط',
-  'Z': 'ظ',
+  'sr': 'ص',
+  'dr': 'ض',
+  'tr': 'ط',
+  'zr': 'ظ',
   'b': 'ب',
   'f': 'ف',
   'k': 'ك',
@@ -161,11 +162,13 @@ const latinToArabicMap: Record<string, string> = {
   'g': 'ع',
   'h': 'ه',
   'j': 'ج',
-  'H': 'ح',
-  'K': 'خ',
+  'x': 'ح',
+  'xh': 'خ',
   'm': 'م',
+  'c': 'ّ',
   'i': 'ِ',
   'u': 'ُ',
+  'v': 'َ',
 }
 
 // Sort keys by length (longest first) for greedy matching
@@ -200,16 +203,16 @@ export function transcribeLatin(text: string): string {
 
 // Get description for an Arabic character
 export const arabicDescriptions: Record<string, string> = {
-  'آ': 'Alif with madda - eaa',
+  'آ': 'Alif with madda - ao',
   'ء': 'Hamza - glottal stop (e)',
   'أ': 'Alif with hamza above - ea',
-  'ئ': 'Ya with hamza - yee',
-  'ؤ': 'Waw with hamza - wee',
-  'إ': 'Alif with hamza below - aee',
-  'ٱ': 'Alif wasl - silent when previous word ends in vowel',
+  'ئ': 'Ya with hamza - ye',
+  'ؤ': 'Waw with hamza - we',
+  'إ': 'Alif with hamza below - ae',
+  'ٱ': 'Alif wasl - o',
   'ة': 'Ta marbuta - feminine ending (a/ha/ah)',
-  'ا': 'Alif - a (beginning), I (end)',
-  'ى': 'Alif maqsura - I (at end)',
+  'ا': 'Alif - a (beginning), aa (end)',
+  'ى': 'Alif maqsura - aa (at end)',
   'ي': 'Ya - y',
   'و': 'Waw - w',
   'ر': 'Ra - r (like "t" in American "water")',
@@ -222,10 +225,10 @@ export const arabicDescriptions: Record<string, string> = {
   'ل': 'Lam - l (tongue on upper mouth)',
   'ن': 'Nun - n',
   'ش': 'Shin - sh',
-  'ص': 'Sad - S (stressed s, thicker)',
-  'ض': 'Dad - D',
-  'ط': 'Ta (emphatic) - T (back of mouth)',
-  'ظ': 'Za (emphatic) - Z (further back)',
+  'ص': 'Sad - sr (stressed s, thicker)',
+  'ض': 'Dad - dr',
+  'ط': 'Ta (emphatic) - tr (back of mouth)',
+  'ظ': 'Za (emphatic) - zr (further back)',
   'ب': 'Ba - b',
   'ف': 'Fa - f',
   'ك': 'Kaf - k',
@@ -234,7 +237,7 @@ export const arabicDescriptions: Record<string, string> = {
   'غ': 'Ghayn - gh (gargling sound)',
   'ه': 'Ha - h',
   'ج': 'Jim - j',
-  'ح': 'Ha (emphatic) - H (fogging up window)',
-  'خ': 'Kha - K (whispered gargle)',
+  'ح': 'Ha (emphatic) - x (fogging up window)',
+  'خ': 'Kha - xh (whispered gargle)',
   'م': 'Mim - m',
 }
