@@ -62,6 +62,7 @@ const keyboardRows = [
   // Row 1: Vowels and vowel-related letters grouped together
   [
     { latin: 'a', arabic: 'ا', label: 'a' },
+    { latin: 'o', arabic: 'ٱ', label: 'o' },
     { latin: 'ao', arabic: 'آ', label: 'ao' },
     { latin: 'aa', arabic: 'ى', label: 'aa' },
     { latin: 'ea', arabic: 'أ', label: 'ea' },
@@ -73,7 +74,6 @@ const keyboardRows = [
     { latin: 'v', arabic: 'َ', label: 'v' },
     { latin: 'i', arabic: 'ِ', label: 'i' },
     { latin: 'u', arabic: 'ُ', label: 'u' },
-    { latin: 'o', arabic: 'ٱ', label: 'o' },
     { latin: 'an', arabic: 'ً', label: 'an' },
     { latin: 'un', arabic: 'ٌ', label: 'un' },
     { latin: 'in', arabic: 'ٍ', label: 'in' },
