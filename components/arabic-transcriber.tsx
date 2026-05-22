@@ -55,9 +55,9 @@ const latinToArabic: Record<string, string> = {
   'u': 'ُ',
 }
 
-// Keyboard layout following QWERTY positions for mental model matching
+// Keyboard layout following QWERTY positions for mental model matching (4 rows)
 const keyboardRows = [
-  // Row 1: QWERTY top row (q w e r t y u i)
+  // Row 1: QWERTY top row + digraphs
   [
     { latin: 'q', arabic: 'ق', label: 'q' },
     { latin: 'w', arabic: 'و', label: 'w' },
@@ -67,8 +67,10 @@ const keyboardRows = [
     { latin: 'y', arabic: 'ي', label: 'y' },
     { latin: 'u', arabic: 'ُ', label: 'u' },
     { latin: 'i', arabic: 'ِ', label: 'i' },
+    { latin: 'th', arabic: 'ث', label: 'th' },
+    { latin: 'sh', arabic: 'ش', label: 'sh' },
   ],
-  // Row 2: QWERTY home row (a s d f g h j k l)
+  // Row 2: QWERTY home row + digraphs
   [
     { latin: 'a', arabic: 'ا', label: 'a' },
     { latin: 's', arabic: 'س', label: 's' },
@@ -79,15 +81,23 @@ const keyboardRows = [
     { latin: 'j', arabic: 'ج', label: 'j' },
     { latin: 'k', arabic: 'ك', label: 'k' },
     { latin: 'l', arabic: 'ل', label: 'l' },
+    { latin: 'dh', arabic: 'ذ', label: 'dh' },
+    { latin: 'gh', arabic: 'غ', label: 'gh' },
   ],
-  // Row 3: QWERTY bottom row (z x c v b n m)
+  // Row 3: QWERTY bottom row + hamza variants
   [
     { latin: 'z', arabic: 'ز', label: 'z' },
     { latin: 'b', arabic: 'ب', label: 'b' },
     { latin: 'n', arabic: 'ن', label: 'n' },
     { latin: 'm', arabic: 'م', label: 'm' },
+    { latin: 'ea', arabic: 'أ', label: 'ea' },
+    { latin: 'eaa', arabic: 'آ', label: 'eaa' },
+    { latin: 'aee', arabic: 'إ', label: 'aee' },
+    { latin: 'an', arabic: 'ً', label: 'an' },
+    { latin: 'un', arabic: 'ٌ', label: 'un' },
+    { latin: 'in', arabic: 'ٍ', label: 'in' },
   ],
-  // Row 4: Emphatic consonants (Shift variants - capitals)
+  // Row 4: Emphatic consonants (capitals)
   [
     { latin: 'S', arabic: 'ص', label: 'S' },
     { latin: 'D', arabic: 'ض', label: 'D' },
@@ -96,22 +106,6 @@ const keyboardRows = [
     { latin: 'H', arabic: 'ح', label: 'H' },
     { latin: 'K', arabic: 'خ', label: 'K' },
     { latin: 'I', arabic: 'ى', label: 'I' },
-  ],
-  // Row 5: Digraphs (two-letter combinations)
-  [
-    { latin: 'th', arabic: 'ث', label: 'th' },
-    { latin: 'dh', arabic: 'ذ', label: 'dh' },
-    { latin: 'sh', arabic: 'ش', label: 'sh' },
-    { latin: 'gh', arabic: 'غ', label: 'gh' },
-    { latin: 'ea', arabic: 'أ', label: 'ea' },
-    { latin: 'eaa', arabic: 'آ', label: 'eaa' },
-    { latin: 'aee', arabic: 'إ', label: 'aee' },
-  ],
-  // Row 6: Tanwin and special
-  [
-    { latin: 'an', arabic: 'ً', label: 'an' },
-    { latin: 'un', arabic: 'ٌ', label: 'un' },
-    { latin: 'in', arabic: 'ٍ', label: 'in' },
   ],
 ]
 
