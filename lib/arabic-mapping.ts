@@ -2,7 +2,7 @@
 
 export const arabicMapping: Record<string, string> = {
   // Hamza variants
-  'آ': 'eaa',
+  'آ': 'ao',
   'ء': 'e',
   'أ': 'ea',
   'ئ': 'ye',
@@ -62,7 +62,7 @@ export const arabicMapping: Record<string, string> = {
   'لا': 'la',
   'لأ': 'lea',
   'لإ': 'lae',
-  'لآ': 'leaa',
+  'لآ': 'lao',
 }
 
 // Letters that can be doubled with shadda
@@ -119,11 +119,11 @@ export function transcribeArabic(text: string): string {
 // Reverse mapping: Latin transliteration -> Arabic character
 const latinToArabicMap: Record<string, string> = {
   // Multi-character mappings (digraphs) - must be checked first (longest match)
-  'eaa': 'آ',
+  'ao': 'آ',
   'ye': 'ئ',
   'we': 'ؤ',
   'ae': 'إ',
-  'leaa': 'لآ',
+  'lao': 'لآ',
   'lae': 'لإ',
   'lea': 'لأ',
   'ea': 'أ',
@@ -201,7 +201,7 @@ export function transcribeLatin(text: string): string {
 
 // Get description for an Arabic character
 export const arabicDescriptions: Record<string, string> = {
-  'آ': 'Alif with madda - eaa',
+  'آ': 'Alif with madda - ao',
   'ء': 'Hamza - glottal stop (e)',
   'أ': 'Alif with hamza above - ea',
   'ئ': 'Ya with hamza - ye',

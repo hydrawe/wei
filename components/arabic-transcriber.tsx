@@ -11,7 +11,7 @@ import { Copy, Check, Trash2, Keyboard } from "lucide-react"
 // Reverse mapping: Latin transliteration -> Arabic character
 const latinToArabic: Record<string, string> = {
   // Multi-character mappings (digraphs) - order matters for matching
-  'eaa': 'آ',
+  'ao': 'آ',
   'ye': 'ئ',
   'we': 'ؤ',
   'ae': 'إ',
@@ -86,7 +86,7 @@ const keyboardRows = [
     { latin: 'tr', arabic: 'ط', label: 'tr' },
     { latin: 'zr', arabic: 'ظ', label: 'zr' },
     { latin: 'ea', arabic: 'أ', label: 'ea' },
-    { latin: 'eaa', arabic: 'آ', label: 'eaa' },
+    { latin: 'ao', arabic: 'آ', label: 'ao' },
     { latin: 'ae', arabic: 'إ', label: 'ae' },
     { latin: 'ye', arabic: 'ئ', label: 'ye' },
     { latin: 'an', arabic: 'ً', label: 'an' },
