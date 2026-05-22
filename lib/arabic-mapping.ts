@@ -6,8 +6,8 @@ export const arabicMapping: Record<string, string> = {
   'ء': 'e',
   'أ': 'ea',
   'ئ': 'ye',
-  'ؤ': 'wee',
-  'إ': 'aee',
+  'ؤ': 'we',
+  'إ': 'ae',
   'ٱ': 'o', // alif wasl
   'ة': 'ah', // ta marbuta - feminine ending
 
@@ -61,7 +61,7 @@ export const arabicMapping: Record<string, string> = {
   // Common ligatures
   'لا': 'la',
   'لأ': 'lea',
-  'لإ': 'laee',
+  'لإ': 'lae',
   'لآ': 'leaa',
 }
 
@@ -121,10 +121,10 @@ const latinToArabicMap: Record<string, string> = {
   // Multi-character mappings (digraphs) - must be checked first (longest match)
   'eaa': 'آ',
   'ye': 'ئ',
-  'wee': 'ؤ',
-  'aee': 'إ',
+  'we': 'ؤ',
+  'ae': 'إ',
   'leaa': 'لآ',
-  'laee': 'لإ',
+  'lae': 'لإ',
   'lea': 'لأ',
   'ea': 'أ',
   'la': 'لا',
@@ -205,8 +205,8 @@ export const arabicDescriptions: Record<string, string> = {
   'ء': 'Hamza - glottal stop (e)',
   'أ': 'Alif with hamza above - ea',
   'ئ': 'Ya with hamza - ye',
-  'ؤ': 'Waw with hamza - wee',
-  'إ': 'Alif with hamza below - aee',
+  'ؤ': 'Waw with hamza - we',
+  'إ': 'Alif with hamza below - ae',
   'ٱ': 'Alif wasl - o',
   'ة': 'Ta marbuta - feminine ending (a/ha/ah)',
   'ا': 'Alif - a (beginning), aa (end)',
