@@ -72,12 +72,6 @@ const keyboardRows = [
     { latin: 'we', arabic: 'ؤ', label: 'we' },
     { latin: 'y', arabic: 'ي', label: 'y' },
     { latin: 'w', arabic: 'و', label: 'w' },
-    { latin: 'v', arabic: 'َ', label: 'v' },
-    { latin: 'i', arabic: 'ِ', label: 'i' },
-    { latin: 'u', arabic: 'ُ', label: 'u' },
-    { latin: 'vn', arabic: 'ً', label: 'vn' },
-    { latin: 'in', arabic: 'ٍ', label: 'in' },
-    { latin: 'un', arabic: 'ٌ', label: 'un' },
   ],
   // Row 2: Consonants
   [
@@ -335,15 +329,69 @@ export function ArabicTranscriber() {
                     ))}
                   </div>
                 ))}
-                {/* Bottom row with x2, space, and delete */}
+                {/* Bottom row with diacritics, x2, space, and delete */}
                 <div className="flex gap-1 justify-center mt-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="min-w-10 h-12 flex flex-col items-center justify-center gap-0.5 px-2"
+                    onClick={() => handleKeyPress('َ', 'v')}
+                  >
+                    <span className="font-mono text-sm font-semibold">v</span>
+                    <span className="text-lg font-arabic">َ</span>
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="min-w-10 h-12 flex flex-col items-center justify-center gap-0.5 px-2"
+                    onClick={() => handleKeyPress('ِ', 'i')}
+                  >
+                    <span className="font-mono text-sm font-semibold">i</span>
+                    <span className="text-lg font-arabic">ِ</span>
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="min-w-10 h-12 flex flex-col items-center justify-center gap-0.5 px-2"
+                    onClick={() => handleKeyPress('ُ', 'u')}
+                  >
+                    <span className="font-mono text-sm font-semibold">u</span>
+                    <span className="text-lg font-arabic">ُ</span>
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="min-w-10 h-12 flex flex-col items-center justify-center gap-0.5 px-2"
+                    onClick={() => handleKeyPress('ً', 'vn')}
+                  >
+                    <span className="font-mono text-sm font-semibold">vn</span>
+                    <span className="text-lg font-arabic">ً</span>
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="min-w-10 h-12 flex flex-col items-center justify-center gap-0.5 px-2"
+                    onClick={() => handleKeyPress('ٍ', 'in')}
+                  >
+                    <span className="font-mono text-sm font-semibold">in</span>
+                    <span className="text-lg font-arabic">ٍ</span>
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="min-w-10 h-12 flex flex-col items-center justify-center gap-0.5 px-2"
+                    onClick={() => handleKeyPress('ٌ', 'un')}
+                  >
+                    <span className="font-mono text-sm font-semibold">un</span>
+                    <span className="text-lg font-arabic">ٌ</span>
+                  </Button>
                   <Button
                     variant="outline"
                     size="sm"
                     className="h-10 px-4"
                     onClick={() => handleKeyPress('ّ', '~')}
                   >
-                    <span className="font-mono text-xs mr-1">×2</span>
+                    <span className="font-mono text-xs mr-1">x2</span>
                     <span className="font-arabic">ّ</span>
                   </Button>
                   <Button
@@ -360,7 +408,7 @@ export function ArabicTranscriber() {
                     className="h-10 px-4"
                     onClick={handleBackspace}
                   >
-                    ← Delete
+                    Delete
                   </Button>
                 </div>
               </div>
