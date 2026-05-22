@@ -49,7 +49,7 @@ export const arabicMapping: Record<string, string> = {
   'م': 'm',
 
   // Diacritics (vowel marks)
-  'ً': 'an', // tanwin fatha (accusative)
+  'ً': 'vn', // tanwin fatha (accusative)
   'ٌ': 'un', // tanwin damma (nominative)
   'ٍ': 'in', // tanwin kasra (genitive)
   'ْ': '', // sukun (silent)
@@ -132,9 +132,9 @@ const latinToArabicMap: Record<string, string> = {
   'th': 'ث',
   'sh': 'ش',
   'gh': 'غ',
-  'an': 'ً',
-  'un': 'ٌ',
+  'vn': 'ً',
   'in': 'ٍ',
+  'un': 'ٌ',
   'ah': 'ة',
   'aaa': 'اٰ',
   'o': 'ٱ',

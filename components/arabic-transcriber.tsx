@@ -20,9 +20,9 @@ const latinToArabic: Record<string, string> = {
   'th': 'ث',
   'sh': 'ش',
   'gh': 'غ',
-  'an': 'ً',
-  'un': 'ٌ',
+  'vn': 'ً',
   'in': 'ٍ',
+  'un': 'ٌ',
   // Single character mappings
   'e': 'ء',
   'a': 'ا',
@@ -74,9 +74,9 @@ const keyboardRows = [
     { latin: 'v', arabic: 'َ', label: 'v' },
     { latin: 'i', arabic: 'ِ', label: 'i' },
     { latin: 'u', arabic: 'ُ', label: 'u' },
-    { latin: 'an', arabic: 'ً', label: 'an' },
-    { latin: 'un', arabic: 'ٌ', label: 'un' },
+    { latin: 'vn', arabic: 'ً', label: 'vn' },
     { latin: 'in', arabic: 'ٍ', label: 'in' },
+    { latin: 'un', arabic: 'ٌ', label: 'un' },
   ],
   // Row 2: Consonants
   [
@@ -426,7 +426,7 @@ export function ArabicTranscriber() {
                   <strong>Digraphs</strong> like &quot;th&quot;, &quot;dh&quot;, &quot;sh&quot;, &quot;gh&quot;, &quot;sr&quot;, &quot;dr&quot;, &quot;tr&quot;, &quot;zr&quot; represent specific Arabic sounds
                 </li>
                 <li>
-                  <strong>Tanwin</strong> (nunation) is represented as &quot;an&quot;, &quot;un&quot;, &quot;in&quot;
+                  <strong>Tanwin</strong> (nunation) is represented as &quot;vn&quot;, &quot;in&quot;, &quot;un&quot;
                 </li>
                 <li>
                   <strong>Shadda</strong> (consonant doubling) doubles the previous consonant
