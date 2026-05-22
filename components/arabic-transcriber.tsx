@@ -26,7 +26,7 @@ const latinToArabic: Record<string, string> = {
   // Single character mappings
   'e': 'ء',
   'a': 'ا',
-  'I': 'ى',
+  'aa': 'ى',
   'y': 'ي',
   'w': 'و',
   'r': 'ر',
@@ -36,10 +36,10 @@ const latinToArabic: Record<string, string> = {
   's': 'س',
   'l': 'ل',
   'n': 'ن',
-  'S': 'ص',
-  'D': 'ض',
-  'T': 'ط',
-  'Z': 'ظ',
+  'sr': 'ص',
+  'dr': 'ض',
+  'tr': 'ط',
+  'zr': 'ظ',
   'b': 'ب',
   'f': 'ف',
   'k': 'ك',
@@ -78,11 +78,11 @@ const keyboardRows = [
     { latin: 'b', arabic: 'ب', label: 'b' },
     { latin: 'n', arabic: 'ن', label: 'n' },
     { latin: 'm', arabic: 'م', label: 'm' },
-    { latin: 'I', arabic: 'ى', label: 'I' },
-    { latin: 'S', arabic: 'ص', label: 'S' },
-    { latin: 'D', arabic: 'ض', label: 'D' },
-    { latin: 'T', arabic: 'ط', label: 'T' },
-    { latin: 'Z', arabic: 'ظ', label: 'Z' },
+    { latin: 'aa', arabic: 'ى', label: 'aa' },
+    { latin: 'sr', arabic: 'ص', label: 'sr' },
+    { latin: 'dr', arabic: 'ض', label: 'dr' },
+    { latin: 'tr', arabic: 'ط', label: 'tr' },
+    { latin: 'zr', arabic: 'ظ', label: 'zr' },
     { latin: 'ea', arabic: 'أ', label: 'ea' },
     { latin: 'eaa', arabic: 'آ', label: 'eaa' },
     { latin: 'aee', arabic: 'إ', label: 'aee' },
@@ -413,11 +413,11 @@ export function ArabicTranscriber() {
               <h4>Key Features:</h4>
               <ul>
                 <li>
-                  <strong>Capital letters</strong> (S, D, T, Z) represent emphatic/heavy
+                  <strong>Capital letters</strong> represent emphatic/heavy
                   consonants pronounced further back in the mouth
                 </li>
                 <li>
-                  <strong>Digraphs</strong> like &quot;th&quot;, &quot;dh&quot;, &quot;sh&quot;, &quot;gh&quot; represent specific Arabic sounds
+                  <strong>Digraphs</strong> like &quot;th&quot;, &quot;dh&quot;, &quot;sh&quot;, &quot;gh&quot;, &quot;sr&quot;, &quot;dr&quot;, &quot;tr&quot;, &quot;zr&quot; represent specific Arabic sounds
                 </li>
                 <li>
                   <strong>Tanwin</strong> (nunation) is represented as &quot;an&quot;, &quot;un&quot;, &quot;in&quot;
