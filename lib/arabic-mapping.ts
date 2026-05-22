@@ -9,7 +9,7 @@ export const arabicMapping: Record<string, string> = {
   'ؤ': 'wee',
   'إ': 'aee',
   'ٱ': '', // silent when previous word ends in vowel
-  'ة': 'a', // ta marbuta - contextual, default to 'a'
+  'ة': 'ah', // ta marbuta - feminine ending
 
   // Alif variants
   'ا': 'a',
