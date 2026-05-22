@@ -44,8 +44,8 @@ export const arabicMapping: Record<string, string> = {
   'ه': 'h',
   'ﻫ': 'h', // alternate form
   'ج': 'j',
-  'ح': 'H',
-  'خ': 'K',
+  'ح': 'x',
+  'خ': 'xh',
   'م': 'm',
 
   // Diacritics (vowel marks)
@@ -161,8 +161,8 @@ const latinToArabicMap: Record<string, string> = {
   'g': 'ع',
   'h': 'ه',
   'j': 'ج',
-  'H': 'ح',
-  'K': 'خ',
+  'x': 'ح',
+  'xh': 'خ',
   'm': 'م',
   'i': 'ِ',
   'u': 'ُ',
@@ -234,7 +234,7 @@ export const arabicDescriptions: Record<string, string> = {
   'غ': 'Ghayn - gh (gargling sound)',
   'ه': 'Ha - h',
   'ج': 'Jim - j',
-  'ح': 'Ha (emphatic) - H (fogging up window)',
-  'خ': 'Kha - K (whispered gargle)',
+  'ح': 'Ha (emphatic) - x (fogging up window)',
+  'خ': 'Kha - xh (whispered gargle)',
   'م': 'Mim - m',
 }

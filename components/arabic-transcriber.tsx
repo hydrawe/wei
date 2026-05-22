@@ -47,8 +47,8 @@ const latinToArabic: Record<string, string> = {
   'g': 'ع',
   'h': 'ه',
   'j': 'ج',
-  'H': 'ح',
-  'K': 'خ',
+  'x': 'ح',
+  'xh': 'خ',
   'm': 'م',
   // Vowel diacritics as standalone keys
   'i': 'ِ',
@@ -102,8 +102,8 @@ const keyboardRows = [
     { latin: 'gh', arabic: 'غ', label: 'gh' },
     { latin: 'h', arabic: 'ه', label: 'h' },
     { latin: 'ah', arabic: 'ة', label: 'ah' },
-    { latin: 'H', arabic: 'ح', label: 'H' },
-    { latin: 'K', arabic: 'خ', label: 'K' },
+    { latin: 'x', arabic: 'ح', label: 'x' },
+    { latin: 'xh', arabic: 'خ', label: 'xh' },
   ],
 ]
 
@@ -413,7 +413,7 @@ export function ArabicTranscriber() {
               <h4>Key Features:</h4>
               <ul>
                 <li>
-                  <strong>Capital letters</strong> (S, D, T, Z, H, K) represent emphatic/heavy
+                  <strong>Capital letters</strong> (S, D, T, Z) represent emphatic/heavy
                   consonants pronounced further back in the mouth
                 </li>
                 <li>
@@ -430,8 +430,8 @@ export function ArabicTranscriber() {
               <ul>
                 <li><strong>g</strong> (ع) - like a surprised &quot;a&quot;</li>
                 <li><strong>gh</strong> (غ) - gargling sound</li>
-                <li><strong>H</strong> (ح) - like fogging up a window</li>
-                <li><strong>K</strong> (خ) - whispered gargle</li>
+                <li><strong>x</strong> (ح) - like fogging up a window</li>
+                <li><strong>xh</strong> (خ) - whispered gargle</li>
                 <li><strong>q</strong> (ق) - deep in the throat</li>
                 <li><strong>r</strong> (ر) - like the &quot;t&quot; in American &quot;water&quot;</li>
               </ul>
