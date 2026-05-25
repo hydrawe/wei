@@ -12,10 +12,10 @@ export const arabicMapping: Record<string, string> = {
   'ة': 'hh', // ta marbuta - feminine ending
 
   // Alif variants
-  'ا': 'a',
+  'ا': 'ah',
   'ى': 'aa',
   'ٰ': 'av', // dagger alif (superscript alif)
-  'اٰ': 'aav', // alif with dagger alif
+  'اٰ': 'ahv', // alif with dagger alif
 
   // Semi-vowels
   'ي': 'y',
@@ -50,20 +50,20 @@ export const arabicMapping: Record<string, string> = {
   'م': 'm',
 
   // Diacritics (vowel marks)
-  'ً': 'vv', // tanwin fatha (accusative)
-  'ٌ': 'uu', // tanwin damma (nominative)
-  'ٍ': 'ii', // tanwin kasra (genitive)
+  'ً': 'av', // tanwin fatha (accusative)
+  'ٌ': 'uv', // tanwin damma (nominative)
+  'ٍ': 'iv', // tanwin kasra (genitive)
   'ْ': '', // sukun (silent)
-  'َ': 'v', // fatha
+  'َ': 'a', // fatha
   'ِ': 'i', // kasra
   'ُ': 'u', // damma
   'ّ': '', // shadda (handled specially - doubles the consonant)
 
   // Common ligatures
-  'لا': 'la',
-  'لأ': 'lea',
-  'لإ': 'lae',
-  'لآ': 'lao',
+  'لا': 'lah',
+  'لأ': 'leah',
+  'لإ': 'lahe',
+  'لآ': 'laho',
 }
 
 // Letters that can be doubled with shadda
@@ -120,29 +120,29 @@ export function transcribeArabic(text: string): string {
 // Reverse mapping: Latin transliteration -> Arabic character
 const latinToArabicMap: Record<string, string> = {
   // Multi-character mappings (digraphs) - must be checked first (longest match)
-  'ao': 'آ',
+  'aho': 'آ',
   'ye': 'ئ',
   'we': 'ؤ',
-  'ae': 'إ',
-  'lao': 'لآ',
-  'lae': 'لإ',
-  'lea': 'لأ',
-  'ea': 'أ',
-  'la': 'لا',
+  'ahe': 'إ',
+  'laho': 'لآ',
+  'lahe': 'لإ',
+  'leah': 'لأ',
+  'eah': 'أ',
+  'lah': 'لا',
   'dh': 'ذ',
   'th': 'ث',
   'sh': 'ش',
   'gh': 'غ',
-  'vv': 'ً',
-  'ii': 'ٍ',
-  'uu': 'ٌ',
+  'av': 'ً',
+  'iv': 'ٍ',
+  'uv': 'ٌ',
   'hh': 'ة',
-  'aav': 'اٰ',
+  'ahv': 'اٰ',
   'av': 'ٰ',
   'o': 'ٱ',
   // Single character mappings
   'e': 'ء',
-  'a': 'ا',
+  'ah': 'ا',
   'aa': 'ى',
   'y': 'ي',
   'w': 'و',
@@ -170,7 +170,7 @@ const latinToArabicMap: Record<string, string> = {
   'c': 'ّ',
   'i': 'ِ',
   'u': 'ُ',
-  'v': 'َ',
+  'a': 'َ',
 }
 
 // Sort keys by length (longest first) for greedy matching
@@ -205,15 +205,15 @@ export function transcribeLatin(text: string): string {
 
 // Get description for an Arabic character
 export const arabicDescriptions: Record<string, string> = {
-  'آ': 'Alif with madda - ao',
+  'آ': 'Alif with madda - aho',
   'ء': 'Hamza - glottal stop (e)',
-  'أ': 'Alif with hamza above - ea',
+  'أ': 'Alif with hamza above - eah',
   'ئ': 'Ya with hamza - ye',
   'ؤ': 'Waw with hamza - we',
-  'إ': 'Alif with hamza below - ae',
+  'إ': 'Alif with hamza below - ahe',
   'ٱ': 'Alif wasl - o',
   'ة': 'Ta marbuta - feminine ending (hh)',
-  'ا': 'Alif - a (beginning), aa (end)',
+  'ا': 'Alif - ah',
   'ى': 'Alif maqsura - aa (at end)',
   'ٰ': 'Dagger alif - av (superscript alif)',
   'ي': 'Ya - y',
