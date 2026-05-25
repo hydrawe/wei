@@ -69,7 +69,7 @@ const keyboardRows = [
     { latin: 'ea', arabic: 'أ', label: 'ea' },
     { latin: 'ae', arabic: 'إ', label: 'ae' },
     { latin: 'aa', arabic: 'ى', label: 'aa' },
-    { latin: 'av', arabic: 'ٰ', label: 'av' },
+    { latin: 'ap', arabic: 'ٰ', label: 'ap' },
     { latin: 'ye', arabic: 'ئ', label: 'ye' },
     { latin: 'we', arabic: 'ؤ', label: 'we' },
     { latin: 'y', arabic: 'ي', label: 'y' },
