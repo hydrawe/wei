@@ -12,10 +12,10 @@ export const arabicMapping: Record<string, string> = {
   'ة': 'hh', // ta marbuta - feminine ending
 
   // Alif variants
-  'ا': 'aa',
+  'ا': 'a-',
   'ى': 'ya',
   'ٰ': 'ac', // dagger alif (superscript alif)
-  'اٰ': 'aac', // alif with dagger alif
+  'اٰ': 'a-c', // alif with dagger alif
 
   // Semi-vowels
   'ي': 'y',
@@ -60,7 +60,7 @@ export const arabicMapping: Record<string, string> = {
   'ّ': '', // shadda (handled specially - doubles the consonant)
 
   // Common ligatures
-  'لا': 'laa',
+  'لا': 'la-',
   'لأ': 'lea',
   'لإ': 'lae',
   'لآ': 'lao',
@@ -128,7 +128,7 @@ const latinToArabicMap: Record<string, string> = {
   'lae': 'لإ',
   'lea': 'لأ',
   'ea': 'أ',
-  'laa': 'لا',
+  'la-': 'لا',
   'dh': 'ذ',
   'th': 'ث',
   'sh': 'ش',
@@ -137,13 +137,13 @@ const latinToArabicMap: Record<string, string> = {
   'iv': 'ٍ',
   'uv': 'ٌ',
   'hh': 'ة',
-  'aac': 'اٰ',
+  'a-c': 'اٰ',
   'ac': 'ٰ',
   'ya': 'ى',
   'o': 'ٱ',
   // Single character mappings
   'e': 'ء',
-  'aa': 'ا',
+  'a-': 'ا',
   'y': 'ي',
   'w': 'و',
   'r': 'ر',
@@ -213,7 +213,7 @@ export const arabicDescriptions: Record<string, string> = {
   'إ': 'Alif with hamza below - ae',
   'ٱ': 'Alif wasl - o',
   'ة': 'Ta marbuta - feminine ending (hh)',
-  'ا': 'Alif - aa',
+  'ا': 'Alif - a-',
   'ى': 'Alif maqsura - ya (at end)',
   'ٰ': 'Dagger alif - ac (superscript alif)',
   'ي': 'Ya - y',
