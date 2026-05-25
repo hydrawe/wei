@@ -56,7 +56,7 @@ const latinToArabic: Record<string, string> = {
   'i': 'ِ',
   'u': 'ُ',
   'a': 'َ',
-  'c': 'ّ',
+  'p': 'ّ',
 }
 
 // Keyboard layout with 3 rows
@@ -392,9 +392,9 @@ export function ArabicTranscriber() {
                     variant="outline"
                     size="sm"
                     className="min-w-10 sm:min-w-11 h-12 sm:h-14 flex flex-col items-center justify-center gap-0.5 px-1.5 sm:px-2.5"
-                    onClick={() => handleKeyPress('ّ', 'c')}
+                    onClick={() => handleKeyPress('ّ', 'p')}
                   >
-                    <span className="font-mono text-xs sm:text-sm font-semibold">c</span>
+                    <span className="font-mono text-xs sm:text-sm font-semibold">p</span>
                     <span className="text-base sm:text-xl font-arabic">ّ</span>
                   </Button>
                   <Button

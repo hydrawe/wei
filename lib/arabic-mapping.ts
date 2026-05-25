@@ -167,7 +167,7 @@ const latinToArabicMap: Record<string, string> = {
   'x': 'ح',
   'xh': 'خ',
   'm': 'م',
-  'c': 'ّ',
+  'p': 'ّ',
   'i': 'ِ',
   'u': 'ُ',
   'a': 'َ',
