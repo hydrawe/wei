@@ -20,9 +20,9 @@ const latinToArabic: Record<string, string> = {
   'th': 'ث',
   'sh': 'ش',
   'gh': 'غ',
-  'vn': 'ً',
-  'in': 'ٍ',
-  'un': 'ٌ',
+  'vv': 'ً',
+  'ii': 'ٍ',
+  'uu': 'ٌ',
   // Single character mappings
   'e': 'ء',
   'a': 'ا',
@@ -103,7 +103,7 @@ const keyboardRows = [
     { latin: 'g', arabic: 'ع', label: 'g' },
     { latin: 'gh', arabic: 'غ', label: 'gh' },
     { latin: 'h', arabic: 'ه', label: 'h' },
-    { latin: 'vv', arabic: 'ة', label: 'vv' },
+    { latin: 'hh', arabic: 'ة', label: 'hh' },
     { latin: 'x', arabic: 'ح', label: 'x' },
     { latin: 'xh', arabic: 'خ', label: 'xh' },
   ],
@@ -364,27 +364,27 @@ export function ArabicTranscriber() {
                     variant="outline"
                     size="sm"
                     className="min-w-10 sm:min-w-11 h-12 sm:h-14 flex flex-col items-center justify-center gap-0.5 px-1.5 sm:px-2.5"
-                    onClick={() => handleKeyPress('ً', 'vn')}
+                    onClick={() => handleKeyPress('ً', 'vv')}
                   >
-                    <span className="font-mono text-xs sm:text-sm font-semibold">vn</span>
+                    <span className="font-mono text-xs sm:text-sm font-semibold">vv</span>
                     <span className="text-base sm:text-xl font-arabic">ً</span>
                   </Button>
                   <Button
                     variant="outline"
                     size="sm"
                     className="min-w-10 sm:min-w-11 h-12 sm:h-14 flex flex-col items-center justify-center gap-0.5 px-1.5 sm:px-2.5"
-                    onClick={() => handleKeyPress('ٍ', 'in')}
+                    onClick={() => handleKeyPress('ٍ', 'ii')}
                   >
-                    <span className="font-mono text-xs sm:text-sm font-semibold">in</span>
+                    <span className="font-mono text-xs sm:text-sm font-semibold">ii</span>
                     <span className="text-base sm:text-xl font-arabic">ٍ</span>
                   </Button>
                   <Button
                     variant="outline"
                     size="sm"
                     className="min-w-10 sm:min-w-11 h-12 sm:h-14 flex flex-col items-center justify-center gap-0.5 px-1.5 sm:px-2.5"
-                    onClick={() => handleKeyPress('ٌ', 'un')}
+                    onClick={() => handleKeyPress('ٌ', 'uu')}
                   >
-                    <span className="font-mono text-xs sm:text-sm font-semibold">un</span>
+                    <span className="font-mono text-xs sm:text-sm font-semibold">uu</span>
                     <span className="text-base sm:text-xl font-arabic">ٌ</span>
                   </Button>
                   <Button
@@ -476,7 +476,7 @@ export function ArabicTranscriber() {
                   <strong>Digraphs</strong> like &quot;th&quot;, &quot;dh&quot;, &quot;sh&quot;, &quot;gh&quot;, &quot;sr&quot;, &quot;dr&quot;, &quot;tr&quot;, &quot;zr&quot; represent specific Arabic sounds
                 </li>
                 <li>
-                  <strong>Tanwin</strong> (nunation) is represented as &quot;vn&quot;, &quot;in&quot;, &quot;un&quot;
+                  <strong>Tanwin</strong> (nunation) is represented as &quot;vv&quot;, &quot;ii&quot;, &quot;uu&quot;
                 </li>
                 <li>
                   <strong>Shadda</strong> (consonant doubling) doubles the previous consonant
