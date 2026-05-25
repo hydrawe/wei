@@ -20,15 +20,15 @@ const latinToArabic: Record<string, string> = {
   'th': 'ث',
   'sh': 'ش',
   'gh': 'غ',
-  'av': 'ً',
-  'iv': 'ٍ',
-  'uv': 'ٌ',
+  '[an]': 'ً',
+  '[in]': 'ٍ',
+  '[un]': 'ٌ',
   // Single character mappings
   'e': 'ء',
-  'ah': 'ا',
+  'a': 'ا',
   'o': 'ٱ',
-  'aa': 'ٰ',
-  'ay': 'ى',
+  'ac': 'ٰ',
+  'ya': 'ى',
   'y': 'ي',
   'w': 'و',
   'r': 'ر',
@@ -53,9 +53,9 @@ const latinToArabic: Record<string, string> = {
   'xh': 'خ',
   'm': 'م',
   // Vowel diacritics as standalone keys
-  'i': 'ِ',
-  'u': 'ُ',
-  'a': 'َ',
+  '[i]': 'ِ',
+  '[u]': 'ُ',
+  '[a]': 'َ',
   'p': 'ّ',
 }
 
@@ -64,13 +64,13 @@ const keyboardRows = [
   // Row 1: Vowels and vowel-related letters grouped together
   [
     { latin: 'e', arabic: 'ء', label: 'e' },
-    { latin: 'ah', arabic: 'ا', label: 'ah' },
+    { latin: 'a', arabic: 'ا', label: 'a' },
     { latin: 'o', arabic: 'ٱ', label: 'o' },
     { latin: 'ao', arabic: 'آ', label: 'ao' },
     { latin: 'ea', arabic: 'أ', label: 'ea' },
     { latin: 'ae', arabic: 'إ', label: 'ae' },
-    { latin: 'ay', arabic: 'ى', label: 'ay' },
-    { latin: 'aa', arabic: 'ٰ', label: 'aa' },
+    { latin: 'ya', arabic: 'ى', label: 'ya' },
+    { latin: 'ac', arabic: 'ٰ', label: 'ac' },
     { latin: 'ye', arabic: 'ئ', label: 'ye' },
     { latin: 'we', arabic: 'ؤ', label: 'we' },
     { latin: 'y', arabic: 'ي', label: 'y' },
@@ -338,54 +338,54 @@ export function ArabicTranscriber() {
                     variant="outline"
                     size="sm"
                     className="min-w-10 sm:min-w-11 h-12 sm:h-14 flex flex-col items-center justify-center gap-0.5 px-1.5 sm:px-2.5"
-                    onClick={() => handleKeyPress('َ', 'a')}
+                    onClick={() => handleKeyPress('َ', '[a]')}
                   >
-                    <span className="font-mono text-xs sm:text-sm font-semibold">a</span>
+                    <span className="font-mono text-xs sm:text-sm font-semibold">[a]</span>
                     <span className="text-base sm:text-xl font-arabic">َ</span>
                   </Button>
                   <Button
                     variant="outline"
                     size="sm"
                     className="min-w-10 sm:min-w-11 h-12 sm:h-14 flex flex-col items-center justify-center gap-0.5 px-1.5 sm:px-2.5"
-                    onClick={() => handleKeyPress('ِ', 'i')}
+                    onClick={() => handleKeyPress('ِ', '[i]')}
                   >
-                    <span className="font-mono text-xs sm:text-sm font-semibold">i</span>
+                    <span className="font-mono text-xs sm:text-sm font-semibold">[i]</span>
                     <span className="text-base sm:text-xl font-arabic">ِ</span>
                   </Button>
                   <Button
                     variant="outline"
                     size="sm"
                     className="min-w-10 sm:min-w-11 h-12 sm:h-14 flex flex-col items-center justify-center gap-0.5 px-1.5 sm:px-2.5"
-                    onClick={() => handleKeyPress('ُ', 'u')}
+                    onClick={() => handleKeyPress('ُ', '[u]')}
                   >
-                    <span className="font-mono text-xs sm:text-sm font-semibold">u</span>
+                    <span className="font-mono text-xs sm:text-sm font-semibold">[u]</span>
                     <span className="text-base sm:text-xl font-arabic">ُ</span>
                   </Button>
                   <Button
                     variant="outline"
                     size="sm"
                     className="min-w-10 sm:min-w-11 h-12 sm:h-14 flex flex-col items-center justify-center gap-0.5 px-1.5 sm:px-2.5"
-                    onClick={() => handleKeyPress('ً', 'av')}
+                    onClick={() => handleKeyPress('ً', '[an]')}
                   >
-                    <span className="font-mono text-xs sm:text-sm font-semibold">av</span>
+                    <span className="font-mono text-xs sm:text-sm font-semibold">[an]</span>
                     <span className="text-base sm:text-xl font-arabic">ً</span>
                   </Button>
                   <Button
                     variant="outline"
                     size="sm"
                     className="min-w-10 sm:min-w-11 h-12 sm:h-14 flex flex-col items-center justify-center gap-0.5 px-1.5 sm:px-2.5"
-                    onClick={() => handleKeyPress('ٍ', 'iv')}
+                    onClick={() => handleKeyPress('ٍ', '[in]')}
                   >
-                    <span className="font-mono text-xs sm:text-sm font-semibold">iv</span>
+                    <span className="font-mono text-xs sm:text-sm font-semibold">[in]</span>
                     <span className="text-base sm:text-xl font-arabic">ٍ</span>
                   </Button>
                   <Button
                     variant="outline"
                     size="sm"
                     className="min-w-10 sm:min-w-11 h-12 sm:h-14 flex flex-col items-center justify-center gap-0.5 px-1.5 sm:px-2.5"
-                    onClick={() => handleKeyPress('ٌ', 'uv')}
+                    onClick={() => handleKeyPress('ٌ', '[un]')}
                   >
-                    <span className="font-mono text-xs sm:text-sm font-semibold">uv</span>
+                    <span className="font-mono text-xs sm:text-sm font-semibold">[un]</span>
                     <span className="text-base sm:text-xl font-arabic">ٌ</span>
                   </Button>
                   <Button
@@ -477,7 +477,7 @@ export function ArabicTranscriber() {
                   <strong>Digraphs</strong> like &quot;th&quot;, &quot;dh&quot;, &quot;sh&quot;, &quot;gh&quot;, &quot;sr&quot;, &quot;dr&quot;, &quot;tr&quot;, &quot;zr&quot; represent specific Arabic sounds
                 </li>
                 <li>
-                  <strong>Tanwin</strong> (nunation) is represented as &quot;av&quot;, &quot;iv&quot;, &quot;uv&quot;
+                  <strong>Tanwin</strong> (nunation) is represented as &quot;[an]&quot;, &quot;[in]&quot;, &quot;[un]&quot;
                 </li>
                 <li>
                   <strong>Shadda</strong> (consonant doubling) doubles the previous consonant
