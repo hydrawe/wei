@@ -12,10 +12,10 @@ export const arabicMapping: Record<string, string> = {
   'ة': 'hh', // ta marbuta - feminine ending
 
   // Alif variants
-  'ا': 'a-',
+  'ا': 'a',
   'ى': 'ya',
   'ٰ': 'ac', // dagger alif (superscript alif)
-  'اٰ': 'a-c', // alif with dagger alif
+  'اٰ': 'ac', // alif with dagger alif
 
   // Semi-vowels
   'ي': 'y',
@@ -50,17 +50,17 @@ export const arabicMapping: Record<string, string> = {
   'م': 'm',
 
   // Diacritics (vowel marks)
-  'ً': 'av', // tanwin fatha (accusative)
-  'ٌ': 'uv', // tanwin damma (nominative)
-  'ٍ': 'iv', // tanwin kasra (genitive)
+  'ً': '[an]', // tanwin fatha (accusative)
+  'ٌ': '[un]', // tanwin damma (nominative)
+  'ٍ': '[in]', // tanwin kasra (genitive)
   'ْ': '', // sukun (silent)
-  'َ': 'a', // fatha
-  'ِ': 'i', // kasra
-  'ُ': 'u', // damma
+  'َ': '[a]', // fatha
+  'ِ': '[i]', // kasra
+  'ُ': '[u]', // damma
   'ّ': '', // shadda (handled specially - doubles the consonant)
 
   // Common ligatures
-  'لا': 'la-',
+  'لا': 'la',
   'لأ': 'lea',
   'لإ': 'lae',
   'لآ': 'lao',
@@ -128,22 +128,21 @@ const latinToArabicMap: Record<string, string> = {
   'lae': 'لإ',
   'lea': 'لأ',
   'ea': 'أ',
-  'la-': 'لا',
+  'la': 'لا',
   'dh': 'ذ',
   'th': 'ث',
   'sh': 'ش',
   'gh': 'غ',
-  'av': 'ً',
-  'iv': 'ٍ',
-  'uv': 'ٌ',
+  '[an]': 'ً',
+  '[in]': 'ٍ',
+  '[un]': 'ٌ',
   'hh': 'ة',
-  'a-c': 'اٰ',
-  'ac': 'ٰ',
+  'ac': 'اٰ',
   'ya': 'ى',
   'o': 'ٱ',
   // Single character mappings
   'e': 'ء',
-  'a-': 'ا',
+  'a': 'ا',
   'y': 'ي',
   'w': 'و',
   'r': 'ر',
@@ -168,9 +167,9 @@ const latinToArabicMap: Record<string, string> = {
   'xh': 'خ',
   'm': 'م',
   'p': 'ّ',
-  'i': 'ِ',
-  'u': 'ُ',
-  'a': 'َ',
+  '[i]': 'ِ',
+  '[u]': 'ُ',
+  '[a]': 'َ',
 }
 
 // Sort keys by length (longest first) for greedy matching
@@ -213,7 +212,7 @@ export const arabicDescriptions: Record<string, string> = {
   'إ': 'Alif with hamza below - ae',
   'ٱ': 'Alif wasl - o',
   'ة': 'Ta marbuta - feminine ending (hh)',
-  'ا': 'Alif - a-',
+  'ا': 'Alif - a',
   'ى': 'Alif maqsura - ya (at end)',
   'ٰ': 'Dagger alif - ac (superscript alif)',
   'ي': 'Ya - y',
