@@ -61,9 +61,9 @@ export const arabicMapping: Record<string, string> = {
 
   // Common ligatures
   'لا': 'lah',
-  'لأ': 'leah',
-  'لإ': 'lahe',
-  'لآ': 'laho',
+  'لأ': 'lea',
+  'لإ': 'lae',
+  'لآ': 'lao',
 }
 
 // Letters that can be doubled with shadda
@@ -120,14 +120,14 @@ export function transcribeArabic(text: string): string {
 // Reverse mapping: Latin transliteration -> Arabic character
 const latinToArabicMap: Record<string, string> = {
   // Multi-character mappings (digraphs) - must be checked first (longest match)
-  'aho': 'آ',
+  'ao': 'آ',
   'ye': 'ئ',
   'we': 'ؤ',
-  'ahe': 'إ',
-  'laho': 'لآ',
-  'lahe': 'لإ',
-  'leah': 'لأ',
-  'eah': 'أ',
+  'ae': 'إ',
+  'lao': 'لآ',
+  'lae': 'لإ',
+  'lea': 'لأ',
+  'ea': 'أ',
   'lah': 'لا',
   'dh': 'ذ',
   'th': 'ث',
@@ -205,12 +205,12 @@ export function transcribeLatin(text: string): string {
 
 // Get description for an Arabic character
 export const arabicDescriptions: Record<string, string> = {
-  'آ': 'Alif with madda - aho',
+  'آ': 'Alif with madda - ao',
   'ء': 'Hamza - glottal stop (e)',
-  'أ': 'Alif with hamza above - eah',
+  'أ': 'Alif with hamza above - ea',
   'ئ': 'Ya with hamza - ye',
   'ؤ': 'Waw with hamza - we',
-  'إ': 'Alif with hamza below - ahe',
+  'إ': 'Alif with hamza below - ae',
   'ٱ': 'Alif wasl - o',
   'ة': 'Ta marbuta - feminine ending (hh)',
   'ا': 'Alif - ah',
