@@ -14,8 +14,8 @@ export const arabicMapping: Record<string, string> = {
   // Alif variants
   'ا': 'ah',
   'ى': 'ay',
-  'ٰ': 'aa', // dagger alif (superscript alif)
-  'اٰ': 'aha', // alif with dagger alif
+  'ٰ': 'ac', // dagger alif (superscript alif)
+  'اٰ': 'ahc', // alif with dagger alif
 
   // Semi-vowels
   'ي': 'y',
@@ -137,8 +137,8 @@ const latinToArabicMap: Record<string, string> = {
   'iv': 'ٍ',
   'uv': 'ٌ',
   'hh': 'ة',
-  'aha': 'اٰ',
-  'aa': 'ٰ',
+  'ahc': 'اٰ',
+  'ac': 'ٰ',
   'ay': 'ى',
   'o': 'ٱ',
   // Single character mappings
@@ -215,7 +215,7 @@ export const arabicDescriptions: Record<string, string> = {
   'ة': 'Ta marbuta - feminine ending (hh)',
   'ا': 'Alif - ah',
   'ى': 'Alif maqsura - ay (at end)',
-  'ٰ': 'Dagger alif - aa (superscript alif)',
+  'ٰ': 'Dagger alif - ac (superscript alif)',
   'ي': 'Ya - y',
   'و': 'Waw - w',
   'ر': 'Ra - r (like "t" in American "water")',
