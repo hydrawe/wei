@@ -16,15 +16,15 @@ const latinToArabic: Record<string, string> = {
   'wc': 'ؤ',
   'ic': 'إ',
   'ac': 'أ',
-  'dh': 'ذ',
-  'th': 'ث',
-  'sh': 'ش',
-  'gh': 'غ',
+  'dc': 'ذ',
+  'tc': 'ث',
+  'sc': 'ش',
+  'gc': 'غ',
   'av': 'ً',
   'iv': 'ٍ',
   'uv': 'ٌ',
   // Single character mappings
-  'c': 'ء',
+  'oc': 'ء',
   'e': 'ا',
   'o': 'ٱ',
   'ao': 'ٰ',
@@ -38,10 +38,10 @@ const latinToArabic: Record<string, string> = {
   's': 'س',
   'l': 'ل',
   'n': 'ن',
-  'sr': 'ص',
-  'dr': 'ض',
-  'tr': 'ط',
-  'zr': 'ظ',
+  'sv': 'ص',
+  'dv': 'ض',
+  'tv': 'ط',
+  'zv': 'ظ',
   'b': 'ب',
   'f': 'ف',
   'k': 'ك',
@@ -50,7 +50,7 @@ const latinToArabic: Record<string, string> = {
   'h': 'ه',
   'j': 'ج',
   'x': 'ح',
-  'xh': 'خ',
+  'xc': 'خ',
   'm': 'م',
   // Vowel diacritics as standalone keys
   'i': 'ِ',
@@ -63,7 +63,7 @@ const latinToArabic: Record<string, string> = {
 const keyboardRows = [
   // Row 1: Vowels and vowel-related letters grouped together
   [
-    { latin: 'c', arabic: 'ء', label: 'c' },
+    { latin: 'oc', arabic: 'ء', label: 'oc' },
     { latin: 'e', arabic: 'ا', label: 'e' },
     { latin: 'o', arabic: 'ٱ', label: 'o' },
     { latin: 'oe', arabic: 'آ', label: 'oe' },
@@ -88,25 +88,25 @@ const keyboardRows = [
     { latin: 'q', arabic: 'ق', label: 'q' },
     { latin: 'r', arabic: 'ر', label: 'r' },
     { latin: 'z', arabic: 'ز', label: 'z' },
-    { latin: 'sr', arabic: 'ص', label: 'sr' },
-    { latin: 'dr', arabic: 'ض', label: 'dr' },
-    { latin: 'tr', arabic: 'ط', label: 'tr' },
-    { latin: 'zr', arabic: 'ظ', label: 'zr' },
+    { latin: 'sv', arabic: 'ص', label: 'sv' },
+    { latin: 'dv', arabic: 'ض', label: 'dv' },
+    { latin: 'tv', arabic: 'ط', label: 'tv' },
+    { latin: 'zv', arabic: 'ظ', label: 'zv' },
   ],
-  // Row 3: Letters with "h" suffix paired (base, h-variant)
+  // Row 3: Letters with "c" suffix paired (base, c-variant)
   [
     { latin: 't', arabic: 'ت', label: 't' },
-    { latin: 'th', arabic: 'ث', label: 'th' },
+    { latin: 'tc', arabic: 'ث', label: 'tc' },
     { latin: 's', arabic: 'س', label: 's' },
-    { latin: 'sh', arabic: 'ش', label: 'sh' },
+    { latin: 'sc', arabic: 'ش', label: 'sc' },
     { latin: 'd', arabic: 'د', label: 'd' },
-    { latin: 'dh', arabic: 'ذ', label: 'dh' },
+    { latin: 'dc', arabic: 'ذ', label: 'dc' },
     { latin: 'g', arabic: 'ع', label: 'g' },
-    { latin: 'gh', arabic: 'غ', label: 'gh' },
+    { latin: 'gc', arabic: 'غ', label: 'gc' },
     { latin: 'h', arabic: 'ه', label: 'h' },
     { latin: 'hh', arabic: 'ة', label: 'hh' },
     { latin: 'x', arabic: 'ح', label: 'x' },
-    { latin: 'xh', arabic: 'خ', label: 'xh' },
+    { latin: 'xc', arabic: 'خ', label: 'xc' },
   ],
 ]
 
@@ -474,7 +474,7 @@ export function ArabicTranscriber() {
                   consonants pronounced further back in the mouth
                 </li>
                 <li>
-                  <strong>Digraphs</strong> like &quot;th&quot;, &quot;dh&quot;, &quot;sh&quot;, &quot;gh&quot;, &quot;sr&quot;, &quot;dr&quot;, &quot;tr&quot;, &quot;zr&quot; represent specific Arabic sounds
+                  <strong>Digraphs</strong> like &quot;tc&quot;, &quot;dc&quot;, &quot;sc&quot;, &quot;gc&quot;, &quot;sv&quot;, &quot;dv&quot;, &quot;tv&quot;, &quot;zv&quot; represent specific Arabic sounds
                 </li>
                 <li>
                   <strong>Tanwin</strong> (nunation) is represented as &quot;av&quot;, &quot;iv&quot;, &quot;uv&quot;
@@ -486,9 +486,9 @@ export function ArabicTranscriber() {
               <h4>Pronunciation Tips:</h4>
               <ul>
                 <li><strong>g</strong> (ع) - like a surprised &quot;a&quot;</li>
-                <li><strong>gh</strong> (غ) - gargling sound</li>
+                <li><strong>gc</strong> (غ) - gargling sound</li>
                 <li><strong>x</strong> (ح) - like fogging up a window</li>
-                <li><strong>xh</strong> (خ) - whispered gargle</li>
+                <li><strong>xc</strong> (خ) - whispered gargle</li>
                 <li><strong>q</strong> (ق) - deep in the throat</li>
                 <li><strong>r</strong> (ر) - like the &quot;t&quot; in American &quot;water&quot;</li>
               </ul>
