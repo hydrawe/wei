@@ -2,20 +2,20 @@
 
 export const arabicMapping: Record<string, string> = {
   // Hamza variants
-  'آ': 'ao',
-  'ء': 'oe',
-  'أ': 'ae',
-  'ئ': 'ye',
-  'ؤ': 'we',
-  'إ': 'ie',
+  'آ': 'oe',
+  'ء': 'c',
+  'أ': 'ac',
+  'ئ': 'yc',
+  'ؤ': 'wc',
+  'إ': 'ic',
   'ٱ': 'o', // alif wasl
   'ة': 'hh', // ta marbuta - feminine ending
 
   // Alif variants
   'ا': 'e',
-  'ى': 'ya',
-  'ٰ': 'ac', // dagger alif (superscript alif)
-  'اٰ': 'ac', // alif with dagger alif
+  'ى': 'yo',
+  'ٰ': 'ao', // dagger alif (superscript alif)
+  'اٰ': 'ao', // alif with dagger alif
 
   // Semi-vowels
   'ي': 'y',
@@ -61,9 +61,9 @@ export const arabicMapping: Record<string, string> = {
 
   // Common ligatures
   'لا': 'le',
-  'لأ': 'lae',
-  'لإ': 'lie',
-  'لآ': 'lao',
+  'لأ': 'lac',
+  'لإ': 'lic',
+  'لآ': 'loe',
 }
 
 // Letters that can be doubled with shadda
@@ -120,14 +120,14 @@ export function transcribeArabic(text: string): string {
 // Reverse mapping: Latin transliteration -> Arabic character
 const latinToArabicMap: Record<string, string> = {
   // Multi-character mappings (digraphs) - must be checked first (longest match)
-  'ao': 'آ',
-  'ye': 'ئ',
-  'we': 'ؤ',
-  'ie': 'إ',
-  'lao': 'لآ',
-  'lie': 'لإ',
-  'lae': 'لأ',
-  'ae': 'أ',
+  'oe': 'آ',
+  'yc': 'ئ',
+  'wc': 'ؤ',
+  'ic': 'إ',
+  'loe': 'لآ',
+  'lic': 'لإ',
+  'lac': 'لأ',
+  'ac': 'أ',
   'le': 'لا',
   'dh': 'ذ',
   'th': 'ث',
@@ -137,11 +137,11 @@ const latinToArabicMap: Record<string, string> = {
   'iv': 'ٍ',
   'uv': 'ٌ',
   'hh': 'ة',
-  'ac': 'ٰ',
-  'ya': 'ى',
+  'ao': 'ٰ',
+  'yo': 'ى',
   'o': 'ٱ',
   // Single character mappings
-  'oe': 'ء',
+  'c': 'ء',
   'e': 'ا',
   'y': 'ي',
   'w': 'و',
@@ -204,17 +204,17 @@ export function transcribeLatin(text: string): string {
 
 // Get description for an Arabic character
 export const arabicDescriptions: Record<string, string> = {
-  'آ': 'Alif with madda - ao',
-  'ء': 'Hamza - glottal stop (oe)',
-  'أ': 'Alif with hamza above - ae',
-  'ئ': 'Ya with hamza - ye',
-  'ؤ': 'Waw with hamza - we',
-  'إ': 'Alif with hamza below - ie',
+  'آ': 'Alif with madda - oe',
+  'ء': 'Hamza - glottal stop (c)',
+  'أ': 'Alif with hamza above - ac',
+  'ئ': 'Ya with hamza - yc',
+  'ؤ': 'Waw with hamza - wc',
+  'إ': 'Alif with hamza below - ic',
   'ٱ': 'Alif wasl - o',
   'ة': 'Ta marbuta - feminine ending (hh)',
   'ا': 'Alif - e',
-  'ى': 'Alif maqsura - ya (at end)',
-  'ٰ': 'Dagger alif - ac (superscript alif)',
+  'ى': 'Alif maqsura - yo (at end)',
+  'ٰ': 'Dagger alif - ao (superscript alif)',
   'ي': 'Ya - y',
   'و': 'Waw - w',
   'ر': 'Ra - r (like "t" in American "water")',
