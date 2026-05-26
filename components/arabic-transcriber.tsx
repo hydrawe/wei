@@ -14,20 +14,20 @@ const latinToArabic: Record<string, string> = {
   'ao': 'آ',
   'ye': 'ئ',
   'we': 'ؤ',
-  'ae': 'إ',
-  'ea': 'أ',
+  'ie': 'إ',
+  'ae': 'أ',
   'dh': 'ذ',
   'th': 'ث',
   'sh': 'ش',
   'gh': 'غ',
-  '[an]': 'ً',
-  '[in]': 'ٍ',
-  '[un]': 'ٌ',
+  'av': 'ً',
+  'iv': 'ٍ',
+  'uv': 'ٌ',
   // Single character mappings
   'e': 'ء',
   'a': 'ا',
   'o': 'ٱ',
-  'ac': 'ٰ',
+  'ap': 'ٰ',
   'ya': 'ى',
   'y': 'ي',
   'w': 'و',
@@ -53,9 +53,9 @@ const latinToArabic: Record<string, string> = {
   'xh': 'خ',
   'm': 'م',
   // Vowel diacritics as standalone keys
-  '[i]': 'ِ',
-  '[u]': 'ُ',
-  '[a]': 'َ',
+  'ic': 'ِ',
+  'uc': 'ُ',
+  'ac': 'َ',
   'p': 'ّ',
 }
 
@@ -67,10 +67,10 @@ const keyboardRows = [
     { latin: 'a', arabic: 'ا', label: 'a' },
     { latin: 'o', arabic: 'ٱ', label: 'o' },
     { latin: 'ao', arabic: 'آ', label: 'ao' },
-    { latin: 'ea', arabic: 'أ', label: 'ea' },
-    { latin: 'ae', arabic: 'إ', label: 'ae' },
+    { latin: 'ae', arabic: 'أ', label: 'ae' },
+    { latin: 'ie', arabic: 'إ', label: 'ie' },
     { latin: 'ya', arabic: 'ى', label: 'ya' },
-    { latin: 'ac', arabic: 'ٰ', label: 'ac' },
+    { latin: 'ap', arabic: 'ٰ', label: 'ap' },
     { latin: 'ye', arabic: 'ئ', label: 'ye' },
     { latin: 'we', arabic: 'ؤ', label: 'we' },
     { latin: 'y', arabic: 'ي', label: 'y' },
@@ -338,54 +338,54 @@ export function ArabicTranscriber() {
                     variant="outline"
                     size="sm"
                     className="min-w-10 sm:min-w-11 h-12 sm:h-14 flex flex-col items-center justify-center gap-0.5 px-1.5 sm:px-2.5"
-                    onClick={() => handleKeyPress('َ', '[a]')}
+                    onClick={() => handleKeyPress('َ', 'ac')}
                   >
-                    <span className="font-mono text-xs sm:text-sm font-semibold">[a]</span>
+                    <span className="font-mono text-xs sm:text-sm font-semibold">ac</span>
                     <span className="text-base sm:text-xl font-arabic">َ</span>
                   </Button>
                   <Button
                     variant="outline"
                     size="sm"
                     className="min-w-10 sm:min-w-11 h-12 sm:h-14 flex flex-col items-center justify-center gap-0.5 px-1.5 sm:px-2.5"
-                    onClick={() => handleKeyPress('ِ', '[i]')}
+                    onClick={() => handleKeyPress('ِ', 'ic')}
                   >
-                    <span className="font-mono text-xs sm:text-sm font-semibold">[i]</span>
+                    <span className="font-mono text-xs sm:text-sm font-semibold">ic</span>
                     <span className="text-base sm:text-xl font-arabic">ِ</span>
                   </Button>
                   <Button
                     variant="outline"
                     size="sm"
                     className="min-w-10 sm:min-w-11 h-12 sm:h-14 flex flex-col items-center justify-center gap-0.5 px-1.5 sm:px-2.5"
-                    onClick={() => handleKeyPress('ُ', '[u]')}
+                    onClick={() => handleKeyPress('ُ', 'uc')}
                   >
-                    <span className="font-mono text-xs sm:text-sm font-semibold">[u]</span>
+                    <span className="font-mono text-xs sm:text-sm font-semibold">uc</span>
                     <span className="text-base sm:text-xl font-arabic">ُ</span>
                   </Button>
                   <Button
                     variant="outline"
                     size="sm"
                     className="min-w-10 sm:min-w-11 h-12 sm:h-14 flex flex-col items-center justify-center gap-0.5 px-1.5 sm:px-2.5"
-                    onClick={() => handleKeyPress('ً', '[an]')}
+                    onClick={() => handleKeyPress('ً', 'av')}
                   >
-                    <span className="font-mono text-xs sm:text-sm font-semibold">[an]</span>
+                    <span className="font-mono text-xs sm:text-sm font-semibold">av</span>
                     <span className="text-base sm:text-xl font-arabic">ً</span>
                   </Button>
                   <Button
                     variant="outline"
                     size="sm"
                     className="min-w-10 sm:min-w-11 h-12 sm:h-14 flex flex-col items-center justify-center gap-0.5 px-1.5 sm:px-2.5"
-                    onClick={() => handleKeyPress('ٍ', '[in]')}
+                    onClick={() => handleKeyPress('ٍ', 'iv')}
                   >
-                    <span className="font-mono text-xs sm:text-sm font-semibold">[in]</span>
+                    <span className="font-mono text-xs sm:text-sm font-semibold">iv</span>
                     <span className="text-base sm:text-xl font-arabic">ٍ</span>
                   </Button>
                   <Button
                     variant="outline"
                     size="sm"
                     className="min-w-10 sm:min-w-11 h-12 sm:h-14 flex flex-col items-center justify-center gap-0.5 px-1.5 sm:px-2.5"
-                    onClick={() => handleKeyPress('ٌ', '[un]')}
+                    onClick={() => handleKeyPress('ٌ', 'uv')}
                   >
-                    <span className="font-mono text-xs sm:text-sm font-semibold">[un]</span>
+                    <span className="font-mono text-xs sm:text-sm font-semibold">uv</span>
                     <span className="text-base sm:text-xl font-arabic">ٌ</span>
                   </Button>
                   <Button
@@ -477,7 +477,7 @@ export function ArabicTranscriber() {
                   <strong>Digraphs</strong> like &quot;th&quot;, &quot;dh&quot;, &quot;sh&quot;, &quot;gh&quot;, &quot;sr&quot;, &quot;dr&quot;, &quot;tr&quot;, &quot;zr&quot; represent specific Arabic sounds
                 </li>
                 <li>
-                  <strong>Tanwin</strong> (nunation) is represented as &quot;[an]&quot;, &quot;[in]&quot;, &quot;[un]&quot;
+                  <strong>Tanwin</strong> (nunation) is represented as &quot;av&quot;, &quot;iv&quot;, &quot;uv&quot;
                 </li>
                 <li>
                   <strong>Shadda</strong> (consonant doubling) doubles the previous consonant
