@@ -4,18 +4,18 @@ export const arabicMapping: Record<string, string> = {
   // Hamza variants
   'آ': 'ao',
   'ء': 'e',
-  'أ': 'ea',
+  'أ': 'ae',
   'ئ': 'ye',
   'ؤ': 'we',
-  'إ': 'ae',
+  'إ': 'ie',
   'ٱ': 'o', // alif wasl
   'ة': 'hh', // ta marbuta - feminine ending
 
   // Alif variants
   'ا': 'a',
   'ى': 'ya',
-  'ٰ': 'ac', // dagger alif (superscript alif)
-  'اٰ': 'ac', // alif with dagger alif
+  'ٰ': 'ap', // dagger alif (superscript alif)
+  'اٰ': 'ap', // alif with dagger alif
 
   // Semi-vowels
   'ي': 'y',
@@ -50,19 +50,19 @@ export const arabicMapping: Record<string, string> = {
   'م': 'm',
 
   // Diacritics (vowel marks)
-  'ً': '[an]', // tanwin fatha (accusative)
-  'ٌ': '[un]', // tanwin damma (nominative)
-  'ٍ': '[in]', // tanwin kasra (genitive)
+  'ً': 'av', // tanwin fatha (accusative)
+  'ٌ': 'uv', // tanwin damma (nominative)
+  'ٍ': 'iv', // tanwin kasra (genitive)
   'ْ': '', // sukun (silent)
-  'َ': '[a]', // fatha
-  'ِ': '[i]', // kasra
-  'ُ': '[u]', // damma
+  'َ': 'ac', // fatha
+  'ِ': 'ic', // kasra
+  'ُ': 'uc', // damma
   'ّ': '', // shadda (handled specially - doubles the consonant)
 
   // Common ligatures
   'لا': 'la',
-  'لأ': 'lea',
-  'لإ': 'lae',
+  'لأ': 'lae',
+  'لإ': 'lie',
   'لآ': 'lao',
 }
 
@@ -123,21 +123,21 @@ const latinToArabicMap: Record<string, string> = {
   'ao': 'آ',
   'ye': 'ئ',
   'we': 'ؤ',
-  'ae': 'إ',
+  'ie': 'إ',
   'lao': 'لآ',
-  'lae': 'لإ',
-  'lea': 'لأ',
-  'ea': 'أ',
+  'lie': 'لإ',
+  'lae': 'لأ',
+  'ae': 'أ',
   'la': 'لا',
   'dh': 'ذ',
   'th': 'ث',
   'sh': 'ش',
   'gh': 'غ',
-  '[an]': 'ً',
-  '[in]': 'ٍ',
-  '[un]': 'ٌ',
+  'av': 'ً',
+  'iv': 'ٍ',
+  'uv': 'ٌ',
   'hh': 'ة',
-  'ac': 'اٰ',
+  'ap': 'اٰ',
   'ya': 'ى',
   'o': 'ٱ',
   // Single character mappings
@@ -167,9 +167,9 @@ const latinToArabicMap: Record<string, string> = {
   'xh': 'خ',
   'm': 'م',
   'p': 'ّ',
-  '[i]': 'ِ',
-  '[u]': 'ُ',
-  '[a]': 'َ',
+  'ic': 'ِ',
+  'uc': 'ُ',
+  'ac': 'َ',
 }
 
 // Sort keys by length (longest first) for greedy matching
@@ -206,15 +206,15 @@ export function transcribeLatin(text: string): string {
 export const arabicDescriptions: Record<string, string> = {
   'آ': 'Alif with madda - ao',
   'ء': 'Hamza - glottal stop (e)',
-  'أ': 'Alif with hamza above - ea',
+  'أ': 'Alif with hamza above - ae',
   'ئ': 'Ya with hamza - ye',
   'ؤ': 'Waw with hamza - we',
-  'إ': 'Alif with hamza below - ae',
+  'إ': 'Alif with hamza below - ie',
   'ٱ': 'Alif wasl - o',
   'ة': 'Ta marbuta - feminine ending (hh)',
   'ا': 'Alif - a',
   'ى': 'Alif maqsura - ya (at end)',
-  'ٰ': 'Dagger alif - ac (superscript alif)',
+  'ٰ': 'Dagger alif - ap (superscript alif)',
   'ي': 'Ya - y',
   'و': 'Waw - w',
   'ر': 'Ra - r (like "t" in American "water")',
