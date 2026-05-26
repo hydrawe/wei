@@ -25,9 +25,9 @@ const latinToArabic: Record<string, string> = {
   'uv': 'ٌ',
   // Single character mappings
   'e': 'ء',
-  'aa': 'ا',
+  'a': 'ا',
   'o': 'ٱ',
-  'ap': 'ٰ',
+  'ac': 'ٰ',
   'ya': 'ى',
   'y': 'ي',
   'w': 'و',
@@ -53,9 +53,9 @@ const latinToArabic: Record<string, string> = {
   'xh': 'خ',
   'm': 'م',
   // Vowel diacritics as standalone keys
-  'i': 'ِ',
-  'u': 'ُ',
-  'a': 'َ',
+  'i-': 'ِ',
+  'u-': 'ُ',
+  'a-': 'َ',
   'p': 'ّ',
 }
 
@@ -64,13 +64,13 @@ const keyboardRows = [
   // Row 1: Vowels and vowel-related letters grouped together
   [
     { latin: 'e', arabic: 'ء', label: 'e' },
-    { latin: 'aa', arabic: 'ا', label: 'aa' },
+    { latin: 'a', arabic: 'ا', label: 'a' },
     { latin: 'o', arabic: 'ٱ', label: 'o' },
     { latin: 'ao', arabic: 'آ', label: 'ao' },
     { latin: 'ae', arabic: 'أ', label: 'ae' },
     { latin: 'ie', arabic: 'إ', label: 'ie' },
     { latin: 'ya', arabic: 'ى', label: 'ya' },
-    { latin: 'ap', arabic: 'ٰ', label: 'ap' },
+    { latin: 'ac', arabic: 'ٰ', label: 'ac' },
     { latin: 'ye', arabic: 'ئ', label: 'ye' },
     { latin: 'we', arabic: 'ؤ', label: 'we' },
     { latin: 'y', arabic: 'ي', label: 'y' },
@@ -338,27 +338,27 @@ export function ArabicTranscriber() {
                     variant="outline"
                     size="sm"
                     className="min-w-10 sm:min-w-11 h-12 sm:h-14 flex flex-col items-center justify-center gap-0.5 px-1.5 sm:px-2.5"
-                    onClick={() => handleKeyPress('َ', 'a')}
+                    onClick={() => handleKeyPress('َ', 'a-')}
                   >
-                    <span className="font-mono text-xs sm:text-sm font-semibold">a</span>
+                    <span className="font-mono text-xs sm:text-sm font-semibold">a-</span>
                     <span className="text-base sm:text-xl font-arabic">َ</span>
                   </Button>
                   <Button
                     variant="outline"
                     size="sm"
                     className="min-w-10 sm:min-w-11 h-12 sm:h-14 flex flex-col items-center justify-center gap-0.5 px-1.5 sm:px-2.5"
-                    onClick={() => handleKeyPress('ِ', 'i')}
+                    onClick={() => handleKeyPress('ِ', 'i-')}
                   >
-                    <span className="font-mono text-xs sm:text-sm font-semibold">i</span>
+                    <span className="font-mono text-xs sm:text-sm font-semibold">i-</span>
                     <span className="text-base sm:text-xl font-arabic">ِ</span>
                   </Button>
                   <Button
                     variant="outline"
                     size="sm"
                     className="min-w-10 sm:min-w-11 h-12 sm:h-14 flex flex-col items-center justify-center gap-0.5 px-1.5 sm:px-2.5"
-                    onClick={() => handleKeyPress('ُ', 'u')}
+                    onClick={() => handleKeyPress('ُ', 'u-')}
                   >
-                    <span className="font-mono text-xs sm:text-sm font-semibold">u</span>
+                    <span className="font-mono text-xs sm:text-sm font-semibold">u-</span>
                     <span className="text-base sm:text-xl font-arabic">ُ</span>
                   </Button>
                   <Button

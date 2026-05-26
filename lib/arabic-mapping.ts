@@ -12,10 +12,10 @@ export const arabicMapping: Record<string, string> = {
   'ة': 'hh', // ta marbuta - feminine ending
 
   // Alif variants
-  'ا': 'aa',
+  'ا': 'a',
   'ى': 'ya',
-  'ٰ': 'ap', // dagger alif (superscript alif)
-  'اٰ': 'ap', // alif with dagger alif
+  'ٰ': 'ac', // dagger alif (superscript alif)
+  'اٰ': 'ac', // alif with dagger alif
 
   // Semi-vowels
   'ي': 'y',
@@ -54,13 +54,13 @@ export const arabicMapping: Record<string, string> = {
   'ٌ': 'uv', // tanwin damma (nominative)
   'ٍ': 'iv', // tanwin kasra (genitive)
   'ْ': '', // sukun (silent)
-  'َ': 'a', // fatha
-  'ِ': 'i', // kasra
-  'ُ': 'u', // damma
+  'َ': 'a-', // fatha
+  'ِ': 'i-', // kasra
+  'ُ': 'u-', // damma
   'ّ': '', // shadda (handled specially - doubles the consonant)
 
   // Common ligatures
-  'لا': 'laa',
+  'لا': 'la',
   'لأ': 'lae',
   'لإ': 'lie',
   'لآ': 'lao',
@@ -128,7 +128,7 @@ const latinToArabicMap: Record<string, string> = {
   'lie': 'لإ',
   'lae': 'لأ',
   'ae': 'أ',
-  'laa': 'لا',
+  'la': 'لا',
   'dh': 'ذ',
   'th': 'ث',
   'sh': 'ش',
@@ -137,12 +137,12 @@ const latinToArabicMap: Record<string, string> = {
   'iv': 'ٍ',
   'uv': 'ٌ',
   'hh': 'ة',
-  'ap': 'ٰ',
+  'ac': 'ٰ',
   'ya': 'ى',
   'o': 'ٱ',
   // Single character mappings
   'e': 'ء',
-  'aa': 'ا',
+  'a': 'ا',
   'y': 'ي',
   'w': 'و',
   'r': 'ر',
@@ -167,9 +167,9 @@ const latinToArabicMap: Record<string, string> = {
   'xh': 'خ',
   'm': 'م',
   'p': 'ّ',
-  'i': 'ِ',
-  'u': 'ُ',
-  'a': 'َ',
+  'i-': 'ِ',
+  'u-': 'ُ',
+  'a-': 'َ',
 }
 
 // Sort keys by length (longest first) for greedy matching
@@ -212,9 +212,9 @@ export const arabicDescriptions: Record<string, string> = {
   'إ': 'Alif with hamza below - ie',
   'ٱ': 'Alif wasl - o',
   'ة': 'Ta marbuta - feminine ending (hh)',
-  'ا': 'Alif - aa',
+  'ا': 'Alif - a',
   'ى': 'Alif maqsura - ya (at end)',
-  'ٰ': 'Dagger alif - ap (superscript alif)',
+  'ٰ': 'Dagger alif - ac (superscript alif)',
   'ي': 'Ya - y',
   'و': 'Waw - w',
   'ر': 'Ra - r (like "t" in American "water")',
