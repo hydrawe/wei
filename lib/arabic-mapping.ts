@@ -137,7 +137,7 @@ const latinToArabicMap: Record<string, string> = {
   'iv': 'ٍ',
   'uv': 'ٌ',
   'hh': 'ة',
-  'ap': 'اٰ',
+  'ap': 'ٰ',
   'ya': 'ى',
   'o': 'ٱ',
   // Single character mappings
