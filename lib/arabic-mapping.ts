@@ -3,7 +3,7 @@
 export const arabicMapping: Record<string, string> = {
   // Hamza variants
   'آ': 'ao',
-  'ء': 'e',
+  'ء': 'oe',
   'أ': 'ae',
   'ئ': 'ye',
   'ؤ': 'we',
@@ -12,10 +12,10 @@ export const arabicMapping: Record<string, string> = {
   'ة': 'hh', // ta marbuta - feminine ending
 
   // Alif variants
-  'ا': 'aa',
+  'ا': 'e',
   'ى': 'ya',
-  'ٰ': 'ap', // dagger alif (superscript alif)
-  'اٰ': 'ap', // alif with dagger alif
+  'ٰ': 'ac', // dagger alif (superscript alif)
+  'اٰ': 'ac', // alif with dagger alif
 
   // Semi-vowels
   'ي': 'y',
@@ -60,7 +60,7 @@ export const arabicMapping: Record<string, string> = {
   'ّ': '', // shadda (handled specially - doubles the consonant)
 
   // Common ligatures
-  'لا': 'laa',
+  'لا': 'le',
   'لأ': 'lae',
   'لإ': 'lie',
   'لآ': 'lao',
@@ -128,7 +128,7 @@ const latinToArabicMap: Record<string, string> = {
   'lie': 'لإ',
   'lae': 'لأ',
   'ae': 'أ',
-  'laa': 'لا',
+  'le': 'لا',
   'dh': 'ذ',
   'th': 'ث',
   'sh': 'ش',
@@ -137,12 +137,12 @@ const latinToArabicMap: Record<string, string> = {
   'iv': 'ٍ',
   'uv': 'ٌ',
   'hh': 'ة',
-  'ap': 'ٰ',
+  'ac': 'ٰ',
   'ya': 'ى',
   'o': 'ٱ',
   // Single character mappings
-  'e': 'ء',
-  'aa': 'ا',
+  'oe': 'ء',
+  'e': 'ا',
   'y': 'ي',
   'w': 'و',
   'r': 'ر',
@@ -205,16 +205,16 @@ export function transcribeLatin(text: string): string {
 // Get description for an Arabic character
 export const arabicDescriptions: Record<string, string> = {
   'آ': 'Alif with madda - ao',
-  'ء': 'Hamza - glottal stop (e)',
+  'ء': 'Hamza - glottal stop (oe)',
   'أ': 'Alif with hamza above - ae',
   'ئ': 'Ya with hamza - ye',
   'ؤ': 'Waw with hamza - we',
   'إ': 'Alif with hamza below - ie',
   'ٱ': 'Alif wasl - o',
   'ة': 'Ta marbuta - feminine ending (hh)',
-  'ا': 'Alif - aa',
+  'ا': 'Alif - e',
   'ى': 'Alif maqsura - ya (at end)',
-  'ٰ': 'Dagger alif - ap (superscript alif)',
+  'ٰ': 'Dagger alif - ac (superscript alif)',
   'ي': 'Ya - y',
   'و': 'Waw - w',
   'ر': 'Ra - r (like "t" in American "water")',

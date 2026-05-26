@@ -24,10 +24,10 @@ const latinToArabic: Record<string, string> = {
   'iv': 'ٍ',
   'uv': 'ٌ',
   // Single character mappings
-  'e': 'ء',
-  'aa': 'ا',
+  'oe': 'ء',
+  'e': 'ا',
   'o': 'ٱ',
-  'ap': 'ٰ',
+  'ac': 'ٰ',
   'ya': 'ى',
   'y': 'ي',
   'w': 'و',
@@ -63,14 +63,14 @@ const latinToArabic: Record<string, string> = {
 const keyboardRows = [
   // Row 1: Vowels and vowel-related letters grouped together
   [
-    { latin: 'e', arabic: 'ء', label: 'e' },
-    { latin: 'aa', arabic: 'ا', label: 'aa' },
+    { latin: 'oe', arabic: 'ء', label: 'oe' },
+    { latin: 'e', arabic: 'ا', label: 'e' },
     { latin: 'o', arabic: 'ٱ', label: 'o' },
     { latin: 'ao', arabic: 'آ', label: 'ao' },
     { latin: 'ae', arabic: 'أ', label: 'ae' },
     { latin: 'ie', arabic: 'إ', label: 'ie' },
     { latin: 'ya', arabic: 'ى', label: 'ya' },
-    { latin: 'ap', arabic: 'ٰ', label: 'ap' },
+    { latin: 'ac', arabic: 'ٰ', label: 'ac' },
     { latin: 'ye', arabic: 'ئ', label: 'ye' },
     { latin: 'we', arabic: 'ؤ', label: 'we' },
     { latin: 'y', arabic: 'ي', label: 'y' },
