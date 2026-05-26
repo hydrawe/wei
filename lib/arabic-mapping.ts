@@ -12,7 +12,7 @@ export const arabicMapping: Record<string, string> = {
   'ة': 'hh', // ta marbuta - feminine ending
 
   // Alif variants
-  'ا': 'a',
+  'ا': 'aa',
   'ى': 'ya',
   'ٰ': 'ap', // dagger alif (superscript alif)
   'اٰ': 'ap', // alif with dagger alif
@@ -54,13 +54,13 @@ export const arabicMapping: Record<string, string> = {
   'ٌ': 'uv', // tanwin damma (nominative)
   'ٍ': 'iv', // tanwin kasra (genitive)
   'ْ': '', // sukun (silent)
-  'َ': 'ac', // fatha
-  'ِ': 'ic', // kasra
-  'ُ': 'uc', // damma
+  'َ': 'a', // fatha
+  'ِ': 'i', // kasra
+  'ُ': 'u', // damma
   'ّ': '', // shadda (handled specially - doubles the consonant)
 
   // Common ligatures
-  'لا': 'la',
+  'لا': 'laa',
   'لأ': 'lae',
   'لإ': 'lie',
   'لآ': 'lao',
@@ -128,7 +128,7 @@ const latinToArabicMap: Record<string, string> = {
   'lie': 'لإ',
   'lae': 'لأ',
   'ae': 'أ',
-  'la': 'لا',
+  'laa': 'لا',
   'dh': 'ذ',
   'th': 'ث',
   'sh': 'ش',
@@ -142,7 +142,7 @@ const latinToArabicMap: Record<string, string> = {
   'o': 'ٱ',
   // Single character mappings
   'e': 'ء',
-  'a': 'ا',
+  'aa': 'ا',
   'y': 'ي',
   'w': 'و',
   'r': 'ر',
@@ -167,9 +167,9 @@ const latinToArabicMap: Record<string, string> = {
   'xh': 'خ',
   'm': 'م',
   'p': 'ّ',
-  'ic': 'ِ',
-  'uc': 'ُ',
-  'ac': 'َ',
+  'i': 'ِ',
+  'u': 'ُ',
+  'a': 'َ',
 }
 
 // Sort keys by length (longest first) for greedy matching
@@ -212,7 +212,7 @@ export const arabicDescriptions: Record<string, string> = {
   'إ': 'Alif with hamza below - ie',
   'ٱ': 'Alif wasl - o',
   'ة': 'Ta marbuta - feminine ending (hh)',
-  'ا': 'Alif - a',
+  'ا': 'Alif - aa',
   'ى': 'Alif maqsura - ya (at end)',
   'ٰ': 'Dagger alif - ap (superscript alif)',
   'ي': 'Ya - y',
