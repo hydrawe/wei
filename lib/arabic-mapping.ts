@@ -3,7 +3,7 @@
 export const arabicMapping: Record<string, string> = {
   // Hamza variants
   'آ': 'ao',
-  'ء': 'e',
+  'ء': 'oe',
   'أ': 'ae',
   'ئ': 'ye',
   'ؤ': 'we',
@@ -12,7 +12,7 @@ export const arabicMapping: Record<string, string> = {
   'ة': 'hh', // ta marbuta - feminine ending
 
   // Alif variants
-  'ا': 'a',
+  'ا': 'e',
   'ى': 'ya',
   'ٰ': 'ac', // dagger alif (superscript alif)
   'اٰ': 'ac', // alif with dagger alif
@@ -54,13 +54,13 @@ export const arabicMapping: Record<string, string> = {
   'ٌ': 'uv', // tanwin damma (nominative)
   'ٍ': 'iv', // tanwin kasra (genitive)
   'ْ': '', // sukun (silent)
-  'َ': 'a-', // fatha
-  'ِ': 'i-', // kasra
-  'ُ': 'u-', // damma
+  'َ': 'a', // fatha
+  'ِ': 'i', // kasra
+  'ُ': 'u', // damma
   'ّ': '', // shadda (handled specially - doubles the consonant)
 
   // Common ligatures
-  'لا': 'la',
+  'لا': 'le',
   'لأ': 'lae',
   'لإ': 'lie',
   'لآ': 'lao',
@@ -128,7 +128,7 @@ const latinToArabicMap: Record<string, string> = {
   'lie': 'لإ',
   'lae': 'لأ',
   'ae': 'أ',
-  'la': 'لا',
+  'le': 'لا',
   'dh': 'ذ',
   'th': 'ث',
   'sh': 'ش',
@@ -141,8 +141,8 @@ const latinToArabicMap: Record<string, string> = {
   'ya': 'ى',
   'o': 'ٱ',
   // Single character mappings
-  'e': 'ء',
-  'a': 'ا',
+  'oe': 'ء',
+  'e': 'ا',
   'y': 'ي',
   'w': 'و',
   'r': 'ر',
@@ -167,9 +167,9 @@ const latinToArabicMap: Record<string, string> = {
   'xh': 'خ',
   'm': 'م',
   'p': 'ّ',
-  'i-': 'ِ',
-  'u-': 'ُ',
-  'a-': 'َ',
+  'i': 'ِ',
+  'u': 'ُ',
+  'a': 'َ',
 }
 
 // Sort keys by length (longest first) for greedy matching
@@ -205,14 +205,14 @@ export function transcribeLatin(text: string): string {
 // Get description for an Arabic character
 export const arabicDescriptions: Record<string, string> = {
   'آ': 'Alif with madda - ao',
-  'ء': 'Hamza - glottal stop (e)',
+  'ء': 'Hamza - glottal stop (oe)',
   'أ': 'Alif with hamza above - ae',
   'ئ': 'Ya with hamza - ye',
   'ؤ': 'Waw with hamza - we',
   'إ': 'Alif with hamza below - ie',
   'ٱ': 'Alif wasl - o',
   'ة': 'Ta marbuta - feminine ending (hh)',
-  'ا': 'Alif - a',
+  'ا': 'Alif - e',
   'ى': 'Alif maqsura - ya (at end)',
   'ٰ': 'Dagger alif - ac (superscript alif)',
   'ي': 'Ya - y',
