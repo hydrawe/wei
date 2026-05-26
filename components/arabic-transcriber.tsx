@@ -24,7 +24,7 @@ const latinToArabic: Record<string, string> = {
   'iv': 'ٍ',
   'uv': 'ٌ',
   // Single character mappings
-  'c': 'ء',
+  'oc': 'ء',
   'e': 'ا',
   'o': 'ٱ',
   'ao': 'ٰ',
@@ -63,7 +63,7 @@ const latinToArabic: Record<string, string> = {
 const keyboardRows = [
   // Row 1: Vowels and vowel-related letters grouped together
   [
-    { latin: 'c', arabic: 'ء', label: 'c' },
+    { latin: 'oc', arabic: 'ء', label: 'oc' },
     { latin: 'e', arabic: 'ا', label: 'e' },
     { latin: 'o', arabic: 'ٱ', label: 'o' },
     { latin: 'oe', arabic: 'آ', label: 'oe' },

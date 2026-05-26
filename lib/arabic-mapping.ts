@@ -3,7 +3,7 @@
 export const arabicMapping: Record<string, string> = {
   // Hamza variants
   'آ': 'oe',
-  'ء': 'c',
+  'ء': 'oc',
   'أ': 'ac',
   'ئ': 'yc',
   'ؤ': 'wc',
@@ -141,7 +141,7 @@ const latinToArabicMap: Record<string, string> = {
   'yo': 'ى',
   'o': 'ٱ',
   // Single character mappings
-  'c': 'ء',
+  'oc': 'ء',
   'e': 'ا',
   'y': 'ي',
   'w': 'و',
@@ -205,7 +205,7 @@ export function transcribeLatin(text: string): string {
 // Get description for an Arabic character
 export const arabicDescriptions: Record<string, string> = {
   'آ': 'Alif with madda - oe',
-  'ء': 'Hamza - glottal stop (c)',
+  'ء': 'Hamza - glottal stop (oc)',
   'أ': 'Alif with hamza above - ac',
   'ئ': 'Ya with hamza - yc',
   'ؤ': 'Waw with hamza - wc',
