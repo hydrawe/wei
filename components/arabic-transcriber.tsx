@@ -15,11 +15,11 @@ const latinToArabic: Record<string, string> = {
   'yc': 'ئ',
   'wc': 'ؤ',
   'ic': 'إ',
-  'ac': 'أ',
-  'dc': 'ذ',
-  'tc': 'ث',
-  'sc': 'ش',
-  'gc': 'غ',
+  'ec': 'أ',
+  'dv': 'ذ',
+  'tv': 'ث',
+  'sv': 'ش',
+  'gv': 'غ',
   'av': 'ً',
   'iv': 'ٍ',
   'uv': 'ٌ',
@@ -38,10 +38,10 @@ const latinToArabic: Record<string, string> = {
   's': 'س',
   'l': 'ل',
   'n': 'ن',
-  'sv': 'ص',
-  'dv': 'ض',
-  'tv': 'ط',
-  'zv': 'ظ',
+  'sc': 'ص',
+  'dc': 'ض',
+  'tc': 'ط',
+  'zc': 'ظ',
   'b': 'ب',
   'f': 'ف',
   'k': 'ك',
@@ -50,7 +50,7 @@ const latinToArabic: Record<string, string> = {
   'h': 'ه',
   'j': 'ج',
   'x': 'ح',
-  'xc': 'خ',
+  'xv': 'خ',
   'm': 'م',
   // Vowel diacritics as standalone keys
   'i': 'ِ',
@@ -67,7 +67,7 @@ const keyboardRows = [
     { latin: 'e', arabic: 'ا', label: 'e' },
     { latin: 'o', arabic: 'ٱ', label: 'o' },
     { latin: 'oe', arabic: 'آ', label: 'oe' },
-    { latin: 'ac', arabic: 'أ', label: 'ac' },
+    { latin: 'ec', arabic: 'أ', label: 'ec' },
     { latin: 'ic', arabic: 'إ', label: 'ic' },
     { latin: 'yo', arabic: 'ى', label: 'yo' },
     { latin: 'ao', arabic: 'ٰ', label: 'ao' },
@@ -88,25 +88,25 @@ const keyboardRows = [
     { latin: 'q', arabic: 'ق', label: 'q' },
     { latin: 'r', arabic: 'ر', label: 'r' },
     { latin: 'z', arabic: 'ز', label: 'z' },
-    { latin: 'sv', arabic: 'ص', label: 'sv' },
-    { latin: 'dv', arabic: 'ض', label: 'dv' },
-    { latin: 'tv', arabic: 'ط', label: 'tv' },
-    { latin: 'zv', arabic: 'ظ', label: 'zv' },
+    { latin: 'sc', arabic: 'ص', label: 'sc' },
+    { latin: 'dc', arabic: 'ض', label: 'dc' },
+    { latin: 'tc', arabic: 'ط', label: 'tc' },
+    { latin: 'zc', arabic: 'ظ', label: 'zc' },
   ],
-  // Row 3: Letters with "c" suffix paired (base, c-variant)
+  // Row 3: Letters with "v" suffix paired (base, v-variant), h and hh at far right
   [
     { latin: 't', arabic: 'ت', label: 't' },
-    { latin: 'tc', arabic: 'ث', label: 'tc' },
+    { latin: 'tv', arabic: 'ث', label: 'tv' },
     { latin: 's', arabic: 'س', label: 's' },
-    { latin: 'sc', arabic: 'ش', label: 'sc' },
+    { latin: 'sv', arabic: 'ش', label: 'sv' },
     { latin: 'd', arabic: 'د', label: 'd' },
-    { latin: 'dc', arabic: 'ذ', label: 'dc' },
+    { latin: 'dv', arabic: 'ذ', label: 'dv' },
     { latin: 'g', arabic: 'ع', label: 'g' },
-    { latin: 'gc', arabic: 'غ', label: 'gc' },
+    { latin: 'gv', arabic: 'غ', label: 'gv' },
+    { latin: 'x', arabic: 'ح', label: 'x' },
+    { latin: 'xv', arabic: 'خ', label: 'xv' },
     { latin: 'h', arabic: 'ه', label: 'h' },
     { latin: 'hh', arabic: 'ة', label: 'hh' },
-    { latin: 'x', arabic: 'ح', label: 'x' },
-    { latin: 'xc', arabic: 'خ', label: 'xc' },
   ],
 ]
 
@@ -474,7 +474,7 @@ export function ArabicTranscriber() {
                   consonants pronounced further back in the mouth
                 </li>
                 <li>
-                  <strong>Digraphs</strong> like &quot;tc&quot;, &quot;dc&quot;, &quot;sc&quot;, &quot;gc&quot;, &quot;sv&quot;, &quot;dv&quot;, &quot;tv&quot;, &quot;zv&quot; represent specific Arabic sounds
+                  <strong>Digraphs</strong> like &quot;tv&quot;, &quot;dv&quot;, &quot;sv&quot;, &quot;gv&quot;, &quot;sc&quot;, &quot;dc&quot;, &quot;tc&quot;, &quot;zc&quot; represent specific Arabic sounds
                 </li>
                 <li>
                   <strong>Tanwin</strong> (nunation) is represented as &quot;av&quot;, &quot;iv&quot;, &quot;uv&quot;
@@ -486,9 +486,9 @@ export function ArabicTranscriber() {
               <h4>Pronunciation Tips:</h4>
               <ul>
                 <li><strong>g</strong> (ع) - like a surprised &quot;a&quot;</li>
-                <li><strong>gc</strong> (غ) - gargling sound</li>
+                <li><strong>gv</strong> (غ) - gargling sound</li>
                 <li><strong>x</strong> (ح) - like fogging up a window</li>
-                <li><strong>xc</strong> (خ) - whispered gargle</li>
+                <li><strong>xv</strong> (خ) - whispered gargle</li>
                 <li><strong>q</strong> (ق) - deep in the throat</li>
                 <li><strong>r</strong> (ر) - like the &quot;t&quot; in American &quot;water&quot;</li>
               </ul>
