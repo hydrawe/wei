@@ -9,7 +9,7 @@ export const arabicMapping: Record<string, string> = {
   'ؤ': 'wc',
   'إ': 'ic',
   'ٱ': 'o', // alif wasl
-  'ة': 'hh', // ta marbuta - feminine ending
+  'ة': 'ho', // ta marbuta - feminine ending
 
   // Alif variants
   'ا': 'e',
@@ -136,7 +136,7 @@ const latinToArabicMap: Record<string, string> = {
   'av': 'ً',
   'iv': 'ٍ',
   'uv': 'ٌ',
-  'hh': 'ة',
+  'ho': 'ة',
   'ao': 'ٰ',
   'yo': 'ى',
   'o': 'ٱ',
@@ -211,7 +211,7 @@ export const arabicDescriptions: Record<string, string> = {
   'ؤ': 'Waw with hamza - wc',
   'إ': 'Alif with hamza below - ic',
   'ٱ': 'Alif wasl - o',
-  'ة': 'Ta marbuta - feminine ending (hh)',
+  'ة': 'Ta marbuta - feminine ending (ho)',
   'ا': 'Alif - e',
   'ى': 'Alif maqsura - yo (at end)',
   'ٰ': 'Dagger alif - ao (superscript alif)',

@@ -1,12 +1,12 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { transcribeArabic, transcribeLatin, arabicMapping, arabicDescriptions } from "@/lib/arabic-mapping"
-import { Copy, Check, Trash2, Keyboard } from "lucide-react"
+import { Copy, Check, Trash2, Keyboard, Languages, Loader2 } from "lucide-react"
 
 // Reverse mapping: Latin transliteration -> Arabic character
 const latinToArabic: Record<string, string> = {
@@ -106,7 +106,7 @@ const keyboardRows = [
     { latin: 'x', arabic: 'ح', label: 'x' },
     { latin: 'xv', arabic: 'خ', label: 'xv' },
     { latin: 'h', arabic: 'ه', label: 'h' },
-    { latin: 'hh', arabic: 'ة', label: 'hh' },
+    { latin: 'ho', arabic: 'ة', label: 'ho' },
   ],
 ]
 
@@ -116,6 +116,38 @@ export function ArabicTranscriber() {
   const [copiedLatin, setCopiedLatin] = useState(false)
   const [copiedArabic, setCopiedArabic] = useState(false)
   const [showKeyboard, setShowKeyboard] = useState(true)
+  const [englishMeaning, setEnglishMeaning] = useState("")
+  const [isTranslating, setIsTranslating] = useState(false)
+
+  // Fetch English translation when Arabic text changes
+  useEffect(() => {
+    const translateText = async () => {
+      if (!arabicText.trim()) {
+        setEnglishMeaning("")
+        return
+      }
+
+      setIsTranslating(true)
+      try {
+        const response = await fetch(
+          `https://api.mymemory.translated.net/get?q=${encodeURIComponent(arabicText)}&langpair=ar|en`
+        )
+        const data = await response.json()
+        if (data.responseStatus === 200 && data.responseData?.translatedText) {
+          setEnglishMeaning(data.responseData.translatedText)
+        } else {
+          setEnglishMeaning("")
+        }
+      } catch {
+        setEnglishMeaning("")
+      } finally {
+        setIsTranslating(false)
+      }
+    }
+
+    const debounceTimer = setTimeout(translateText, 500)
+    return () => clearTimeout(debounceTimer)
+  }, [arabicText])
 
   const handleLatinChange = (value: string) => {
     setLatinText(value)
@@ -298,6 +330,26 @@ export function ArabicTranscriber() {
               </Button>
             )}
           </div>
+
+          {/* English Meaning Section */}
+          {(arabicText.trim() || isTranslating) && (
+            <div className="p-4 border rounded-lg bg-muted/30">
+              <div className="flex items-center gap-2 mb-2">
+                <Languages className="h-4 w-4 text-muted-foreground" />
+                <label className="text-sm font-medium">English Meaning</label>
+              </div>
+              {isTranslating ? (
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <span className="text-sm">Translating...</span>
+                </div>
+              ) : englishMeaning ? (
+                <p className="text-base">{englishMeaning}</p>
+              ) : (
+                <p className="text-sm text-muted-foreground italic">Translation not available</p>
+              )}
+            </div>
+          )}
 
           {/* Virtual Keyboard */}
           <div className="space-y-2">
