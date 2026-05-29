@@ -331,25 +331,25 @@ export function ArabicTranscriber() {
             )}
           </div>
 
-          {/* English Meaning Section */}
-          {(arabicText.trim() || isTranslating) && (
-            <div className="p-4 border rounded-lg bg-muted/30">
-              <div className="flex items-center gap-2 mb-2">
-                <Languages className="h-4 w-4 text-muted-foreground" />
-                <label className="text-sm font-medium">English Meaning</label>
-              </div>
-              {isTranslating ? (
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                  <span className="text-sm">Translating...</span>
-                </div>
-              ) : englishMeaning ? (
-                <p className="text-base">{englishMeaning}</p>
-              ) : (
-                <p className="text-sm text-muted-foreground italic">Translation not available</p>
-              )}
+          {/* English Meaning Section - Always visible */}
+          <div className="p-4 border rounded-lg bg-muted/30">
+            <div className="flex items-center gap-2 mb-2">
+              <Languages className="h-4 w-4 text-muted-foreground" />
+              <label className="text-sm font-medium">English Meaning</label>
             </div>
-          )}
+            {!arabicText.trim() ? (
+              <p className="text-sm text-muted-foreground italic">Enter Arabic text to see translation</p>
+            ) : isTranslating ? (
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <Loader2 className="h-4 w-4 animate-spin" />
+                <span className="text-sm">Translating...</span>
+              </div>
+            ) : englishMeaning ? (
+              <p className="text-base">{englishMeaning}</p>
+            ) : (
+              <p className="text-sm text-muted-foreground italic">Translation not available</p>
+            )}
+          </div>
 
           {/* Virtual Keyboard */}
           <div className="space-y-2">
@@ -472,42 +472,11 @@ export function ArabicTranscriber() {
         </CardContent>
       </Card>
 
-      <Tabs defaultValue="reference" className="w-full">
+      <Tabs defaultValue="about" className="w-full">
         <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="reference">Reference Chart</TabsTrigger>
           <TabsTrigger value="about">About</TabsTrigger>
+          <TabsTrigger value="reference">Reference Chart</TabsTrigger>
         </TabsList>
-        <TabsContent value="reference">
-          <Card>
-            <CardHeader>
-              <CardTitle>Arabic Letter Reference</CardTitle>
-              <CardDescription>
-                Complete mapping of Arabic letters to their transliteration
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                {Object.entries(arabicDescriptions).map(([arabic, description]) => (
-                  <div
-                    key={arabic}
-                    className="flex items-center gap-3 p-3 rounded-lg border bg-card hover:bg-accent/50 transition-colors cursor-pointer"
-                    onClick={() => setArabicText((prev) => prev + arabic)}
-                  >
-                    <span className="text-3xl font-arabic w-10 text-center">{arabic}</span>
-                    <div className="flex-1 min-w-0">
-                      <div className="font-mono text-sm font-semibold text-primary">
-                        {arabicMapping[arabic] || "—"}
-                      </div>
-                      <div className="text-xs text-muted-foreground truncate">
-                        {description.split(" - ")[0]}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
         <TabsContent value="about">
           <Card>
             <CardHeader>
@@ -515,7 +484,7 @@ export function ArabicTranscriber() {
             </CardHeader>
             <CardContent className="prose prose-sm dark:prose-invert max-w-none">
               <p>
-                This transcription tool converts Arabic script to a romanized form using the
+                This transcription tool converts Arabic script to Latin text using the
                 <strong> Wanji transliteration system</strong>. This system is designed to be
                 readable for novice learners while preserving important phonetic distinctions.
               </p>
@@ -555,6 +524,37 @@ export function ArabicTranscriber() {
                   hydrawe.org/pathways/Wanji
                 </a>
               </p>
+            </CardContent>
+          </Card>
+        </TabsContent>
+        <TabsContent value="reference">
+          <Card>
+            <CardHeader>
+              <CardTitle>Arabic Letter Reference</CardTitle>
+              <CardDescription>
+                Complete mapping of Arabic letters to their Latin transliteration
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                {Object.entries(arabicDescriptions).map(([arabic, description]) => (
+                  <div
+                    key={arabic}
+                    className="flex items-center gap-3 p-3 rounded-lg border bg-card hover:bg-accent/50 transition-colors cursor-pointer"
+                    onClick={() => setArabicText((prev) => prev + arabic)}
+                  >
+                    <span className="text-3xl font-arabic w-10 text-center">{arabic}</span>
+                    <div className="flex-1 min-w-0">
+                      <div className="font-mono text-sm font-semibold text-primary">
+                        {arabicMapping[arabic] || "—"}
+                      </div>
+                      <div className="text-xs text-muted-foreground truncate">
+                        {description.split(" - ")[0]}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
