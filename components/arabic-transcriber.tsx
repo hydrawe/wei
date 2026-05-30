@@ -3,9 +3,9 @@
 import { useState, useEffect } from "react"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { transcribeArabic, transcribeLatin, arabicMapping, arabicDescriptions } from "@/lib/arabic-mapping"
-import { Copy, Check, Trash2, Keyboard, Languages, Loader2 } from "lucide-react"
+import { Copy, Check, Trash2, Keyboard, Languages, Loader2, Bookmark } from "lucide-react"
 
 // Reverse mapping: Latin transliteration -> Arabic character
 const latinToArabic: Record<string, string> = {
@@ -107,6 +107,20 @@ const keyboardRows = [
     { latin: 'h', arabic: 'ه', label: 'h' },
     { latin: 'ho', arabic: 'ة', label: 'ho' },
   ],
+]
+
+// Common phrases for quick access
+const commonPhrases = [
+  { english: "Hello", arabic: "مَرْحَبًا", latin: "marhaban" },
+  { english: "Thanks", arabic: "شُكْرًا", latin: "sukran" },
+  { english: "Nice to meet you", arabic: "تَشَرَّفْنَا", latin: "tasharrafna" },
+  { english: "My name is Wanji", arabic: "اِسْمِي وَانْجِي", latin: "ismy wanjy" },
+  { english: "I'm from Egypt", arabic: "أَنَا مِنْ مِصْر", latin: "ecana min misr" },
+  { english: "Where are you from?", arabic: "مِنْ أَيْنَ أَنْتَ؟", latin: "min ecyna ecnta?" },
+  { english: "What's your name?", arabic: "مَا اسْمُكَ؟", latin: "ma ismuka?" },
+  { english: "How are you?", arabic: "كَيْفَ حَالُكَ؟", latin: "kayfa xaluka?" },
+  { english: "Do you speak Arabic?", arabic: "هَلْ تَتَكَلَّمُ العَرَبِيَّة؟", latin: "hal tatakallamu algarabiyaho?" },
+  { english: "Good morning", arabic: "صَبَاحُ الخَيْر", latin: "scabaxu alxvayr" },
 ]
 
 export function ArabicTranscriber() {
@@ -218,23 +232,10 @@ export function ArabicTranscriber() {
     setLatinText((prev) => prev + " ")
   }
 
-  // Sample texts for demonstration
-  const sampleTexts = [
-    { label: "Bismillah", arabic: "بِسْمِ اللَّهِ" },
-    { label: "Salam", arabic: "السَّلَامُ عَلَيْكُم" },
-    { label: "Thank you", arabic: "شُكْرًا" },
-  ]
-
   return (
     <div className="w-full max-w-4xl mx-auto space-y-6">
       <Card>
-        <CardHeader>
-          <CardTitle className="text-2xl">Arabic Transcriber</CardTitle>
-          <CardDescription>
-            Enter Latin or Arabic text below to see its transliteration using the Wanji system
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-4 pt-6">
           {/* Side by side: Latin on left, Arabic on right */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Left: Latin Text Input */}
@@ -301,20 +302,25 @@ export function ArabicTranscriber() {
             </div>
           </div>
 
-          {/* Sample texts and clear button */}
+          {/* Common Phrases Bookmarks */}
           <div className="flex gap-2 flex-wrap items-center">
-            <span className="text-sm text-muted-foreground">Try:</span>
-            {sampleTexts.map((sample) => (
+            <span className="text-sm text-muted-foreground flex items-center gap-1">
+              <Bookmark className="h-3.5 w-3.5" />
+              Try:
+            </span>
+            {commonPhrases.map((phrase, index) => (
               <Button
-                key={sample.label}
+                key={index}
                 variant="outline"
                 size="sm"
+                className="text-xs"
                 onClick={() => {
-                  setArabicText(sample.arabic)
-                  setLatinText(transcribeArabic(sample.arabic))
+                  setArabicText(phrase.arabic)
+                  setLatinText(phrase.latin)
                 }}
+                title={`${phrase.english}: ${phrase.arabic}`}
               >
-                {sample.label}
+                {phrase.english}
               </Button>
             ))}
             {(arabicText || latinText) && (
@@ -325,7 +331,7 @@ export function ArabicTranscriber() {
                 className="text-muted-foreground ml-auto"
               >
                 <Trash2 className="h-4 w-4 mr-1" />
-                Clear Both
+                Clear
               </Button>
             )}
           </div>
