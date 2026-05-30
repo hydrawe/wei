@@ -5,7 +5,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { transcribeArabic, transcribeLatin, arabicMapping, arabicDescriptions } from "@/lib/arabic-mapping"
-import { Copy, Check, Trash2, Keyboard, Languages, Loader2 } from "lucide-react"
+import { Copy, Check, Trash2, Keyboard, Languages, Loader2, Bookmark } from "lucide-react"
 
 // Reverse mapping: Latin transliteration -> Arabic character
 const latinToArabic: Record<string, string> = {
@@ -117,6 +117,46 @@ export function ArabicTranscriber() {
   const [showKeyboard, setShowKeyboard] = useState(true)
   const [englishMeaning, setEnglishMeaning] = useState("")
   const [isTranslating, setIsTranslating] = useState(false)
+  const [recentPhrases, setRecentPhrases] = useState<Array<{ arabic: string; latin: string }>>([])
+
+  // Load recent phrases from localStorage on mount
+  useEffect(() => {
+    const saved = localStorage.getItem("wanji-recent-phrases")
+    if (saved) {
+      try {
+        setRecentPhrases(JSON.parse(saved))
+      } catch {
+        // Ignore parse errors
+      }
+    }
+  }, [])
+
+  // Save phrase to recent list when text changes (debounced)
+  useEffect(() => {
+    if (!arabicText.trim() || arabicText.trim().length < 2) return
+
+    const saveTimer = setTimeout(() => {
+      const newPhrase = { arabic: arabicText.trim(), latin: latinText.trim() }
+      
+      setRecentPhrases((prev) => {
+        // Check if phrase already exists
+        const exists = prev.some((p) => p.arabic === newPhrase.arabic)
+        if (exists) {
+          // Move to front if exists
+          const filtered = prev.filter((p) => p.arabic !== newPhrase.arabic)
+          const updated = [newPhrase, ...filtered].slice(0, 10)
+          localStorage.setItem("wanji-recent-phrases", JSON.stringify(updated))
+          return updated
+        }
+        // Add new phrase to front
+        const updated = [newPhrase, ...prev].slice(0, 10)
+        localStorage.setItem("wanji-recent-phrases", JSON.stringify(updated))
+        return updated
+      })
+    }, 1500)
+
+    return () => clearTimeout(saveTimer)
+  }, [arabicText, latinText])
 
   // Fetch English translation when Arabic text changes
   useEffect(() => {
@@ -218,20 +258,13 @@ export function ArabicTranscriber() {
     setLatinText((prev) => prev + " ")
   }
 
-  // Sample texts for demonstration
-  const sampleTexts = [
-    { label: "Bismillah", arabic: "بِسْمِ اللَّهِ" },
-    { label: "Salam", arabic: "السَّلَامُ عَلَيْكُم" },
-    { label: "Thank you", arabic: "شُكْرًا" },
-  ]
-
   return (
     <div className="w-full max-w-4xl mx-auto space-y-6">
       <Card>
         <CardHeader>
           <CardTitle className="text-2xl">Arabic Transcriber</CardTitle>
           <CardDescription>
-            Enter Latin or Arabic text below to see its transliteration using the Wanji system
+            Readable and reversible Latin texts for Arabic learning
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -301,22 +334,31 @@ export function ArabicTranscriber() {
             </div>
           </div>
 
-          {/* Sample texts and clear button */}
+          {/* Recent Phrases Bookmarks */}
           <div className="flex gap-2 flex-wrap items-center">
-            <span className="text-sm text-muted-foreground">Try:</span>
-            {sampleTexts.map((sample) => (
-              <Button
-                key={sample.label}
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  setArabicText(sample.arabic)
-                  setLatinText(transcribeArabic(sample.arabic))
-                }}
-              >
-                {sample.label}
-              </Button>
-            ))}
+            <span className="text-sm text-muted-foreground flex items-center gap-1">
+              <Bookmark className="h-3.5 w-3.5" />
+              Recent:
+            </span>
+            {recentPhrases.length > 0 ? (
+              recentPhrases.slice(0, 10).map((phrase, index) => (
+                <Button
+                  key={index}
+                  variant="outline"
+                  size="sm"
+                  className="max-w-32 truncate"
+                  onClick={() => {
+                    setArabicText(phrase.arabic)
+                    setLatinText(phrase.latin)
+                  }}
+                  title={`${phrase.latin} - ${phrase.arabic}`}
+                >
+                  <span className="truncate">{phrase.latin || phrase.arabic}</span>
+                </Button>
+              ))
+            ) : (
+              <span className="text-sm text-muted-foreground italic">No recent phrases yet</span>
+            )}
             {(arabicText || latinText) && (
               <Button
                 variant="ghost"
@@ -325,7 +367,7 @@ export function ArabicTranscriber() {
                 className="text-muted-foreground ml-auto"
               >
                 <Trash2 className="h-4 w-4 mr-1" />
-                Clear Both
+                Clear
               </Button>
             )}
           </div>
