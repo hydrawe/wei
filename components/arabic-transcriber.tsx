@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { transcribeArabic, transcribeLatin, arabicMapping, arabicDescriptions } from "@/lib/arabic-mapping"
 import { Copy, Check, Trash2, Keyboard, Languages, Loader2, Bookmark } from "lucide-react"
 
@@ -109,6 +109,20 @@ const keyboardRows = [
   ],
 ]
 
+// Common phrases for quick access
+const commonPhrases = [
+  { english: "Hello", arabic: "مَرْحَبًا", latin: "marhaban" },
+  { english: "Thanks", arabic: "شُكْرًا", latin: "sukran" },
+  { english: "Nice to meet you", arabic: "تَشَرَّفْنَا", latin: "tasharrafna" },
+  { english: "My name is Wanji", arabic: "اِسْمِي وَانْجِي", latin: "ismy wanjy" },
+  { english: "I'm from Egypt", arabic: "أَنَا مِنْ مِصْر", latin: "ecana min misr" },
+  { english: "Where are you from?", arabic: "مِنْ أَيْنَ أَنْتَ؟", latin: "min ecyna ecnta?" },
+  { english: "What's your name?", arabic: "مَا اسْمُكَ؟", latin: "ma ismuka?" },
+  { english: "How are you?", arabic: "كَيْفَ حَالُكَ؟", latin: "kayfa xaluka?" },
+  { english: "Do you speak Arabic?", arabic: "هَلْ تَتَكَلَّمُ العَرَبِيَّة؟", latin: "hal tatakallamu algarabiyaho?" },
+  { english: "Good morning", arabic: "صَبَاحُ الخَيْر", latin: "scabaxu alxvayr" },
+]
+
 export function ArabicTranscriber() {
   const [arabicText, setArabicText] = useState("")
   const [latinText, setLatinText] = useState("")
@@ -117,46 +131,6 @@ export function ArabicTranscriber() {
   const [showKeyboard, setShowKeyboard] = useState(true)
   const [englishMeaning, setEnglishMeaning] = useState("")
   const [isTranslating, setIsTranslating] = useState(false)
-  const [recentPhrases, setRecentPhrases] = useState<Array<{ arabic: string; latin: string }>>([])
-
-  // Load recent phrases from localStorage on mount
-  useEffect(() => {
-    const saved = localStorage.getItem("wanji-recent-phrases")
-    if (saved) {
-      try {
-        setRecentPhrases(JSON.parse(saved))
-      } catch {
-        // Ignore parse errors
-      }
-    }
-  }, [])
-
-  // Save phrase to recent list when text changes (debounced)
-  useEffect(() => {
-    if (!arabicText.trim() || arabicText.trim().length < 2) return
-
-    const saveTimer = setTimeout(() => {
-      const newPhrase = { arabic: arabicText.trim(), latin: latinText.trim() }
-      
-      setRecentPhrases((prev) => {
-        // Check if phrase already exists
-        const exists = prev.some((p) => p.arabic === newPhrase.arabic)
-        if (exists) {
-          // Move to front if exists
-          const filtered = prev.filter((p) => p.arabic !== newPhrase.arabic)
-          const updated = [newPhrase, ...filtered].slice(0, 10)
-          localStorage.setItem("wanji-recent-phrases", JSON.stringify(updated))
-          return updated
-        }
-        // Add new phrase to front
-        const updated = [newPhrase, ...prev].slice(0, 10)
-        localStorage.setItem("wanji-recent-phrases", JSON.stringify(updated))
-        return updated
-      })
-    }, 1500)
-
-    return () => clearTimeout(saveTimer)
-  }, [arabicText, latinText])
 
   // Fetch English translation when Arabic text changes
   useEffect(() => {
@@ -261,13 +235,7 @@ export function ArabicTranscriber() {
   return (
     <div className="w-full max-w-4xl mx-auto space-y-6">
       <Card>
-        <CardHeader>
-          <CardTitle className="text-2xl">Arabic Transcriber</CardTitle>
-          <CardDescription>
-            Readable and reversible Latin texts for Arabic learning
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-4 pt-6">
           {/* Side by side: Latin on left, Arabic on right */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Left: Latin Text Input */}
@@ -334,31 +302,27 @@ export function ArabicTranscriber() {
             </div>
           </div>
 
-          {/* Recent Phrases Bookmarks */}
+          {/* Common Phrases Bookmarks */}
           <div className="flex gap-2 flex-wrap items-center">
             <span className="text-sm text-muted-foreground flex items-center gap-1">
               <Bookmark className="h-3.5 w-3.5" />
-              Recent:
+              Try:
             </span>
-            {recentPhrases.length > 0 ? (
-              recentPhrases.slice(0, 10).map((phrase, index) => (
-                <Button
-                  key={index}
-                  variant="outline"
-                  size="sm"
-                  className="max-w-32 truncate"
-                  onClick={() => {
-                    setArabicText(phrase.arabic)
-                    setLatinText(phrase.latin)
-                  }}
-                  title={`${phrase.latin} - ${phrase.arabic}`}
-                >
-                  <span className="truncate">{phrase.latin || phrase.arabic}</span>
-                </Button>
-              ))
-            ) : (
-              <span className="text-sm text-muted-foreground italic">No recent phrases yet</span>
-            )}
+            {commonPhrases.map((phrase, index) => (
+              <Button
+                key={index}
+                variant="outline"
+                size="sm"
+                className="text-xs"
+                onClick={() => {
+                  setArabicText(phrase.arabic)
+                  setLatinText(phrase.latin)
+                }}
+                title={`${phrase.english}: ${phrase.arabic}`}
+              >
+                {phrase.english}
+              </Button>
+            ))}
             {(arabicText || latinText) && (
               <Button
                 variant="ghost"
