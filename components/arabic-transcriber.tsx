@@ -236,6 +236,12 @@ export function ArabicTranscriber() {
     <div className="w-full max-w-4xl mx-auto space-y-6">
       <Card>
         <CardContent className="space-y-4 pt-6">
+          {/* Reversible conversion note */}
+          <p className="text-sm text-muted-foreground rounded-lg border bg-muted/30 p-3">
+            The conversion between Latin Text and Arabic Text is fully reversible. You can type in
+            either Latin Text or Arabic Text, and the other updates automatically.
+          </p>
+
           {/* Side by side: Latin on left, Arabic on right */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Left: Latin Text Input */}
