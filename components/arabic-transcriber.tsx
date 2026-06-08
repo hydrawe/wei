@@ -501,10 +501,10 @@ export function ArabicTranscriber() {
               consonants pronounced further back in the mouth
             </li>
             <li>
-              <strong>Digraphs</strong> like &quot;tv&quot;, &quot;dv&quot;, &quot;sv&quot;, &quot;gv&quot;, &quot;sc&quot;, &quot;dc&quot;, &quot;tc&quot;, &quot;zc&quot; represent specific Arabic sounds
+              <strong>Digraphs </strong> like &quot;tv&quot;, &quot;dv&quot;, &quot;sv&quot;, &quot;gv&quot;, &quot;sc&quot;, &quot;dc&quot;, &quot;tc&quot;, &quot;zc&quot; represent specific Arabic sounds
             </li>
             <li>
-              <strong>Tanwin</strong> (nunation) is represented as &quot;av&quot;, &quot;iv&quot;, &quot;uv&quot;
+              <strong>Tanwin </strong> (nunation) is represented as &quot;av&quot;, &quot;iv&quot;, &quot;uv&quot;
             </li>
             <li>
               <strong>Shadda</strong> (consonant doubling) doubles the previous consonant
