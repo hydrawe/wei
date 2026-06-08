@@ -178,13 +178,15 @@ const sortedLatinKeys = Object.keys(latinToArabicMap).sort((a, b) => b.length - 
 export function transcribeLatin(text: string): string {
   let result = ''
   let i = 0
+  // Match case-insensitively so uppercase and lowercase Latin convert the same way
+  const lowerText = text.toLowerCase()
 
   while (i < text.length) {
     let matched = false
 
     // Try to match the longest possible sequence first
     for (const key of sortedLatinKeys) {
-      if (text.slice(i, i + key.length) === key) {
+      if (lowerText.slice(i, i + key.length) === key) {
         result += latinToArabicMap[key]
         i += key.length
         matched = true
