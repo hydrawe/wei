@@ -43,6 +43,7 @@ export default function Home() {
           <TabsContent value="french">
             <AccentTranscriber
               language="French"
+              langCode="fr"
               forward={frenchForward}
               placeholder="Tapez le texte français ici..."
               phrases={frenchPhrases}
@@ -52,6 +53,7 @@ export default function Home() {
           <TabsContent value="spanish">
             <AccentTranscriber
               language="Spanish"
+              langCode="es"
               forward={spanishForward}
               placeholder="Escribe el texto en español aquí..."
               phrases={spanishPhrases}
