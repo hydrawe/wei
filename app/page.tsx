@@ -6,19 +6,15 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { spanishForward, frenchForward } from "@/lib/accent-mapping"
 
 const spanishPhrases = [
-  { english: "Hello (Hola)", plain: "Hola" },
-  { english: "Thank you (Gracias)", plain: "Gracias" },
-  { english: "How are you? (¿Cómo estás?)", plain: "¿Cokmo estaks?" },
   { english: "Spanish (Español)", plain: "Espanhol" },
   { english: "Goodbye (Adiós)", plain: "Adioks" },
+  { english: "How (Cómo)", plain: "Cokmo" },
 ]
 
 const frenchPhrases = [
-  { english: "Hello (Bonjour)", plain: "Bonjour" },
-  { english: "Thank you (Merci)", plain: "Merci" },
-  { english: "Where? (Où)", plain: "Ouy" },
   { english: "Summer (Été)", plain: "Ektek" },
-  { english: "Hospital (Hôpital)", plain: "Hohpital" },
+  { english: "Hospital (Hôpital)", plain: "Hojpital" },
+  { english: "Boy (Garçon)", plain: "Garcson" },
 ]
 
 export default function Home() {

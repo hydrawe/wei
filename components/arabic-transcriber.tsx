@@ -111,16 +111,9 @@ const keyboardRows = [
 
 // Common phrases for quick access
 const commonPhrases = [
-  { english: "Hello", arabic: "مَرْحَبًا", latin: "marhaban" },
-  { english: "Thanks", arabic: "شُكْرًا", latin: "sukran" },
-  { english: "Nice to meet you", arabic: "تَشَرَّفْنَا", latin: "tasharrafna" },
-  { english: "My name is Wanji", arabic: "اِسْمِي وَانْجِي", latin: "ismy wanjy" },
-  { english: "I'm from Egypt", arabic: "أَنَا مِنْ مِصْر", latin: "ecana min misr" },
-  { english: "Where are you from?", arabic: "مِنْ أَيْنَ أَنْتَ؟", latin: "min ecyna ecnta?" },
-  { english: "What's your name?", arabic: "مَا اسْمُكَ؟", latin: "ma ismuka?" },
-  { english: "How are you?", arabic: "كَيْفَ حَالُكَ؟", latin: "kayfa xaluka?" },
-  { english: "Do you speak Arabic?", arabic: "هَلْ تَتَكَلَّمُ العَرَبِيَّة؟", latin: "hal tatakallamu algarabiyaho?" },
   { english: "Good morning", arabic: "صَبَاحُ الخَيْر", latin: "scabaxu alxvayr" },
+  { english: "How are you?", arabic: "كَيْفَ حَالُكَ", latin: "kayfa xaluka" },
+  { english: "Arabic", arabic: "العَرَبِيَّة", latin: "algarabiyaho" },
 ]
 
 export function ArabicTranscriber() {
