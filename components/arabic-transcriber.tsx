@@ -130,29 +130,39 @@ export function ArabicTranscriber() {
   const [copiedArabic, setCopiedArabic] = useState(false)
   const [showKeyboard, setShowKeyboard] = useState(true)
   const [englishMeaning, setEnglishMeaning] = useState("")
+  const [chineseMeaning, setChineseMeaning] = useState("")
   const [isTranslating, setIsTranslating] = useState(false)
 
-  // Fetch English translation when Arabic text changes
+  // Fetch English and Chinese translations when Arabic text changes
   useEffect(() => {
     const translateText = async () => {
       if (!arabicText.trim()) {
         setEnglishMeaning("")
+        setChineseMeaning("")
         return
       }
 
       setIsTranslating(true)
       try {
-        const response = await fetch(
-          `https://api.mymemory.translated.net/get?q=${encodeURIComponent(arabicText)}&langpair=ar|en`
+        const [enRes, zhRes] = await Promise.all([
+          fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(arabicText)}&langpair=ar|en`),
+          fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(arabicText)}&langpair=ar|zh`),
+        ])
+        const enData = await enRes.json()
+        const zhData = await zhRes.json()
+        setEnglishMeaning(
+          enData.responseStatus === 200 && enData.responseData?.translatedText
+            ? enData.responseData.translatedText
+            : ""
         )
-        const data = await response.json()
-        if (data.responseStatus === 200 && data.responseData?.translatedText) {
-          setEnglishMeaning(data.responseData.translatedText)
-        } else {
-          setEnglishMeaning("")
-        }
+        setChineseMeaning(
+          zhData.responseStatus === 200 && zhData.responseData?.translatedText
+            ? zhData.responseData.translatedText
+            : ""
+        )
       } catch {
         setEnglishMeaning("")
+        setChineseMeaning("")
       } finally {
         setIsTranslating(false)
       }
@@ -342,24 +352,47 @@ export function ArabicTranscriber() {
             )}
           </div>
 
-          {/* English Meaning Section - Always visible */}
-          <div className="p-4 border rounded-lg bg-muted/30">
-            <div className="flex items-center gap-2 mb-2">
-              <Languages className="h-4 w-4 text-muted-foreground" />
-              <label className="text-sm font-medium">English Meaning</label>
-            </div>
-            {!arabicText.trim() ? (
-              <p className="text-sm text-muted-foreground italic">Enter Arabic text to see translation</p>
-            ) : isTranslating ? (
-              <div className="flex items-center gap-2 text-muted-foreground">
-                <Loader2 className="h-4 w-4 animate-spin" />
-                <span className="text-sm">Translating...</span>
+          {/* Translation Sections - Always visible */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {/* English Meaning */}
+            <div className="p-4 border rounded-lg bg-muted/30">
+              <div className="flex items-center gap-2 mb-2">
+                <Languages className="h-4 w-4 text-muted-foreground" />
+                <label className="text-sm font-medium">English Meaning</label>
               </div>
-            ) : englishMeaning ? (
-              <p className="text-base">{englishMeaning}</p>
-            ) : (
-              <p className="text-sm text-muted-foreground italic">Translation not available</p>
-            )}
+              {!arabicText.trim() ? (
+                <p className="text-sm text-muted-foreground italic">Enter Arabic text to see translation</p>
+              ) : isTranslating ? (
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <span className="text-sm">Translating...</span>
+                </div>
+              ) : englishMeaning ? (
+                <p className="text-base">{englishMeaning}</p>
+              ) : (
+                <p className="text-sm text-muted-foreground italic">Translation not available</p>
+              )}
+            </div>
+
+            {/* Chinese Meaning */}
+            <div className="p-4 border rounded-lg bg-muted/30">
+              <div className="flex items-center gap-2 mb-2">
+                <Languages className="h-4 w-4 text-muted-foreground" />
+                <label className="text-sm font-medium">Chinese Meaning</label>
+              </div>
+              {!arabicText.trim() ? (
+                <p className="text-sm text-muted-foreground italic">Enter Arabic text to see translation</p>
+              ) : isTranslating ? (
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <span className="text-sm">Translating...</span>
+                </div>
+              ) : chineseMeaning ? (
+                <p className="text-base">{chineseMeaning}</p>
+              ) : (
+                <p className="text-sm text-muted-foreground italic">Translation not available</p>
+              )}
+            </div>
           </div>
 
           {/* Virtual Keyboard */}
