@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -9,23 +9,56 @@ import {
   transcribeToPlain,
   buildReference,
 } from "@/lib/accent-mapping"
-import { Copy, Check, Trash2, Keyboard } from "lucide-react"
+import { Copy, Check, Trash2, Keyboard, Languages, Loader2 } from "lucide-react"
 
 interface AccentTranscriberProps {
   language: string
+  langCode: string
   forward: Record<string, string>
   placeholder: string
   phrases: { english: string; plain: string }[]
 }
 
-export function AccentTranscriber({ language, forward, placeholder, phrases }: AccentTranscriberProps) {
+export function AccentTranscriber({ language, langCode, forward, placeholder, phrases }: AccentTranscriberProps) {
   const [plainText, setPlainText] = useState("")
   const [accentedText, setAccentedText] = useState("")
   const [copiedPlain, setCopiedPlain] = useState(false)
   const [copiedAccented, setCopiedAccented] = useState(false)
   const [showKeyboard, setShowKeyboard] = useState(true)
+  const [englishMeaning, setEnglishMeaning] = useState("")
+  const [isTranslating, setIsTranslating] = useState(false)
 
   const reference = buildReference(forward)
+
+  // Fetch English translation when accented text changes
+  useEffect(() => {
+    const translateText = async () => {
+      if (!accentedText.trim()) {
+        setEnglishMeaning("")
+        return
+      }
+
+      setIsTranslating(true)
+      try {
+        const response = await fetch(
+          `https://api.mymemory.translated.net/get?q=${encodeURIComponent(accentedText)}&langpair=${langCode}|en`
+        )
+        const data = await response.json()
+        if (data.responseStatus === 200 && data.responseData?.translatedText) {
+          setEnglishMeaning(data.responseData.translatedText)
+        } else {
+          setEnglishMeaning("")
+        }
+      } catch {
+        setEnglishMeaning("")
+      } finally {
+        setIsTranslating(false)
+      }
+    }
+
+    const debounceTimer = setTimeout(translateText, 500)
+    return () => clearTimeout(debounceTimer)
+  }, [accentedText, langCode])
 
   const handlePlainChange = (value: string) => {
     setPlainText(value)
@@ -166,6 +199,26 @@ export function AccentTranscriber({ language, forward, placeholder, phrases }: A
               )}
             </div>
           )}
+
+          {/* English Meaning Section - Always visible */}
+          <div className="p-4 border rounded-lg bg-muted/30">
+            <div className="flex items-center gap-2 mb-2">
+              <Languages className="h-4 w-4 text-muted-foreground" />
+              <label className="text-sm font-medium">English Meaning</label>
+            </div>
+            {!accentedText.trim() ? (
+              <p className="text-sm text-muted-foreground italic">Enter {language} text to see translation</p>
+            ) : isTranslating ? (
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <Loader2 className="h-4 w-4 animate-spin" />
+                <span className="text-sm">Translating...</span>
+              </div>
+            ) : englishMeaning ? (
+              <p className="text-base">{englishMeaning}</p>
+            ) : (
+              <p className="text-sm text-muted-foreground italic">Translation not available</p>
+            )}
+          </div>
 
           {/* Virtual Keyboard */}
           <div className="space-y-2">
