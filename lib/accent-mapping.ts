@@ -3,34 +3,35 @@
 
 // Spanish: code (plain latin) -> accented character
 export const spanishForward: Record<string, string> = {
-  'ak': 'á',
-  'ek': 'é',
-  'ik': 'í',
-  'ok': 'ó',
-  'uk': 'ú',
-  'uw': 'ü',
-  'nh': 'ñ',
+  'a2': 'á',
+  'e2': 'é',
+  'i2': 'í',
+  'o2': 'ó',
+  'u2': 'ú',
+  'u1': 'ü',
+  'n0': 'ñ',
 }
 
 // French: code (plain latin) -> accented character
 export const frenchForward: Record<string, string> = {
-  'ew': 'ë',
-  'aw': 'ä',
-  'uw': 'ü',
-  'ow': 'ö',
-  'iw': 'ï',
-  'yw': 'ÿ',
-  'ej': 'ê',
-  'aj': 'â',
-  'uj': 'û',
-  'oj': 'ô',
-  'ij': 'î',
-  'ee': 'è',
-  'aa': 'à',
-  'uu': 'ù',
-  'ek': 'é',
+  'e1': 'ë',
+  'a1': 'ä',
+  'u1': 'ü',
+  'o1': 'ö',
+  'i1': 'ï',
+  'y1': 'ÿ',
+  'e2': 'é',
+  'e3': 'ê',
+  'a3': 'â',
+  'u3': 'û',
+  'o3': 'ô',
+  'i3': 'î',
+  'e4': 'è',
+  'a4': 'à',
+  'u4': 'ù',
+  'c5': 'ç',
+  'ae': 'æ',
   'oe': 'œ',
-  'cs': 'ç',
 }
 
 // Build the reverse map: accented character -> code
