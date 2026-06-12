@@ -14,13 +14,13 @@ export const spanishForward: Record<string, string> = {
 
 // French: code (plain latin) -> accented character
 export const frenchForward: Record<string, string> = {
-  'e1': 'é',
-  'e2': 'ë',
-  'a2': 'ä',
-  'u2': 'ü',
-  'o2': 'ö',
-  'i2': 'ï',
-  'y2': 'ÿ',
+  'e1': 'ë',
+  'a1': 'ä',
+  'u1': 'ü',
+  'o1': 'ö',
+  'i1': 'ï',
+  'y1': 'ÿ',
+  'e2': 'é',
   'e3': 'ê',
   'a3': 'â',
   'u3': 'û',

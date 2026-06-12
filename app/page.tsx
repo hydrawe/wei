@@ -12,7 +12,7 @@ const spanishPhrases = [
 ]
 
 const frenchPhrases = [
-  { english: "Summer (Été)", plain: "E1te1" },
+  { english: "Summer (Été)", plain: "E2te2" },
   { english: "Hospital (Hôpital)", plain: "Ho3pital" },
   { english: "Boy (Garçon)", plain: "Garc5on" },
 ]
