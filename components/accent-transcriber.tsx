@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -22,62 +22,111 @@ interface AccentTranscriberProps {
 export function AccentTranscriber({ language, langCode, forward, placeholder, phrases }: AccentTranscriberProps) {
   const [plainText, setPlainText] = useState("")
   const [accentedText, setAccentedText] = useState("")
+  const [englishText, setEnglishText] = useState("")
+  const [chineseText, setChineseText] = useState("")
   const [copiedPlain, setCopiedPlain] = useState(false)
   const [copiedAccented, setCopiedAccented] = useState(false)
+  const [copiedEnglish, setCopiedEnglish] = useState(false)
+  const [copiedChinese, setCopiedChinese] = useState(false)
   const [showKeyboard, setShowKeyboard] = useState(true)
-  const [englishMeaning, setEnglishMeaning] = useState("")
-  const [chineseMeaning, setChineseMeaning] = useState("")
   const [isTranslating, setIsTranslating] = useState(false)
+  // Tracks which field the user last edited so we know the translation direction
+  const [source, setSource] = useState<"plain" | "accented" | "english" | "chinese" | null>(null)
+  const lastProcessedRef = useRef<string>("")
 
   const reference = buildReference(forward)
 
-  // Fetch English and Chinese translations when accented text changes
+  const fetchTranslation = async (text: string, pair: string): Promise<string> => {
+    try {
+      const res = await fetch(
+        `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${pair}`
+      )
+      const data = await res.json()
+      return data.responseStatus === 200 && data.responseData?.translatedText
+        ? data.responseData.translatedText
+        : ""
+    } catch {
+      return ""
+    }
+  }
+
+  // Bidirectional translation: the edited field drives the other three
   useEffect(() => {
-    const translateText = async () => {
-      if (!accentedText.trim()) {
-        setEnglishMeaning("")
-        setChineseMeaning("")
+    if (source === null) return
+
+    const sourceText =
+      source === "english" ? englishText : source === "chinese" ? chineseText : accentedText
+    const key = `${source}:${sourceText}`
+    if (key === lastProcessedRef.current) return
+
+    const run = async () => {
+      lastProcessedRef.current = key
+
+      if (!sourceText.trim()) {
+        if (source !== "accented" && source !== "plain") {
+          setAccentedText("")
+          setPlainText("")
+        }
+        if (source !== "english") setEnglishText("")
+        if (source !== "chinese") setChineseText("")
         return
       }
 
       setIsTranslating(true)
       try {
-        const [enRes, zhRes] = await Promise.all([
-          fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(accentedText)}&langpair=${langCode}|en`),
-          fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(accentedText)}&langpair=${langCode}|zh`),
-        ])
-        const enData = await enRes.json()
-        const zhData = await zhRes.json()
-        setEnglishMeaning(
-          enData.responseStatus === 200 && enData.responseData?.translatedText
-            ? enData.responseData.translatedText
-            : ""
-        )
-        setChineseMeaning(
-          zhData.responseStatus === 200 && zhData.responseData?.translatedText
-            ? zhData.responseData.translatedText
-            : ""
-        )
-      } catch {
-        setEnglishMeaning("")
-        setChineseMeaning("")
+        if (source === "plain" || source === "accented") {
+          const [en, zh] = await Promise.all([
+            fetchTranslation(accentedText, `${langCode}|en`),
+            fetchTranslation(accentedText, `${langCode}|zh`),
+          ])
+          setEnglishText(en)
+          setChineseText(zh)
+        } else if (source === "english") {
+          const [accented, zh] = await Promise.all([
+            fetchTranslation(englishText, `en|${langCode}`),
+            fetchTranslation(englishText, "en|zh"),
+          ])
+          setAccentedText(accented)
+          setPlainText(transcribeToPlain(accented, forward))
+          setChineseText(zh)
+        } else if (source === "chinese") {
+          const [accented, en] = await Promise.all([
+            fetchTranslation(chineseText, `zh|${langCode}`),
+            fetchTranslation(chineseText, "zh|en"),
+          ])
+          setAccentedText(accented)
+          setPlainText(transcribeToPlain(accented, forward))
+          setEnglishText(en)
+        }
       } finally {
         setIsTranslating(false)
       }
     }
 
-    const debounceTimer = setTimeout(translateText, 500)
+    const debounceTimer = setTimeout(run, 600)
     return () => clearTimeout(debounceTimer)
-  }, [accentedText, langCode])
+  }, [source, accentedText, englishText, chineseText, langCode, forward])
 
   const handlePlainChange = (value: string) => {
+    setSource("plain")
     setPlainText(value)
     setAccentedText(transcribeToAccented(value, forward))
   }
 
   const handleAccentedChange = (value: string) => {
+    setSource("accented")
     setAccentedText(value)
     setPlainText(transcribeToPlain(value, forward))
+  }
+
+  const handleEnglishChange = (value: string) => {
+    setSource("english")
+    setEnglishText(value)
+  }
+
+  const handleChineseChange = (value: string) => {
+    setSource("chinese")
+    setChineseText(value)
   }
 
   const copyToClipboard = async (text: string, setCopied: (v: boolean) => void) => {
@@ -98,9 +147,14 @@ export function AccentTranscriber({ language, langCode, forward, placeholder, ph
   const handleClear = () => {
     setPlainText("")
     setAccentedText("")
+    setEnglishText("")
+    setChineseText("")
+    setSource(null)
+    lastProcessedRef.current = ""
   }
 
   const handleKeyPress = (code: string, char: string) => {
+    setSource("accented")
     setPlainText((prev) => prev + code)
     setAccentedText((prev) => prev + char)
   }
@@ -210,46 +264,75 @@ export function AccentTranscriber({ language, langCode, forward, placeholder, ph
             </div>
           )}
 
-          {/* Translation Sections - Always visible */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {/* English Meaning */}
-            <div className="p-4 border rounded-lg bg-muted/30">
-              <div className="flex items-center gap-2 mb-2">
-                <Languages className="h-4 w-4 text-muted-foreground" />
-                <label className="text-sm font-medium">English Meaning</label>
-              </div>
-              {!accentedText.trim() ? (
-                <p className="text-sm text-muted-foreground italic">Enter {language} text to see translation</p>
-              ) : isTranslating ? (
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                  <span className="text-sm">Translating...</span>
-                </div>
-              ) : englishMeaning ? (
-                <p className="text-base">{englishMeaning}</p>
-              ) : (
-                <p className="text-sm text-muted-foreground italic">Translation not available</p>
-              )}
+          {/* Translation textboxes - editable and copiable */}
+          <div className="space-y-2">
+            <div className="flex items-center gap-2">
+              <Languages className="h-4 w-4 text-muted-foreground" />
+              <span className="text-sm font-medium">Translations</span>
+              {isTranslating && <Loader2 className="h-3.5 w-3.5 animate-spin text-muted-foreground" />}
             </div>
-
-            {/* Chinese Meaning */}
-            <div className="p-4 border rounded-lg bg-muted/30">
-              <div className="flex items-center gap-2 mb-2">
-                <Languages className="h-4 w-4 text-muted-foreground" />
-                <label className="text-sm font-medium">Chinese Meaning</label>
-              </div>
-              {!accentedText.trim() ? (
-                <p className="text-sm text-muted-foreground italic">Enter {language} text to see translation</p>
-              ) : isTranslating ? (
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                  <span className="text-sm">Translating...</span>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {/* English */}
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <label htmlFor={`${language}-english-input`} className="text-sm font-medium">
+                    English
+                  </label>
+                  {englishText && (
+                    <Button variant="ghost" size="sm" onClick={() => copyToClipboard(englishText, setCopiedEnglish)}>
+                      {copiedEnglish ? (
+                        <>
+                          <Check className="h-4 w-4 mr-1" />
+                          Copied
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="h-4 w-4 mr-1" />
+                          Copy
+                        </>
+                      )}
+                    </Button>
+                  )}
                 </div>
-              ) : chineseMeaning ? (
-                <p className="text-base">{chineseMeaning}</p>
-              ) : (
-                <p className="text-sm text-muted-foreground italic">Translation not available</p>
-              )}
+                <Textarea
+                  id={`${language}-english-input`}
+                  placeholder="Type English here..."
+                  className="min-h-24 !text-[18px] !leading-normal"
+                  value={englishText}
+                  onChange={(e) => handleEnglishChange(e.target.value)}
+                />
+              </div>
+
+              {/* Chinese */}
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <label htmlFor={`${language}-chinese-input`} className="text-sm font-medium">
+                    Chinese
+                  </label>
+                  {chineseText && (
+                    <Button variant="ghost" size="sm" onClick={() => copyToClipboard(chineseText, setCopiedChinese)}>
+                      {copiedChinese ? (
+                        <>
+                          <Check className="h-4 w-4 mr-1" />
+                          Copied
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="h-4 w-4 mr-1" />
+                          Copy
+                        </>
+                      )}
+                    </Button>
+                  )}
+                </div>
+                <Textarea
+                  id={`${language}-chinese-input`}
+                  placeholder="在此输入中文..."
+                  className="min-h-24 !text-[18px] !leading-normal"
+                  value={chineseText}
+                  onChange={(e) => handleChineseChange(e.target.value)}
+                />
+              </div>
             </div>
           </div>
 
