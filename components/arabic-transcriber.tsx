@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -119,109 +119,144 @@ const commonPhrases = [
 export function ArabicTranscriber() {
   const [arabicText, setArabicText] = useState("")
   const [latinText, setLatinText] = useState("")
+  const [englishText, setEnglishText] = useState("")
+  const [chineseText, setChineseText] = useState("")
   const [copiedLatin, setCopiedLatin] = useState(false)
   const [copiedArabic, setCopiedArabic] = useState(false)
+  const [copiedEnglish, setCopiedEnglish] = useState(false)
+  const [copiedChinese, setCopiedChinese] = useState(false)
   const [showKeyboard, setShowKeyboard] = useState(true)
-  const [englishMeaning, setEnglishMeaning] = useState("")
-  const [chineseMeaning, setChineseMeaning] = useState("")
   const [isTranslating, setIsTranslating] = useState(false)
+  // Tracks which field the user last edited so we know the translation direction
+  const [source, setSource] = useState<"latin" | "arabic" | "english" | "chinese" | null>(null)
+  const lastProcessedRef = useRef<string>("")
 
-  // Fetch English and Chinese translations when Arabic text changes
+  const fetchTranslation = async (text: string, pair: string): Promise<string> => {
+    try {
+      const res = await fetch(
+        `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${pair}`
+      )
+      const data = await res.json()
+      return data.responseStatus === 200 && data.responseData?.translatedText
+        ? data.responseData.translatedText
+        : ""
+    } catch {
+      return ""
+    }
+  }
+
+  // Bidirectional translation: the edited field drives the other three
   useEffect(() => {
-    const translateText = async () => {
-      if (!arabicText.trim()) {
-        setEnglishMeaning("")
-        setChineseMeaning("")
+    if (source === null) return
+
+    const sourceText =
+      source === "english" ? englishText : source === "chinese" ? chineseText : arabicText
+    const key = `${source}:${sourceText}`
+    if (key === lastProcessedRef.current) return
+
+    const run = async () => {
+      lastProcessedRef.current = key
+
+      // Clear everything if the source field is empty
+      if (!sourceText.trim()) {
+        if (source !== "arabic" && source !== "latin") {
+          setArabicText("")
+          setLatinText("")
+        }
+        if (source !== "english") setEnglishText("")
+        if (source !== "chinese") setChineseText("")
         return
       }
 
       setIsTranslating(true)
       try {
-        const [enRes, zhRes] = await Promise.all([
-          fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(arabicText)}&langpair=ar|en`),
-          fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(arabicText)}&langpair=ar|zh`),
-        ])
-        const enData = await enRes.json()
-        const zhData = await zhRes.json()
-        setEnglishMeaning(
-          enData.responseStatus === 200 && enData.responseData?.translatedText
-            ? enData.responseData.translatedText
-            : ""
-        )
-        setChineseMeaning(
-          zhData.responseStatus === 200 && zhData.responseData?.translatedText
-            ? zhData.responseData.translatedText
-            : ""
-        )
-      } catch {
-        setEnglishMeaning("")
-        setChineseMeaning("")
+        if (source === "latin" || source === "arabic") {
+          const [en, zh] = await Promise.all([
+            fetchTranslation(arabicText, "ar|en"),
+            fetchTranslation(arabicText, "ar|zh"),
+          ])
+          setEnglishText(en)
+          setChineseText(zh)
+        } else if (source === "english") {
+          const [ar, zh] = await Promise.all([
+            fetchTranslation(englishText, "en|ar"),
+            fetchTranslation(englishText, "en|zh"),
+          ])
+          setArabicText(ar)
+          setLatinText(transcribeArabic(ar))
+          setChineseText(zh)
+        } else if (source === "chinese") {
+          const [ar, en] = await Promise.all([
+            fetchTranslation(chineseText, "zh|ar"),
+            fetchTranslation(chineseText, "zh|en"),
+          ])
+          setArabicText(ar)
+          setLatinText(transcribeArabic(ar))
+          setEnglishText(en)
+        }
       } finally {
         setIsTranslating(false)
       }
     }
 
-    const debounceTimer = setTimeout(translateText, 500)
+    const debounceTimer = setTimeout(run, 600)
     return () => clearTimeout(debounceTimer)
-  }, [arabicText])
+  }, [source, arabicText, englishText, chineseText])
 
   const handleLatinChange = (value: string) => {
+    setSource("latin")
     setLatinText(value)
     setArabicText(transcribeLatin(value))
   }
 
   const handleArabicChange = (value: string) => {
+    setSource("arabic")
     setArabicText(value)
     setLatinText(transcribeArabic(value))
   }
 
-  const handleCopyLatin = async () => {
-    try {
-      await navigator.clipboard.writeText(latinText)
-      setCopiedLatin(true)
-      setTimeout(() => setCopiedLatin(false), 2000)
-    } catch (err) {
-      // Fallback for environments where clipboard API is not available
-      const textArea = document.createElement('textarea')
-      textArea.value = latinText
-      document.body.appendChild(textArea)
-      textArea.select()
-      document.execCommand('copy')
-      document.body.removeChild(textArea)
-      setCopiedLatin(true)
-      setTimeout(() => setCopiedLatin(false), 2000)
-    }
+  const handleEnglishChange = (value: string) => {
+    setSource("english")
+    setEnglishText(value)
   }
 
-  const handleCopyArabic = async () => {
+  const handleChineseChange = (value: string) => {
+    setSource("chinese")
+    setChineseText(value)
+  }
+
+  const copyToClipboard = async (text: string, setCopied: (v: boolean) => void) => {
     try {
-      await navigator.clipboard.writeText(arabicText)
-      setCopiedArabic(true)
-      setTimeout(() => setCopiedArabic(false), 2000)
-    } catch (err) {
-      // Fallback for environments where clipboard API is not available
-      const textArea = document.createElement('textarea')
-      textArea.value = arabicText
+      await navigator.clipboard.writeText(text)
+    } catch {
+      const textArea = document.createElement("textarea")
+      textArea.value = text
       document.body.appendChild(textArea)
       textArea.select()
-      document.execCommand('copy')
+      document.execCommand("copy")
       document.body.removeChild(textArea)
-      setCopiedArabic(true)
-      setTimeout(() => setCopiedArabic(false), 2000)
     }
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
   }
 
   const handleClear = () => {
     setArabicText("")
     setLatinText("")
+    setEnglishText("")
+    setChineseText("")
+    setSource(null)
+    lastProcessedRef.current = ""
   }
 
   const handleKeyPress = (arabic: string, latin: string) => {
+    setSource("arabic")
     setArabicText((prev) => prev + arabic)
     setLatinText((prev) => prev + latin)
   }
 
   const handleBackspace = () => {
+    setSource("arabic")
     setArabicText((prev) => [...prev].slice(0, -1).join(""))
     // For latin, we need to handle multi-char sequences
     setLatinText((prev) => {
@@ -231,6 +266,7 @@ export function ArabicTranscriber() {
   }
 
   const handleSpace = () => {
+    setSource("arabic")
     setArabicText((prev) => prev + " ")
     setLatinText((prev) => prev + " ")
   }
@@ -254,7 +290,7 @@ export function ArabicTranscriber() {
                   Latin Text
                 </label>
                 {latinText && (
-                  <Button variant="ghost" size="sm" onClick={handleCopyLatin}>
+                  <Button variant="ghost" size="sm" onClick={() => copyToClipboard(latinText, setCopiedLatin)}>
                     {copiedLatin ? (
                       <>
                         <Check className="h-4 w-4 mr-1" />
@@ -285,7 +321,7 @@ export function ArabicTranscriber() {
                   Arabic Text
                 </label>
                 {arabicText && (
-                  <Button variant="ghost" size="sm" onClick={handleCopyArabic}>
+                  <Button variant="ghost" size="sm" onClick={() => copyToClipboard(arabicText, setCopiedArabic)}>
                     {copiedArabic ? (
                       <>
                         <Check className="h-4 w-4 mr-1" />
@@ -324,6 +360,7 @@ export function ArabicTranscriber() {
                 size="sm"
                 className="text-xs"
                 onClick={() => {
+                  setSource("arabic")
                   setArabicText(phrase.arabic)
                   setLatinText(phrase.latin)
                 }}
@@ -345,46 +382,75 @@ export function ArabicTranscriber() {
             )}
           </div>
 
-          {/* Translation Sections - Always visible */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {/* English Meaning */}
-            <div className="p-4 border rounded-lg bg-muted/30">
-              <div className="flex items-center gap-2 mb-2">
-                <Languages className="h-4 w-4 text-muted-foreground" />
-                <label className="text-sm font-medium">English Meaning</label>
-              </div>
-              {!arabicText.trim() ? (
-                <p className="text-sm text-muted-foreground italic">Enter Arabic text to see translation</p>
-              ) : isTranslating ? (
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                  <span className="text-sm">Translating...</span>
-                </div>
-              ) : englishMeaning ? (
-                <p className="text-base">{englishMeaning}</p>
-              ) : (
-                <p className="text-sm text-muted-foreground italic">Translation not available</p>
-              )}
+          {/* Translation textboxes - editable and copiable */}
+          <div className="space-y-2">
+            <div className="flex items-center gap-2">
+              <Languages className="h-4 w-4 text-muted-foreground" />
+              <span className="text-sm font-medium">Translations</span>
+              {isTranslating && <Loader2 className="h-3.5 w-3.5 animate-spin text-muted-foreground" />}
             </div>
-
-            {/* Chinese Meaning */}
-            <div className="p-4 border rounded-lg bg-muted/30">
-              <div className="flex items-center gap-2 mb-2">
-                <Languages className="h-4 w-4 text-muted-foreground" />
-                <label className="text-sm font-medium">Chinese Meaning</label>
-              </div>
-              {!arabicText.trim() ? (
-                <p className="text-sm text-muted-foreground italic">Enter Arabic text to see translation</p>
-              ) : isTranslating ? (
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                  <span className="text-sm">Translating...</span>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {/* English */}
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <label htmlFor="english-input" className="text-sm font-medium">
+                    English
+                  </label>
+                  {englishText && (
+                    <Button variant="ghost" size="sm" onClick={() => copyToClipboard(englishText, setCopiedEnglish)}>
+                      {copiedEnglish ? (
+                        <>
+                          <Check className="h-4 w-4 mr-1" />
+                          Copied
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="h-4 w-4 mr-1" />
+                          Copy
+                        </>
+                      )}
+                    </Button>
+                  )}
                 </div>
-              ) : chineseMeaning ? (
-                <p className="text-base">{chineseMeaning}</p>
-              ) : (
-                <p className="text-sm text-muted-foreground italic">Translation not available</p>
-              )}
+                <Textarea
+                  id="english-input"
+                  placeholder="Type English here..."
+                  className="min-h-24 !text-[18px] !leading-normal"
+                  value={englishText}
+                  onChange={(e) => handleEnglishChange(e.target.value)}
+                />
+              </div>
+
+              {/* Chinese */}
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <label htmlFor="chinese-input" className="text-sm font-medium">
+                    Chinese
+                  </label>
+                  {chineseText && (
+                    <Button variant="ghost" size="sm" onClick={() => copyToClipboard(chineseText, setCopiedChinese)}>
+                      {copiedChinese ? (
+                        <>
+                          <Check className="h-4 w-4 mr-1" />
+                          Copied
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="h-4 w-4 mr-1" />
+                          Copy
+                        </>
+                      )}
+                    </Button>
+                  )}
+                </div>
+                <Textarea
+                  id="chinese-input"
+                  placeholder="在此输入中文..."
+                  className="min-h-24 !text-[18px] !leading-normal"
+                  value={chineseText}
+                  onChange={(e) => handleChineseChange(e.target.value)}
+                />
+              </div>
             </div>
           </div>
 
