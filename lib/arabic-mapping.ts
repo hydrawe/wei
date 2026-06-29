@@ -192,14 +192,26 @@ export function transcribeLatin(text: string): string {
       if (lowerText.slice(i, i + key.length) === key) {
         const arabicChar = latinToArabicMap[key]
 
-        // A consonant immediately repeated (e.g. "bb" or "svsv") represents a
-        // shadda: emit the consonant once followed by the shadda mark.
-        if (
-          consonants.has(arabicChar) &&
-          lowerText.slice(i + key.length, i + key.length * 2) === key
-        ) {
-          result += arabicChar + 'ّ'
-          i += key.length * 2
+        if (consonants.has(arabicChar)) {
+          // Count how many times this same consonant code repeats in a row.
+          let runLength = 0
+          while (lowerText.slice(i + runLength * key.length, i + (runLength + 1) * key.length) === key) {
+            runLength++
+          }
+
+          // Each pair of identical consonants becomes one shadda. For an odd
+          // run (e.g. "lll"), the FIRST letter stays single and the trailing
+          // letters pair up, so "elll" -> ل + لّ (only the last two doubled).
+          let remaining = runLength
+          if (remaining % 2 === 1) {
+            result += arabicChar
+            remaining--
+          }
+          for (let pair = 0; pair < remaining / 2; pair++) {
+            result += arabicChar + 'ّ'
+          }
+
+          i += key.length * runLength
         } else {
           result += arabicChar
           i += key.length
