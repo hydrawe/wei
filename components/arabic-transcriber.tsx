@@ -546,15 +546,6 @@ export function ArabicTranscriber() {
                   <Button
                     variant="outline"
                     size="sm"
-                    className="min-w-10 sm:min-w-11 h-12 sm:h-14 flex flex-col items-center justify-center gap-0.5 px-1.5 sm:px-2.5"
-                    onClick={() => handleKeyPress('ّ', 'p')}
-                  >
-                    <span className="font-mono text-xs sm:text-sm font-semibold">p</span>
-                    <span className="text-base sm:text-xl font-arabic">ّ</span>
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
                     className="h-12 sm:h-14 px-4 sm:px-8 text-xs sm:text-sm"
                     onClick={handleSpace}
                   >

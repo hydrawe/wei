@@ -74,6 +74,9 @@ export const consonants = new Set([
 
 export function transcribeArabic(text: string): string {
   let result = ''
+  // Track the full Latin transliteration of the previous consonant so that a
+  // following shadda can repeat the entire sequence (e.g. "sv" -> "svsv").
+  let lastConsonantLatin = ''
   const chars = [...text] // Handle multi-byte characters properly
 
   for (let i = 0; i < chars.length; i++) {
@@ -85,17 +88,16 @@ export function transcribeArabic(text: string): string {
       const ligature = char + nextChar
       if (arabicMapping[ligature] !== undefined) {
         result += arabicMapping[ligature]
+        lastConsonantLatin = '' // ligatures are not single consonants
         i++ // Skip next character
         continue
       }
     }
 
-    // Handle shadda (doubles the previous consonant)
+    // Handle shadda (doubles the previous consonant by repeating its Latin form)
     if (char === 'ّ') {
-      // Find the last consonant in the result and double it
-      const lastConsonant = result.slice(-1)
-      if (lastConsonant) {
-        result += lastConsonant
+      if (lastConsonantLatin) {
+        result += lastConsonantLatin
       }
       continue
     }
@@ -103,6 +105,8 @@ export function transcribeArabic(text: string): string {
     // Regular character mapping
     if (arabicMapping[char] !== undefined) {
       result += arabicMapping[char]
+      // Remember consonants so a following shadda can repeat them
+      lastConsonantLatin = consonants.has(char) ? arabicMapping[char] : ''
     } else if (char === ' ' || char === '\n' || char === '\t') {
       result += char // Preserve whitespace
     } else if (/[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/.test(char)) {
@@ -166,7 +170,6 @@ const latinToArabicMap: Record<string, string> = {
   'x': 'ح',
   'xv': 'خ',
   'm': 'م',
-  'p': 'ّ',
   'i': 'ِ',
   'u': 'ُ',
   'a': 'َ',
@@ -187,8 +190,33 @@ export function transcribeLatin(text: string): string {
     // Try to match the longest possible sequence first
     for (const key of sortedLatinKeys) {
       if (lowerText.slice(i, i + key.length) === key) {
-        result += latinToArabicMap[key]
-        i += key.length
+        const arabicChar = latinToArabicMap[key]
+
+        if (consonants.has(arabicChar)) {
+          // Count how many times this same consonant code repeats in a row.
+          let runLength = 0
+          while (lowerText.slice(i + runLength * key.length, i + (runLength + 1) * key.length) === key) {
+            runLength++
+          }
+
+          // Each pair of identical consonants becomes one shadda. For an odd
+          // run (e.g. "lll"), the FIRST letter stays single and the trailing
+          // letters pair up, so "elll" -> ل + لّ (only the last two doubled).
+          let remaining = runLength
+          if (remaining % 2 === 1) {
+            result += arabicChar
+            remaining--
+          }
+          for (let pair = 0; pair < remaining / 2; pair++) {
+            result += arabicChar + 'ّ'
+          }
+
+          i += key.length * runLength
+        } else {
+          result += arabicChar
+          i += key.length
+        }
+
         matched = true
         break
       }
