@@ -35,6 +35,12 @@ interface ArabicTranscriberProps {
   phrases?: Phrase[]
   /** Placeholder for the script textarea */
   scriptPlaceholder?: string
+  /**
+   * Route script<->Chinese translations through English. MyMemory has almost
+   * no direct corpus for some pairs (e.g. Persian<->Chinese), so pivoting via
+   * English (which has rich corpora) yields far better results.
+   */
+  pivotChineseThroughEnglish?: boolean
 }
 
 export function ArabicTranscriber({
@@ -47,6 +53,7 @@ export function ArabicTranscriber({
   keyboardRows = arabicKeyboardRows,
   phrases = arabicPhrases,
   scriptPlaceholder = "اكتب النص العربي هنا...",
+  pivotChineseThroughEnglish = false,
 }: ArabicTranscriberProps) {
   const [arabicText, setArabicText] = useState("")
   const [latinText, setLatinText] = useState("")
@@ -68,9 +75,25 @@ export function ArabicTranscriber({
         `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${pair}`
       )
       const data = await res.json()
-      return data.responseStatus === 200 && data.responseData?.translatedText
-        ? data.responseData.translatedText
-        : ""
+      if (data.responseStatus !== 200) return ""
+
+      // MyMemory's `translatedText` blindly picks the highest string-match
+      // score, which is often a low-quality community entry (e.g. "[ana lucia]
+      // hey." for سلام). Instead, pick the match with the best combined
+      // quality x similarity score, falling back to translatedText.
+      const matches = Array.isArray(data.matches) ? data.matches : []
+      let best: { score: number; text: string } | null = null
+      for (const m of matches) {
+        const translation = typeof m.translation === "string" ? m.translation.trim() : ""
+        if (!translation) continue
+        const quality = Number.parseFloat(m.quality) || 0
+        const similarity = Number.parseFloat(m.match) || 0
+        const score = quality * similarity
+        if (!best || score > best.score) best = { score, text: translation }
+      }
+
+      if (best && best.score > 0) return best.text
+      return data.responseData?.translatedText || ""
     } catch {
       return ""
     }
@@ -102,11 +125,12 @@ export function ArabicTranscriber({
       setIsTranslating(true)
       try {
         if (source === "latin" || source === "arabic") {
-          const [en, zh] = await Promise.all([
-            fetchTranslation(arabicText, `${langCode}|en`),
-            fetchTranslation(arabicText, `${langCode}|zh`),
-          ])
+          const en = await fetchTranslation(arabicText, `${langCode}|en`)
           setEnglishText(en)
+          // Pivot script->Chinese through English when the direct pair is poor.
+          const zh = pivotChineseThroughEnglish
+            ? await fetchTranslation(en, "en|zh")
+            : await fetchTranslation(arabicText, `${langCode}|zh`)
           setChineseText(zh)
         } else if (source === "english") {
           const [ar, zh] = await Promise.all([
@@ -117,13 +141,14 @@ export function ArabicTranscriber({
           setLatinText(toLatin(ar))
           setChineseText(zh)
         } else if (source === "chinese") {
-          const [ar, en] = await Promise.all([
-            fetchTranslation(chineseText, `zh|${langCode}`),
-            fetchTranslation(chineseText, "zh|en"),
-          ])
+          const en = await fetchTranslation(chineseText, "zh|en")
+          setEnglishText(en)
+          // Pivot Chinese->script through English when the direct pair is poor.
+          const ar = pivotChineseThroughEnglish
+            ? await fetchTranslation(en, `en|${langCode}`)
+            : await fetchTranslation(chineseText, `zh|${langCode}`)
           setArabicText(ar)
           setLatinText(toLatin(ar))
-          setEnglishText(en)
         }
       } finally {
         setIsTranslating(false)
@@ -132,7 +157,7 @@ export function ArabicTranscriber({
 
     const debounceTimer = setTimeout(run, 600)
     return () => clearTimeout(debounceTimer)
-  }, [source, arabicText, englishText, chineseText, langCode, toLatin])
+  }, [source, arabicText, englishText, chineseText, langCode, toLatin, pivotChineseThroughEnglish])
 
   const handleLatinChange = (value: string) => {
     setSource("latin")

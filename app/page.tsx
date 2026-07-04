@@ -56,6 +56,7 @@ export default function Home() {
             <ArabicTranscriber
               scriptName="Persian"
               langCode="fa"
+              pivotChineseThroughEnglish
               toLatin={transcribePersian}
               toScript={transcribePersianLatin}
               mapping={persianMapping}
