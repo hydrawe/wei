@@ -92,14 +92,14 @@ export function AccentTranscriber({ language, langCode, forward, placeholder, ph
         if (source === "plain" || source === "accented") {
           const [en, zh] = await Promise.all([
             fetchTranslation(accentedText, `${langCode}|en`),
-            fetchTranslation(accentedText, `${langCode}|zh`),
+            fetchTranslation(accentedText, `${langCode}|zh-CN`),
           ])
           setEnglishText(en)
           setChineseText(zh)
         } else if (source === "english") {
           const [accented, zh] = await Promise.all([
             fetchTranslation(englishText, `en|${langCode}`),
-            fetchTranslation(englishText, "en|zh"),
+            fetchTranslation(englishText, "en|zh-CN"),
           ])
           setAccentedText(accented)
           setPlainText(transcribeToPlain(accented, forward))

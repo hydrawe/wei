@@ -129,13 +129,13 @@ export function ArabicTranscriber({
           setEnglishText(en)
           // Pivot script->Chinese through English when the direct pair is poor.
           const zh = pivotChineseThroughEnglish
-            ? await fetchTranslation(en, "en|zh")
-            : await fetchTranslation(arabicText, `${langCode}|zh`)
+            ? await fetchTranslation(en, "en|zh-CN")
+            : await fetchTranslation(arabicText, `${langCode}|zh-CN`)
           setChineseText(zh)
         } else if (source === "english") {
           const [ar, zh] = await Promise.all([
             fetchTranslation(englishText, `en|${langCode}`),
-            fetchTranslation(englishText, "en|zh"),
+            fetchTranslation(englishText, "en|zh-CN"),
           ])
           setArabicText(ar)
           setLatinText(toLatin(ar))

@@ -22,6 +22,7 @@ const persianExtras: Record<string, string> = {
   'پ': 'p',  // pe   (like English "p")
   'ک': 'kc', // Persian kaf
   'گ': 'kv', // gaf  (hard "g")
+  'ی': 'yo', // Farsi yeh (U+06CC) - distinct from Arabic ي / ى, reuse "yo"
 }
 
 // Latin codes -> Persian-specific letters
@@ -31,6 +32,7 @@ const persianExtrasReverse: Record<string, string> = {
   'p': 'پ',
   'kc': 'ک',
   'kv': 'گ',
+  'yo': 'ی', // "yo" produces the Persian Farsi yeh (U+06CC)
 }
 
 // Full Persian maps = Arabic maps + Persian extras
