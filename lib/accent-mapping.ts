@@ -34,6 +34,23 @@ export const frenchForward: Record<string, string> = {
   'oe': 'œ',
 }
 
+// Portuguese: code (plain latin) -> accented character
+export const portugueseForward: Record<string, string> = {
+  'a0': 'ã',
+  'o0': 'õ',
+  'u1': 'ü',
+  'a2': 'á',
+  'o2': 'ó',
+  'e2': 'é',
+  'i2': 'í',
+  'u2': 'ú',
+  'a3': 'â',
+  'o3': 'ô',
+  'e3': 'ê',
+  'a4': 'à',
+  'c5': 'ç',
+}
+
 // Build the reverse map: accented character -> code
 function buildReverse(forward: Record<string, string>): Record<string, string> {
   const reverse: Record<string, string> = {}
