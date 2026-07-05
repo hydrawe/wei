@@ -362,7 +362,8 @@ export const arabicKeyboardRows: KeyDef[][] = [
 
 // Common phrases for quick access
 export const arabicPhrases: Phrase[] = [
-  { english: "Good morning", arabic: "صَبَاحُ الخَيْر", latin: "scabaxu alxvayr" },
-  { english: "How are you?", arabic: "كَيْفَ حَالُكَ", latin: "kayfa xaluka" },
-  { english: "Arabic", arabic: "العَرَبِيَّة", latin: "algarabiyaho" },
+  // Latin is derived from the mapping so it always aligns with the keyboard keys
+  { english: "Good morning", arabic: "صَبَاحُ الخَيْر", latin: transcribeArabic("صَبَاحُ الخَيْر") },
+  { english: "How are you?", arabic: "كَيْفَ حَالُكَ", latin: transcribeArabic("كَيْفَ حَالُكَ") },
+  { english: "Arabic", arabic: "العَرَبِيَّة", latin: transcribeArabic("العَرَبِيَّة") },
 ]
