@@ -519,7 +519,7 @@ export function ArabicTranscriber({
         <CardContent className="prose prose-sm dark:prose-invert max-w-none">
           <p>
             This transcription tool converts {scriptName} script to Latin text using the
-            <strong> Wanji transliteration system</strong>. This system is designed to be
+            <strong> Wei transliteration system</strong>. This system is designed to be
             readable for novice learners while preserving important phonetic distinctions.
           </p>
           <h4>Key Features:</h4>
