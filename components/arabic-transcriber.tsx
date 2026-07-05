@@ -4,119 +4,57 @@ import { useState, useEffect, useRef } from "react"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { transcribeArabic, transcribeLatin, arabicMapping, arabicDescriptions } from "@/lib/arabic-mapping"
+import {
+  transcribeArabic,
+  transcribeLatin,
+  arabicMapping,
+  arabicDescriptions,
+  arabicKeyboardRows,
+  arabicPhrases,
+  type KeyDef,
+  type Phrase,
+} from "@/lib/arabic-mapping"
 import { Copy, Check, Trash2, Keyboard, Languages, Loader2, Bookmark } from "lucide-react"
 
-// Reverse mapping: Latin transliteration -> Arabic character
-const latinToArabic: Record<string, string> = {
-  // Multi-character mappings (digraphs) - order matters for matching
-  'oe': 'آ',
-  'yc': 'ئ',
-  'wc': 'ؤ',
-  'ic': 'إ',
-  'ec': 'أ',
-  'dv': 'ذ',
-  'tv': 'ث',
-  'sv': 'ش',
-  'gv': 'غ',
-  'av': 'ً',
-  'iv': 'ٍ',
-  'uv': 'ٌ',
-  // Single character mappings
-  'oc': 'ء',
-  'e': 'ا',
-  'o': 'ٱ',
-  'ao': 'ٰ',
-  'yo': 'ى',
-  'y': 'ي',
-  'w': 'و',
-  'r': 'ر',
-  'z': 'ز',
-  'd': 'د',
-  't': 'ت',
-  's': 'س',
-  'l': 'ل',
-  'n': 'ن',
-  'sc': 'ص',
-  'dc': 'ض',
-  'tc': 'ط',
-  'zc': 'ظ',
-  'b': 'ب',
-  'f': 'ف',
-  'k': 'ك',
-  'q': 'ق',
-  'g': 'ع',
-  'h': 'ه',
-  'j': 'ج',
-  'x': 'ح',
-  'xv': 'خ',
-  'm': 'م',
-  // Vowel diacritics as standalone keys
-  'i': 'ِ',
-  'u': 'ُ',
-  'a': 'َ',
-  'p': 'ّ',
+interface ArabicTranscriberProps {
+  /** Display name of the script, e.g. "Arabic" or "Persian" */
+  scriptName?: string
+  /** MyMemory language code for translation, e.g. "ar" or "fa" */
+  langCode?: string
+  /** script -> Latin transcription */
+  toLatin?: (text: string) => string
+  /** Latin -> script transcription */
+  toScript?: (text: string) => string
+  /** script char -> Latin code, used by the letter reference */
+  mapping?: Record<string, string>
+  /** script char -> description, used by the letter reference */
+  descriptions?: Record<string, string>
+  /** Virtual keyboard layout */
+  keyboardRows?: KeyDef[][]
+  /** Quick-access phrases */
+  phrases?: Phrase[]
+  /** Placeholder for the script textarea */
+  scriptPlaceholder?: string
+  /**
+   * Route script<->Chinese translations through English. MyMemory has almost
+   * no direct corpus for some pairs (e.g. Persian<->Chinese), so pivoting via
+   * English (which has rich corpora) yields far better results.
+   */
+  pivotChineseThroughEnglish?: boolean
 }
 
-// Keyboard layout with 3 rows
-const keyboardRows = [
-  // Row 1: Vowels and vowel-related letters grouped together
-  [
-    { latin: 'oc', arabic: 'ء', label: 'oc' },
-    { latin: 'e', arabic: 'ا', label: 'e' },
-    { latin: 'o', arabic: 'ٱ', label: 'o' },
-    { latin: 'oe', arabic: 'آ', label: 'oe' },
-    { latin: 'ec', arabic: 'أ', label: 'ec' },
-    { latin: 'ic', arabic: 'إ', label: 'ic' },
-    { latin: 'yo', arabic: 'ى', label: 'yo' },
-    { latin: 'ao', arabic: 'ٰ', label: 'ao' },
-    { latin: 'yc', arabic: 'ئ', label: 'yc' },
-    { latin: 'wc', arabic: 'ؤ', label: 'wc' },
-    { latin: 'y', arabic: 'ي', label: 'y' },
-    { latin: 'w', arabic: 'و', label: 'w' },
-  ],
-  // Row 2: Consonants
-  [
-    { latin: 'b', arabic: 'ب', label: 'b' },
-    { latin: 'f', arabic: 'ف', label: 'f' },
-    { latin: 'j', arabic: 'ج', label: 'j' },
-    { latin: 'k', arabic: 'ك', label: 'k' },
-    { latin: 'l', arabic: 'ل', label: 'l' },
-    { latin: 'm', arabic: 'م', label: 'm' },
-    { latin: 'n', arabic: 'ن', label: 'n' },
-    { latin: 'q', arabic: 'ق', label: 'q' },
-    { latin: 'r', arabic: 'ر', label: 'r' },
-    { latin: 'z', arabic: 'ز', label: 'z' },
-    { latin: 'sc', arabic: 'ص', label: 'sc' },
-    { latin: 'dc', arabic: 'ض', label: 'dc' },
-    { latin: 'tc', arabic: 'ط', label: 'tc' },
-    { latin: 'zc', arabic: 'ظ', label: 'zc' },
-  ],
-  // Row 3: Letters with "v" suffix paired (base, v-variant), h and hh at far right
-  [
-    { latin: 't', arabic: 'ت', label: 't' },
-    { latin: 'tv', arabic: 'ث', label: 'tv' },
-    { latin: 's', arabic: 'س', label: 's' },
-    { latin: 'sv', arabic: 'ش', label: 'sv' },
-    { latin: 'd', arabic: 'د', label: 'd' },
-    { latin: 'dv', arabic: 'ذ', label: 'dv' },
-    { latin: 'g', arabic: 'ع', label: 'g' },
-    { latin: 'gv', arabic: 'غ', label: 'gv' },
-    { latin: 'x', arabic: 'ح', label: 'x' },
-    { latin: 'xv', arabic: 'خ', label: 'xv' },
-    { latin: 'h', arabic: 'ه', label: 'h' },
-    { latin: 'ho', arabic: 'ة', label: 'ho' },
-  ],
-]
-
-// Common phrases for quick access
-const commonPhrases = [
-  { english: "Good morning", arabic: "صَبَاحُ الخَيْر", latin: "scabaxu alxvayr" },
-  { english: "How are you?", arabic: "كَيْفَ حَالُكَ", latin: "kayfa xaluka" },
-  { english: "Arabic", arabic: "العَرَبِيَّة", latin: "algarabiyaho" },
-]
-
-export function ArabicTranscriber() {
+export function ArabicTranscriber({
+  scriptName = "Arabic",
+  langCode = "ar",
+  toLatin = transcribeArabic,
+  toScript = transcribeLatin,
+  mapping = arabicMapping,
+  descriptions = arabicDescriptions,
+  keyboardRows = arabicKeyboardRows,
+  phrases = arabicPhrases,
+  scriptPlaceholder = "اكتب النص العربي هنا...",
+  pivotChineseThroughEnglish = false,
+}: ArabicTranscriberProps) {
   const [arabicText, setArabicText] = useState("")
   const [latinText, setLatinText] = useState("")
   const [englishText, setEnglishText] = useState("")
@@ -137,9 +75,25 @@ export function ArabicTranscriber() {
         `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${pair}`
       )
       const data = await res.json()
-      return data.responseStatus === 200 && data.responseData?.translatedText
-        ? data.responseData.translatedText
-        : ""
+      if (data.responseStatus !== 200) return ""
+
+      // MyMemory's `translatedText` blindly picks the highest string-match
+      // score, which is often a low-quality community entry (e.g. "[ana lucia]
+      // hey." for سلام). Instead, pick the match with the best combined
+      // quality x similarity score, falling back to translatedText.
+      const matches = Array.isArray(data.matches) ? data.matches : []
+      let best: { score: number; text: string } | null = null
+      for (const m of matches) {
+        const translation = typeof m.translation === "string" ? m.translation.trim() : ""
+        if (!translation) continue
+        const quality = Number.parseFloat(m.quality) || 0
+        const similarity = Number.parseFloat(m.match) || 0
+        const score = quality * similarity
+        if (!best || score > best.score) best = { score, text: translation }
+      }
+
+      if (best && best.score > 0) return best.text
+      return data.responseData?.translatedText || ""
     } catch {
       return ""
     }
@@ -171,28 +125,30 @@ export function ArabicTranscriber() {
       setIsTranslating(true)
       try {
         if (source === "latin" || source === "arabic") {
-          const [en, zh] = await Promise.all([
-            fetchTranslation(arabicText, "ar|en"),
-            fetchTranslation(arabicText, "ar|zh"),
-          ])
+          const en = await fetchTranslation(arabicText, `${langCode}|en`)
           setEnglishText(en)
+          // Pivot script->Chinese through English when the direct pair is poor.
+          const zh = pivotChineseThroughEnglish
+            ? await fetchTranslation(en, "en|zh-CN")
+            : await fetchTranslation(arabicText, `${langCode}|zh-CN`)
           setChineseText(zh)
         } else if (source === "english") {
           const [ar, zh] = await Promise.all([
-            fetchTranslation(englishText, "en|ar"),
-            fetchTranslation(englishText, "en|zh"),
+            fetchTranslation(englishText, `en|${langCode}`),
+            fetchTranslation(englishText, "en|zh-CN"),
           ])
           setArabicText(ar)
-          setLatinText(transcribeArabic(ar))
+          setLatinText(toLatin(ar))
           setChineseText(zh)
         } else if (source === "chinese") {
-          const [ar, en] = await Promise.all([
-            fetchTranslation(chineseText, "zh|ar"),
-            fetchTranslation(chineseText, "zh|en"),
-          ])
-          setArabicText(ar)
-          setLatinText(transcribeArabic(ar))
+          const en = await fetchTranslation(chineseText, "zh|en")
           setEnglishText(en)
+          // Pivot Chinese->script through English when the direct pair is poor.
+          const ar = pivotChineseThroughEnglish
+            ? await fetchTranslation(en, `en|${langCode}`)
+            : await fetchTranslation(chineseText, `zh|${langCode}`)
+          setArabicText(ar)
+          setLatinText(toLatin(ar))
         }
       } finally {
         setIsTranslating(false)
@@ -201,18 +157,18 @@ export function ArabicTranscriber() {
 
     const debounceTimer = setTimeout(run, 600)
     return () => clearTimeout(debounceTimer)
-  }, [source, arabicText, englishText, chineseText])
+  }, [source, arabicText, englishText, chineseText, langCode, toLatin, pivotChineseThroughEnglish])
 
   const handleLatinChange = (value: string) => {
     setSource("latin")
     setLatinText(value)
-    setArabicText(transcribeLatin(value))
+    setArabicText(toScript(value))
   }
 
   const handleArabicChange = (value: string) => {
     setSource("arabic")
     setArabicText(value)
-    setLatinText(transcribeArabic(value))
+    setLatinText(toLatin(value))
   }
 
   const handleEnglishChange = (value: string) => {
@@ -277,11 +233,11 @@ export function ArabicTranscriber() {
         <CardContent className="space-y-4 pt-6">
           {/* Reversible conversion note */}
           <p className="text-sm text-muted-foreground rounded-lg border bg-muted/30 p-3">
-            The conversion between Latin Text and Arabic Text is fully reversible. You can type in
-            either Latin Text or Arabic Text, and the other updates automatically.
+            The conversion between Latin Text and {scriptName} Text is fully reversible. You can type in
+            either Latin Text or {scriptName} Text, and the other updates automatically.
           </p>
 
-          {/* Side by side: Latin on left, Arabic on right */}
+          {/* Side by side: Latin on left, script on right */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Left: Latin Text Input */}
             <div className="space-y-2">
@@ -314,11 +270,11 @@ export function ArabicTranscriber() {
               />
             </div>
 
-            {/* Right: Arabic Text Input */}
+            {/* Right: Script Text Input */}
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <label htmlFor="arabic-input" className="text-sm font-medium">
-                  Arabic Text
+                  {scriptName} Text
                 </label>
                 {arabicText && (
                   <Button variant="ghost" size="sm" onClick={() => copyToClipboard(arabicText, setCopiedArabic)}>
@@ -338,7 +294,7 @@ export function ArabicTranscriber() {
               </div>
               <Textarea
                 id="arabic-input"
-                placeholder="اكتب النص العربي هنا..."
+                placeholder={scriptPlaceholder}
                 className="min-h-32 !text-[30px] text-right font-arabic !leading-normal"
                 dir="rtl"
                 value={arabicText}
@@ -353,7 +309,7 @@ export function ArabicTranscriber() {
               <Bookmark className="h-3.5 w-3.5" />
               Try:
             </span>
-            {commonPhrases.map((phrase, index) => (
+            {phrases.map((phrase, index) => (
               <Button
                 key={index}
                 variant="outline"
@@ -487,7 +443,7 @@ export function ArabicTranscriber() {
                     ))}
                   </div>
                 ))}
-                {/* Bottom row with diacritics, c, space, and delete */}
+                {/* Bottom row with diacritics, space, and delete */}
                 <div className="flex flex-wrap gap-1 sm:gap-1.5 justify-center mt-2 sm:mt-2.5">
                   <Button
                     variant="outline"
@@ -573,7 +529,7 @@ export function ArabicTranscriber() {
         </CardHeader>
         <CardContent className="prose prose-sm dark:prose-invert max-w-none">
           <p>
-            This transcription tool converts Arabic script to Latin text using the
+            This transcription tool converts {scriptName} script to Latin text using the
             <strong> Wanji transliteration system</strong>. This system is designed to be
             readable for novice learners while preserving important phonetic distinctions.
           </p>
@@ -584,7 +540,7 @@ export function ArabicTranscriber() {
               consonants pronounced further back in the mouth
             </li>
             <li>
-              <strong>Digraphs </strong> like &quot;tv&quot;, &quot;dv&quot;, &quot;sv&quot;, &quot;gv&quot;, &quot;sc&quot;, &quot;dc&quot;, &quot;tc&quot;, &quot;zc&quot; represent specific Arabic sounds
+              <strong>Digraphs </strong> like &quot;tv&quot;, &quot;dv&quot;, &quot;sv&quot;, &quot;gv&quot;, &quot;sc&quot;, &quot;dc&quot;, &quot;tc&quot;, &quot;zc&quot; represent specific sounds
             </li>
             <li>
               <strong>Tanwin </strong> (nunation) is represented as &quot;av&quot;, &quot;iv&quot;, &quot;uv&quot;
@@ -616,17 +572,17 @@ export function ArabicTranscriber() {
         </CardContent>
       </Card>
 
-      {/* Arabic Letter Reference */}
+      {/* Script Letter Reference */}
       <Card>
         <CardHeader>
-          <CardTitle>Arabic Letter Reference</CardTitle>
+          <CardTitle>{scriptName} Letter Reference</CardTitle>
           <CardDescription>
-            Complete mapping of Arabic letters to their Latin transliteration
+            Complete mapping of {scriptName} letters to their Latin transliteration
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-            {Object.entries(arabicDescriptions).map(([arabic, description]) => (
+            {Object.entries(descriptions).map(([arabic, description]) => (
               <div
                 key={arabic}
                 className="flex items-center gap-3 p-3 rounded-lg border bg-card hover:bg-accent/50 transition-colors cursor-pointer"
@@ -635,7 +591,7 @@ export function ArabicTranscriber() {
                 <span className="text-3xl font-arabic w-10 text-center">{arabic}</span>
                 <div className="flex-1 min-w-0">
                   <div className="font-mono text-sm font-semibold text-primary">
-                    {arabicMapping[arabic] || "—"}
+                    {mapping[arabic] || "—"}
                   </div>
                   <div className="text-xs text-muted-foreground truncate">
                     {description.split(" - ")[0]}

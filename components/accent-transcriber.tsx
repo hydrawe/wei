@@ -42,9 +42,24 @@ export function AccentTranscriber({ language, langCode, forward, placeholder, ph
         `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${pair}`
       )
       const data = await res.json()
-      return data.responseStatus === 200 && data.responseData?.translatedText
-        ? data.responseData.translatedText
-        : ""
+      if (data.responseStatus !== 200) return ""
+
+      // MyMemory's `translatedText` blindly picks the highest string-match
+      // score, which is often a low-quality community entry. Instead, pick the
+      // match with the best combined quality x similarity score.
+      const matches = Array.isArray(data.matches) ? data.matches : []
+      let best: { score: number; text: string } | null = null
+      for (const m of matches) {
+        const translation = typeof m.translation === "string" ? m.translation.trim() : ""
+        if (!translation) continue
+        const quality = Number.parseFloat(m.quality) || 0
+        const similarity = Number.parseFloat(m.match) || 0
+        const score = quality * similarity
+        if (!best || score > best.score) best = { score, text: translation }
+      }
+
+      if (best && best.score > 0) return best.text
+      return data.responseData?.translatedText || ""
     } catch {
       return ""
     }
@@ -77,14 +92,14 @@ export function AccentTranscriber({ language, langCode, forward, placeholder, ph
         if (source === "plain" || source === "accented") {
           const [en, zh] = await Promise.all([
             fetchTranslation(accentedText, `${langCode}|en`),
-            fetchTranslation(accentedText, `${langCode}|zh`),
+            fetchTranslation(accentedText, `${langCode}|zh-CN`),
           ])
           setEnglishText(en)
           setChineseText(zh)
         } else if (source === "english") {
           const [accented, zh] = await Promise.all([
             fetchTranslation(englishText, `en|${langCode}`),
-            fetchTranslation(englishText, "en|zh"),
+            fetchTranslation(englishText, "en|zh-CN"),
           ])
           setAccentedText(accented)
           setPlainText(transcribeToPlain(accented, forward))

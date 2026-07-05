@@ -3,7 +3,15 @@
 import { ArabicTranscriber } from "@/components/arabic-transcriber"
 import { AccentTranscriber } from "@/components/accent-transcriber"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { spanishForward, frenchForward } from "@/lib/accent-mapping"
+import { spanishForward, frenchForward, portugueseForward } from "@/lib/accent-mapping"
+import {
+  transcribePersian,
+  transcribePersianLatin,
+  persianMapping,
+  persianDescriptions,
+  persianKeyboardRows,
+  persianPhrases,
+} from "@/lib/persian-mapping"
 
 const spanishPhrases = [
   { english: "Spanish (Español)", plain: "Espan0ol" },
@@ -17,6 +25,12 @@ const frenchPhrases = [
   { english: "Boy (Garçon)", plain: "Garc5on" },
 ]
 
+const portuguesePhrases = [
+  { english: "Bread (Pão)", plain: "Pa0o" },
+  { english: "Coffee (Café)", plain: "Cafe2" },
+  { english: "Heart (Coração)", plain: "Corac5a0o" },
+]
+
 export default function Home() {
   return (
     <main className="min-h-screen py-8 px-4">
@@ -26,14 +40,31 @@ export default function Home() {
         </div>
 
         <Tabs defaultValue="arabic" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 mb-6">
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-5 mb-6 h-auto">
             <TabsTrigger value="arabic">Arabic</TabsTrigger>
+            <TabsTrigger value="persian">Persian</TabsTrigger>
             <TabsTrigger value="french">French</TabsTrigger>
             <TabsTrigger value="spanish">Spanish</TabsTrigger>
+            <TabsTrigger value="portuguese">Portuguese</TabsTrigger>
           </TabsList>
 
           <TabsContent value="arabic">
             <ArabicTranscriber />
+          </TabsContent>
+
+          <TabsContent value="persian">
+            <ArabicTranscriber
+              scriptName="Persian"
+              langCode="fa"
+              pivotChineseThroughEnglish
+              toLatin={transcribePersian}
+              toScript={transcribePersianLatin}
+              mapping={persianMapping}
+              descriptions={persianDescriptions}
+              keyboardRows={persianKeyboardRows}
+              phrases={persianPhrases}
+              scriptPlaceholder="متن فارسی را اینجا بنویسید..."
+            />
           </TabsContent>
 
           <TabsContent value="french">
@@ -53,6 +84,16 @@ export default function Home() {
               forward={spanishForward}
               placeholder="Escribe el texto en español aquí..."
               phrases={spanishPhrases}
+            />
+          </TabsContent>
+
+          <TabsContent value="portuguese">
+            <AccentTranscriber
+              language="Portuguese"
+              langCode="pt"
+              forward={portugueseForward}
+              placeholder="Digite o texto em português aqui..."
+              phrases={portuguesePhrases}
             />
           </TabsContent>
         </Tabs>

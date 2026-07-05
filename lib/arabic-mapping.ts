@@ -72,7 +72,13 @@ export const consonants = new Set([
   'ص', 'ض', 'ط', 'ظ', 'ع', 'غ', 'ف', 'ق', 'ك', 'ل', 'م', 'ن', 'ه', 'ي', 'و'
 ])
 
-export function transcribeArabic(text: string): string {
+// Generic script -> Latin transcription. Works for any Arabic-based script
+// (Arabic, Persian, ...) given its mapping and the set of doublable consonants.
+export function scriptToLatin(
+  text: string,
+  mapping: Record<string, string>,
+  consonantSet: Set<string>
+): string {
   let result = ''
   // Track the full Latin transliteration of the previous consonant so that a
   // following shadda can repeat the entire sequence (e.g. "sv" -> "svsv").
@@ -86,8 +92,8 @@ export function transcribeArabic(text: string): string {
     // Check for ligatures first (two-character combinations)
     if (nextChar) {
       const ligature = char + nextChar
-      if (arabicMapping[ligature] !== undefined) {
-        result += arabicMapping[ligature]
+      if (mapping[ligature] !== undefined) {
+        result += mapping[ligature]
         lastConsonantLatin = '' // ligatures are not single consonants
         i++ // Skip next character
         continue
@@ -103,14 +109,14 @@ export function transcribeArabic(text: string): string {
     }
 
     // Regular character mapping
-    if (arabicMapping[char] !== undefined) {
-      result += arabicMapping[char]
+    if (mapping[char] !== undefined) {
+      result += mapping[char]
       // Remember consonants so a following shadda can repeat them
-      lastConsonantLatin = consonants.has(char) ? arabicMapping[char] : ''
+      lastConsonantLatin = consonantSet.has(char) ? mapping[char] : ''
     } else if (char === ' ' || char === '\n' || char === '\t') {
       result += char // Preserve whitespace
     } else if (/[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/.test(char)) {
-      // Unknown Arabic character - keep as is with marker
+      // Unknown Arabic-script character - keep as is with marker
       result += `[${char}]`
     } else {
       // Non-Arabic character (punctuation, numbers, etc.)
@@ -121,8 +127,12 @@ export function transcribeArabic(text: string): string {
   return result
 }
 
+export function transcribeArabic(text: string): string {
+  return scriptToLatin(text, arabicMapping, consonants)
+}
+
 // Reverse mapping: Latin transliteration -> Arabic character
-const latinToArabicMap: Record<string, string> = {
+export const latinToArabicMap: Record<string, string> = {
   // Multi-character mappings (digraphs) - must be checked first (longest match)
   'oe': 'آ',
   'yc': 'ئ',
@@ -175,10 +185,15 @@ const latinToArabicMap: Record<string, string> = {
   'a': 'َ',
 }
 
-// Sort keys by length (longest first) for greedy matching
-const sortedLatinKeys = Object.keys(latinToArabicMap).sort((a, b) => b.length - a.length)
-
-export function transcribeLatin(text: string): string {
+// Generic Latin -> script transcription. Works for any Arabic-based script
+// given its reverse mapping and the set of doublable consonants.
+export function latinToScript(
+  text: string,
+  latinToScriptMap: Record<string, string>,
+  consonantSet: Set<string>
+): string {
+  // Sort keys by length (longest first) for greedy matching
+  const sortedKeys = Object.keys(latinToScriptMap).sort((a, b) => b.length - a.length)
   let result = ''
   let i = 0
   // Match case-insensitively so uppercase and lowercase Latin convert the same way
@@ -188,11 +203,11 @@ export function transcribeLatin(text: string): string {
     let matched = false
 
     // Try to match the longest possible sequence first
-    for (const key of sortedLatinKeys) {
+    for (const key of sortedKeys) {
       if (lowerText.slice(i, i + key.length) === key) {
-        const arabicChar = latinToArabicMap[key]
+        const scriptChar = latinToScriptMap[key]
 
-        if (consonants.has(arabicChar)) {
+        if (consonantSet.has(scriptChar)) {
           // Count how many times this same consonant code repeats in a row.
           let runLength = 0
           while (lowerText.slice(i + runLength * key.length, i + (runLength + 1) * key.length) === key) {
@@ -204,16 +219,16 @@ export function transcribeLatin(text: string): string {
           // letters pair up, so "elll" -> ل + لّ (only the last two doubled).
           let remaining = runLength
           if (remaining % 2 === 1) {
-            result += arabicChar
+            result += scriptChar
             remaining--
           }
           for (let pair = 0; pair < remaining / 2; pair++) {
-            result += arabicChar + 'ّ'
+            result += scriptChar + 'ّ'
           }
 
           i += key.length * runLength
         } else {
-          result += arabicChar
+          result += scriptChar
           i += key.length
         }
 
@@ -230,6 +245,10 @@ export function transcribeLatin(text: string): string {
   }
 
   return result
+}
+
+export function transcribeLatin(text: string): string {
+  return latinToScript(text, latinToArabicMap, consonants)
 }
 
 // Get description for an Arabic character
@@ -273,3 +292,77 @@ export const arabicDescriptions: Record<string, string> = {
   'خ': 'Kha - xv (whispered gargle)',
   'م': 'Mim - m',
 }
+
+// Shared types for the transcriber UI
+export interface KeyDef {
+  latin: string
+  // The script character produced (kept named "arabic" for backward compat)
+  arabic: string
+  label: string
+}
+
+export interface Phrase {
+  english: string
+  // The script phrase (kept named "arabic" for backward compat)
+  arabic: string
+  latin: string
+}
+
+// Arabic virtual keyboard layout (3 rows of letters; diacritics/space/del are
+// rendered separately by the component).
+export const arabicKeyboardRows: KeyDef[][] = [
+  // Row 1: Vowels and vowel-related letters grouped together
+  [
+    { latin: 'oc', arabic: 'ء', label: 'oc' },
+    { latin: 'e', arabic: 'ا', label: 'e' },
+    { latin: 'o', arabic: 'ٱ', label: 'o' },
+    { latin: 'oe', arabic: 'آ', label: 'oe' },
+    { latin: 'ec', arabic: 'أ', label: 'ec' },
+    { latin: 'ic', arabic: 'إ', label: 'ic' },
+    { latin: 'yo', arabic: 'ى', label: 'yo' },
+    { latin: 'ao', arabic: 'ٰ', label: 'ao' },
+    { latin: 'yc', arabic: 'ئ', label: 'yc' },
+    { latin: 'wc', arabic: 'ؤ', label: 'wc' },
+    { latin: 'y', arabic: 'ي', label: 'y' },
+    { latin: 'w', arabic: 'و', label: 'w' },
+  ],
+  // Row 2: Consonants
+  [
+    { latin: 'b', arabic: 'ب', label: 'b' },
+    { latin: 'f', arabic: 'ف', label: 'f' },
+    { latin: 'j', arabic: 'ج', label: 'j' },
+    { latin: 'k', arabic: 'ك', label: 'k' },
+    { latin: 'l', arabic: 'ل', label: 'l' },
+    { latin: 'm', arabic: 'م', label: 'm' },
+    { latin: 'n', arabic: 'ن', label: 'n' },
+    { latin: 'q', arabic: 'ق', label: 'q' },
+    { latin: 'r', arabic: 'ر', label: 'r' },
+    { latin: 'z', arabic: 'ز', label: 'z' },
+    { latin: 'sc', arabic: 'ص', label: 'sc' },
+    { latin: 'dc', arabic: 'ض', label: 'dc' },
+    { latin: 'tc', arabic: 'ط', label: 'tc' },
+    { latin: 'zc', arabic: 'ظ', label: 'zc' },
+  ],
+  // Row 3: Letters with "v" suffix paired (base, v-variant), h and ho at far right
+  [
+    { latin: 't', arabic: 'ت', label: 't' },
+    { latin: 'tv', arabic: 'ث', label: 'tv' },
+    { latin: 's', arabic: 'س', label: 's' },
+    { latin: 'sv', arabic: 'ش', label: 'sv' },
+    { latin: 'd', arabic: 'د', label: 'd' },
+    { latin: 'dv', arabic: 'ذ', label: 'dv' },
+    { latin: 'g', arabic: 'ع', label: 'g' },
+    { latin: 'gv', arabic: 'غ', label: 'gv' },
+    { latin: 'x', arabic: 'ح', label: 'x' },
+    { latin: 'xv', arabic: 'خ', label: 'xv' },
+    { latin: 'h', arabic: 'ه', label: 'h' },
+    { latin: 'ho', arabic: 'ة', label: 'ho' },
+  ],
+]
+
+// Common phrases for quick access
+export const arabicPhrases: Phrase[] = [
+  { english: "Good morning", arabic: "صَبَاحُ الخَيْر", latin: "scabaxu alxvayr" },
+  { english: "How are you?", arabic: "كَيْفَ حَالُكَ", latin: "kayfa xaluka" },
+  { english: "Arabic", arabic: "العَرَبِيَّة", latin: "algarabiyaho" },
+]
