@@ -14,7 +14,7 @@ import {
   type KeyDef,
   type Phrase,
 } from "@/lib/arabic-mapping"
-import { transcribeArabicIpa } from "@/lib/ipa-mapping"
+import { transcribeArabicIpa, arabicIpa } from "@/lib/ipa-mapping"
 import { Copy, Check, Trash2, Keyboard, Languages, Loader2, Bookmark } from "lucide-react"
 
 interface ArabicTranscriberProps {
@@ -32,6 +32,8 @@ interface ArabicTranscriberProps {
   mapping?: Record<string, string>
   /** script char -> description, used by the letter reference */
   descriptions?: Record<string, string>
+  /** script char -> IPA symbol, used by the letter reference */
+  ipaMap?: Record<string, string>
   /** Virtual keyboard layout */
   keyboardRows?: KeyDef[][]
   /** Quick-access phrases */
@@ -54,6 +56,7 @@ export function ArabicTranscriber({
   toIpa = transcribeArabicIpa,
   mapping = arabicMapping,
   descriptions = arabicDescriptions,
+  ipaMap = arabicIpa,
   keyboardRows = arabicKeyboardRows,
   phrases = arabicPhrases,
   scriptPlaceholder = "اكتب النص العربي هنا...",
@@ -602,7 +605,7 @@ export function ArabicTranscriber({
         <CardHeader>
           <CardTitle>{scriptName} Letter Reference</CardTitle>
           <CardDescription>
-            Complete mapping of {scriptName} letters to their Latin transliteration
+            Complete mapping of {scriptName} letters to their Latin transliteration and IPA pronunciation
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -615,8 +618,19 @@ export function ArabicTranscriber({
               >
                 <span className="text-3xl font-arabic w-10 text-center">{arabic}</span>
                 <div className="flex-1 min-w-0">
-                  <div className="font-mono text-sm font-semibold text-primary">
-                    {mapping[arabic] || "—"}
+                  <div className="flex items-baseline gap-2">
+                    <span className="font-mono text-sm font-semibold text-primary">
+                      {mapping[arabic] || "—"}
+                    </span>
+                    {ipaMap[arabic] ? (
+                      <span
+                        lang="und-fonipa"
+                        aria-label={`IPA pronunciation: ${ipaMap[arabic]}`}
+                        className="font-mono text-xs text-muted-foreground"
+                      >
+                        /{ipaMap[arabic]}/
+                      </span>
+                    ) : null}
                   </div>
                   <div className="text-xs text-muted-foreground truncate">
                     {description.split(" - ")[0]}
