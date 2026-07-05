@@ -83,6 +83,12 @@ export function scriptToLatin(
   // Track the full Latin transliteration of the previous consonant so that a
   // following shadda can repeat the entire sequence (e.g. "sv" -> "svsv").
   let lastConsonantLatin = ''
+  // Vowel marks emitted since that consonant. A shadda can appear either before
+  // OR after the vowel (e.g. "يَّ" vs "يّ"), so we must double the consonant
+  // while keeping the vowel in place: "يَّة" -> "yya", not "ya".
+  let vowelAfterConsonant = ''
+  // Combining vowel/diacritic marks that attach to the preceding consonant.
+  const vowelMarks = new Set(['ً', 'ٌ', 'ٍ', 'ْ', 'َ', 'ِ', 'ُ', 'ّ', 'ٰ'])
   const chars = [...text] // Handle multi-byte characters properly
 
   for (let i = 0; i < chars.length; i++) {
@@ -95,6 +101,7 @@ export function scriptToLatin(
       if (mapping[ligature] !== undefined) {
         result += mapping[ligature]
         lastConsonantLatin = '' // ligatures are not single consonants
+        vowelAfterConsonant = ''
         i++ // Skip next character
         continue
       }
@@ -103,7 +110,14 @@ export function scriptToLatin(
     // Handle shadda (doubles the previous consonant by repeating its Latin form)
     if (char === 'ّ') {
       if (lastConsonantLatin) {
-        result += lastConsonantLatin
+        if (vowelAfterConsonant) {
+          // Insert the doubled consonant BEFORE the already-emitted vowel so
+          // that "يَّ" becomes "yya" instead of "yay".
+          result = result.slice(0, result.length - vowelAfterConsonant.length) +
+            lastConsonantLatin + vowelAfterConsonant
+        } else {
+          result += lastConsonantLatin
+        }
       }
       continue
     }
@@ -111,16 +125,32 @@ export function scriptToLatin(
     // Regular character mapping
     if (mapping[char] !== undefined) {
       result += mapping[char]
-      // Remember consonants so a following shadda can repeat them
-      lastConsonantLatin = consonantSet.has(char) ? mapping[char] : ''
+      if (consonantSet.has(char)) {
+        // Remember consonants so a following shadda can repeat them
+        lastConsonantLatin = mapping[char]
+        vowelAfterConsonant = ''
+      } else if (vowelMarks.has(char)) {
+        // Vowel mark: keep the consonant reference for a trailing shadda
+        vowelAfterConsonant += mapping[char]
+      } else {
+        // Non-consonant letter (alif, hamza, etc.) breaks the shadda chain
+        lastConsonantLatin = ''
+        vowelAfterConsonant = ''
+      }
     } else if (char === ' ' || char === '\n' || char === '\t') {
       result += char // Preserve whitespace
+      lastConsonantLatin = ''
+      vowelAfterConsonant = ''
     } else if (/[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/.test(char)) {
       // Unknown Arabic-script character - keep as is with marker
       result += `[${char}]`
+      lastConsonantLatin = ''
+      vowelAfterConsonant = ''
     } else {
       // Non-Arabic character (punctuation, numbers, etc.)
       result += char
+      lastConsonantLatin = ''
+      vowelAfterConsonant = ''
     }
   }
 
@@ -362,7 +392,8 @@ export const arabicKeyboardRows: KeyDef[][] = [
 
 // Common phrases for quick access
 export const arabicPhrases: Phrase[] = [
-  { english: "Good morning", arabic: "صَبَاحُ الخَيْر", latin: "scabaxu alxvayr" },
-  { english: "How are you?", arabic: "كَيْفَ حَالُكَ", latin: "kayfa xaluka" },
-  { english: "Arabic", arabic: "العَرَبِيَّة", latin: "algarabiyaho" },
+  // Latin is derived from the mapping so it always aligns with the keyboard keys
+  { english: "Good morning", arabic: "صَبَاحُ الخَيْر", latin: transcribeArabic("صَبَاحُ الخَيْر") },
+  { english: "How are you?", arabic: "كَيْفَ حَالُكَ", latin: transcribeArabic("كَيْفَ حَالُكَ") },
+  { english: "Arabic", arabic: "العَرَبِيَّة", latin: transcribeArabic("العَرَبِيَّة") },
 ]
