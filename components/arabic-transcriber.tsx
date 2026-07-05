@@ -14,6 +14,7 @@ import {
   type KeyDef,
   type Phrase,
 } from "@/lib/arabic-mapping"
+import { transcribeArabicIpa } from "@/lib/ipa-mapping"
 import { Copy, Check, Trash2, Keyboard, Languages, Loader2, Bookmark } from "lucide-react"
 
 interface ArabicTranscriberProps {
@@ -25,6 +26,8 @@ interface ArabicTranscriberProps {
   toLatin?: (text: string) => string
   /** Latin -> script transcription */
   toScript?: (text: string) => string
+  /** script -> IPA phonetic transcription, shown as accessible pronunciation notes */
+  toIpa?: (text: string) => string
   /** script char -> Latin code, used by the letter reference */
   mapping?: Record<string, string>
   /** script char -> description, used by the letter reference */
@@ -48,6 +51,7 @@ export function ArabicTranscriber({
   langCode = "ar",
   toLatin = transcribeArabic,
   toScript = transcribeLatin,
+  toIpa = transcribeArabicIpa,
   mapping = arabicMapping,
   descriptions = arabicDescriptions,
   keyboardRows = arabicKeyboardRows,
@@ -63,11 +67,17 @@ export function ArabicTranscriber({
   const [copiedArabic, setCopiedArabic] = useState(false)
   const [copiedEnglish, setCopiedEnglish] = useState(false)
   const [copiedChinese, setCopiedChinese] = useState(false)
+  const [copiedIpa, setCopiedIpa] = useState(false)
   const [showKeyboard, setShowKeyboard] = useState(true)
   const [isTranslating, setIsTranslating] = useState(false)
   // Tracks which field the user last edited so we know the translation direction
   const [source, setSource] = useState<"latin" | "arabic" | "english" | "chinese" | null>(null)
   const lastProcessedRef = useRef<string>("")
+
+  // IPA phonetic transcription of the current script text, shown as accessible
+  // pronunciation notes so the pronunciation is readable (including by screen
+  // readers) without relying on audio.
+  const ipaText = arabicText.trim() ? toIpa(arabicText) : ""
 
   const fetchTranslation = async (text: string, pair: string): Promise<string> => {
     try {
@@ -289,6 +299,32 @@ export function ArabicTranscriber({
                 value={arabicText}
                 onChange={(e) => handleArabicChange(e.target.value)}
               />
+              {ipaText && (
+                <div className="rounded-md border bg-muted/50 px-3 py-2">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                      Pronunciation (IPA)
+                    </span>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-6 px-2"
+                      onClick={() => copyToClipboard(`/${ipaText}/`, setCopiedIpa)}
+                    >
+                      {copiedIpa ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
+                      <span className="sr-only">Copy IPA pronunciation</span>
+                    </Button>
+                  </div>
+                  <p
+                    lang="und-fonipa"
+                    aria-label={`IPA pronunciation: ${ipaText}`}
+                    className="mt-1 font-mono text-lg leading-relaxed text-foreground"
+                    dir="ltr"
+                  >
+                    {`/${ipaText}/`}
+                  </p>
+                </div>
+              )}
             </div>
           </div>
 

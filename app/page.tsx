@@ -12,6 +12,7 @@ import {
   persianKeyboardRows,
   persianPhrases,
 } from "@/lib/persian-mapping"
+import { transcribePersianIpa } from "@/lib/ipa-mapping"
 
 const spanishPhrases = [
   { english: "Spanish (Español)", plain: "Espan0ol" },
@@ -59,6 +60,7 @@ export default function Home() {
               pivotChineseThroughEnglish
               toLatin={transcribePersian}
               toScript={transcribePersianLatin}
+              toIpa={transcribePersianIpa}
               mapping={persianMapping}
               descriptions={persianDescriptions}
               keyboardRows={persianKeyboardRows}
