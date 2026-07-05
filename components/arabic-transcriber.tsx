@@ -14,7 +14,7 @@ import {
   type KeyDef,
   type Phrase,
 } from "@/lib/arabic-mapping"
-import { Copy, Check, Trash2, Keyboard, Languages, Loader2, Bookmark } from "lucide-react"
+import { Copy, Check, Trash2, Keyboard, Languages, Loader2, Bookmark, Volume2, Square } from "lucide-react"
 
 interface ArabicTranscriberProps {
   /** Display name of the script, e.g. "Arabic" or "Persian" */
@@ -67,7 +67,55 @@ export function ArabicTranscriber({
   const [isTranslating, setIsTranslating] = useState(false)
   // Tracks which field the user last edited so we know the translation direction
   const [source, setSource] = useState<"latin" | "arabic" | "english" | "chinese" | null>(null)
+  const [isSpeaking, setIsSpeaking] = useState(false)
+  const [speechSupported, setSpeechSupported] = useState(true)
   const lastProcessedRef = useRef<string>("")
+
+  // Web Speech API isn't available in every browser/SSR context
+  useEffect(() => {
+    setSpeechSupported(typeof window !== "undefined" && "speechSynthesis" in window)
+  }, [])
+
+  // Stop any ongoing speech when the component unmounts (e.g. switching tabs)
+  useEffect(() => {
+    return () => {
+      if (typeof window !== "undefined" && "speechSynthesis" in window) {
+        window.speechSynthesis.cancel()
+      }
+    }
+  }, [])
+
+  // Full BCP-47 locale gives the synthesizer a better chance of picking a
+  // native voice for the script (e.g. "ar" -> Arabic, "fa" -> Persian).
+  const speechLocale = langCode === "fa" ? "fa-IR" : langCode === "ar" ? "ar-SA" : langCode
+
+  const speakArabic = () => {
+    if (!speechSupported || !arabicText.trim()) return
+
+    // Toggle off if already speaking
+    if (window.speechSynthesis.speaking) {
+      window.speechSynthesis.cancel()
+      setIsSpeaking(false)
+      return
+    }
+
+    const utterance = new SpeechSynthesisUtterance(arabicText)
+    utterance.lang = speechLocale
+    utterance.rate = 0.85
+
+    // Prefer a voice that matches the target language when one is installed
+    const voices = window.speechSynthesis.getVoices()
+    const match = voices.find(
+      (v) => v.lang === speechLocale || v.lang.toLowerCase().startsWith(langCode.toLowerCase()),
+    )
+    if (match) utterance.voice = match
+
+    utterance.onend = () => setIsSpeaking(false)
+    utterance.onerror = () => setIsSpeaking(false)
+
+    setIsSpeaking(true)
+    window.speechSynthesis.speak(utterance)
+  }
 
   const fetchTranslation = async (text: string, pair: string): Promise<string> => {
     try {
@@ -266,19 +314,41 @@ export function ArabicTranscriber({
                   {scriptName} Text
                 </label>
                 {arabicText && (
-                  <Button variant="ghost" size="sm" onClick={() => copyToClipboard(arabicText, setCopiedArabic)}>
-                    {copiedArabic ? (
-                      <>
-                        <Check className="h-4 w-4 mr-1" />
-                        Copied
-                      </>
-                    ) : (
-                      <>
-                        <Copy className="h-4 w-4 mr-1" />
-                        Copy
-                      </>
+                  <div className="flex items-center gap-1">
+                    {speechSupported && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={speakArabic}
+                        title={`Listen to the ${scriptName} pronunciation`}
+                      >
+                        {isSpeaking ? (
+                          <>
+                            <Square className="h-4 w-4 mr-1" />
+                            Stop
+                          </>
+                        ) : (
+                          <>
+                            <Volume2 className="h-4 w-4 mr-1" />
+                            Listen
+                          </>
+                        )}
+                      </Button>
                     )}
-                  </Button>
+                    <Button variant="ghost" size="sm" onClick={() => copyToClipboard(arabicText, setCopiedArabic)}>
+                      {copiedArabic ? (
+                        <>
+                          <Check className="h-4 w-4 mr-1" />
+                          Copied
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="h-4 w-4 mr-1" />
+                          Copy
+                        </>
+                      )}
+                    </Button>
+                  </div>
                 )}
               </div>
               <Textarea
