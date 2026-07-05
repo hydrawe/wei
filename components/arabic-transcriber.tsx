@@ -550,12 +550,12 @@ export function ArabicTranscriber({
           <p className="mt-4">
             Learn more at{" "}
             <a
-              href="https://www.hydrawe.org/pathways/Wanji/"
+              href="https://www.hydrawe.org/pathways/Wei/"
               target="_blank"
               rel="noopener noreferrer"
               className="text-primary underline underline-offset-4 hover:text-primary/80"
             >
-              hydrawe.org/pathways/Wanji
+              hydrawe.org/pathways/Wei
             </a>
           </p>
         </CardContent>
