@@ -8,7 +8,7 @@ const _geistMono = Geist_Mono({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: 'Arabic Transliteration Tool',
-  description: 'Convert Arabic script to readable romanized text using the Wanji transliteration system',
+  description: 'Convert Arabic script to readable romanized text using the Wei transliteration system',
   generator: 'v0.app',
   icons: {
     icon: [

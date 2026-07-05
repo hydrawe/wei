@@ -519,7 +519,7 @@ export function ArabicTranscriber({
         <CardContent className="prose prose-sm dark:prose-invert max-w-none">
           <p>
             This transcription tool converts {scriptName} script to Latin text using the
-            <strong> Wanji transliteration system</strong>. This system is designed to be
+            <strong> Wei transliteration system</strong>. This system is designed to be
             readable for novice learners while preserving important phonetic distinctions.
           </p>
           <h4>Key Features:</h4>
@@ -550,12 +550,12 @@ export function ArabicTranscriber({
           <p className="mt-4">
             Learn more at{" "}
             <a
-              href="https://www.hydrawe.org/pathways/Wanji/"
+              href="https://www.hydrawe.org/pathways/Wei/"
               target="_blank"
               rel="noopener noreferrer"
               className="text-primary underline underline-offset-4 hover:text-primary/80"
             >
-              hydrawe.org/pathways/Wanji
+              hydrawe.org/pathways/Wei
             </a>
           </p>
         </CardContent>
