@@ -71,29 +71,18 @@ export function ArabicTranscriber({
 
   const fetchTranslation = async (text: string, pair: string): Promise<string> => {
     try {
+      // MyMemory's free API returns very noisy community entries for some
+      // languages (e.g. Persian -> "ENGLISH" for فارسی). Google's public
+      // translate endpoint is far more accurate and needs no API key.
+      const [sl, tl] = pair.split("|")
       const res = await fetch(
-        `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${pair}`
+        `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${sl}&tl=${tl}&dt=t&q=${encodeURIComponent(text)}`
       )
+      if (!res.ok) return ""
       const data = await res.json()
-      if (data.responseStatus !== 200) return ""
-
-      // MyMemory's `translatedText` blindly picks the highest string-match
-      // score, which is often a low-quality community entry (e.g. "[ana lucia]
-      // hey." for سلام). Instead, pick the match with the best combined
-      // quality x similarity score, falling back to translatedText.
-      const matches = Array.isArray(data.matches) ? data.matches : []
-      let best: { score: number; text: string } | null = null
-      for (const m of matches) {
-        const translation = typeof m.translation === "string" ? m.translation.trim() : ""
-        if (!translation) continue
-        const quality = Number.parseFloat(m.quality) || 0
-        const similarity = Number.parseFloat(m.match) || 0
-        const score = quality * similarity
-        if (!best || score > best.score) best = { score, text: translation }
-      }
-
-      if (best && best.score > 0) return best.text
-      return data.responseData?.translatedText || ""
+      // Response shape: [[[ "translated", "source", ... ], ...], ...]
+      if (!Array.isArray(data?.[0])) return ""
+      return data[0].map((seg: unknown[]) => (typeof seg?.[0] === "string" ? seg[0] : "")).join("")
     } catch {
       return ""
     }
