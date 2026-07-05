@@ -103,26 +103,69 @@ export const persianIpa: Record<string, string> = {
   "ک": "k",
   "گ": "ɡ",
   "ی": "j", // Farsi yeh (U+06CC)
+
+  // Ligatures use the Persian long-vowel quality (ɒː) rather than Arabic (aː)
+  "لا": "lɒː",
+  "لأ": "laʔ",
+  "لإ": "leʔ",
+  "لآ": "lɒːʔ",
 }
+
+// Semivowels behave like a syllable nucleus/glide: they satisfy the vowel
+// requirement for a following consonant, so they don't trigger a second
+// epenthetic vowel after themselves.
+const arabicSemivowels = new Set(["ي", "و", "ی"])
+
+// Short-vowel diacritics. When present they give the exact vowel, so no
+// epenthesis is needed.
+const shortVowelMarks = new Set(["ً", "ٌ", "ٍ", "َ", "ِ", "ُ"])
 
 // Convert Arabic-script text to an IPA transcription. Mirrors the ligature and
 // shadda (gemination) handling used by scriptToLatin so the phonetics line up
 // with the transliteration.
-export function scriptToIpa(text: string, ipaMap: Record<string, string>, consonantSet: Set<string>): string {
+//
+// Arabic and Persian are usually written without short-vowel diacritics, which
+// would otherwise leave consonant clusters unpronounceable (e.g. "سلام" -> /slaːm/).
+// To keep the pronunciation readable, we insert a default short vowel between two
+// adjacent consonants whenever the writer didn't supply an explicit vowel, so
+// "سلام" -> /salaːm/.
+export function scriptToIpa(
+  text: string,
+  ipaMap: Record<string, string>,
+  consonantSet: Set<string>,
+  defaultVowel: string,
+): string {
   let result = ""
   let lastConsonantIpa = ""
+  // Whether the previous emitted sound was a consonant not yet followed by a vowel.
+  let pendingConsonant = false
   const chars = [...text]
+
+  const emitConsonant = (ipa: string, char: string) => {
+    // Two consonants in a row with no vowel between them: insert the default
+    // short vowel so the cluster is pronounceable.
+    if (pendingConsonant) result += defaultVowel
+    result += ipa
+    lastConsonantIpa = ipa
+    // Semivowels act as their own nucleus, so they don't leave a pending
+    // consonant that needs an epenthetic vowel after it.
+    pendingConsonant = !arabicSemivowels.has(char)
+  }
 
   for (let i = 0; i < chars.length; i++) {
     const char = chars[i]
     const nextChar = chars[i + 1]
 
-    // Two-character ligatures first
+    // Two-character ligatures first (these already encode their own vowels)
     if (nextChar) {
       const ligature = char + nextChar
       if (ipaMap[ligature] !== undefined) {
+        // Ligatures such as "لا" begin with a consonant, so insert the default
+        // vowel if the previous sound was also an unresolved consonant.
+        if (pendingConsonant) result += defaultVowel
         result += ipaMap[ligature]
         lastConsonantIpa = ""
+        pendingConsonant = false
         i++
         continue
       }
@@ -131,19 +174,29 @@ export function scriptToIpa(text: string, ipaMap: Record<string, string>, conson
     // Shadda geminates (doubles) the preceding consonant
     if (char === "ّ") {
       if (lastConsonantIpa) result += lastConsonantIpa
+      pendingConsonant = true
       continue
     }
 
     if (ipaMap[char] !== undefined) {
-      result += ipaMap[char]
-      lastConsonantIpa = consonantSet.has(char) ? ipaMap[char] : ""
+      if (consonantSet.has(char)) {
+        emitConsonant(ipaMap[char], char)
+      } else {
+        // Vowels (long vowel letters + short-vowel diacritics) and other marks
+        result += ipaMap[char]
+        // A short-vowel diacritic or long vowel resolves the pending consonant.
+        if (shortVowelMarks.has(char) || ipaMap[char] !== "") pendingConsonant = false
+        lastConsonantIpa = ""
+      }
     } else if (char === " " || char === "\n" || char === "\t") {
       result += char
       lastConsonantIpa = ""
+      pendingConsonant = false
     } else {
       // Keep punctuation, numbers, and unknown characters as-is
       result += char
       lastConsonantIpa = ""
+      pendingConsonant = false
     }
   }
 
@@ -151,9 +204,9 @@ export function scriptToIpa(text: string, ipaMap: Record<string, string>, conson
 }
 
 export function transcribeArabicIpa(text: string): string {
-  return scriptToIpa(text, arabicIpa, consonants)
+  return scriptToIpa(text, arabicIpa, consonants, "a")
 }
 
 export function transcribePersianIpa(text: string): string {
-  return scriptToIpa(text, persianIpa, persianConsonants)
+  return scriptToIpa(text, persianIpa, persianConsonants, "e")
 }
