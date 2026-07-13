@@ -27,6 +27,8 @@ interface CjkTranscriberProps {
   scriptPlaceholder: string
   /** Title for the letter reference card */
   referenceTitle: string
+  /** Fixed number of columns for the reference grid (e.g. 5 for the Japanese gojūon table). Defaults to a responsive layout. */
+  referenceColumns?: 5
 }
 
 type Source = "latin" | "script" | "english" | "chinese" | null
@@ -41,6 +43,7 @@ export function CjkTranscriber({
   reference,
   scriptPlaceholder,
   referenceTitle,
+  referenceColumns,
 }: CjkTranscriberProps) {
   const [scriptText, setScriptText] = useState("")
   const [latinText, setLatinText] = useState("")
@@ -450,7 +453,13 @@ export function CjkTranscriber({
               <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
                 {section.description}
               </h3>
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+              <div
+                className={
+                  referenceColumns === 5
+                    ? "grid grid-cols-5 gap-2"
+                    : "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3"
+                }
+              >
                 {section.items.map((item, index) => (
                   <div
                     key={`${item.char}-${item.latin}-${index}`}

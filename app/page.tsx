@@ -111,6 +111,7 @@ export default function Home() {
               phrases={japanesePhrases}
               reference={japaneseReference}
               referenceTitle="Japanese Kana Reference"
+              referenceColumns={5}
               scriptPlaceholder="ここに日本語を入力してください..."
             />
           </TabsContent>
