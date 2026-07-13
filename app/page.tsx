@@ -27,6 +27,7 @@ import {
   japaneseKeyboardRows,
   japanesePhrases,
   japaneseReference,
+  japaneseReferenceRows,
 } from "@/lib/japanese-mapping"
 
 const spanishPhrases = [
@@ -110,6 +111,7 @@ export default function Home() {
               keyboardRows={japaneseKeyboardRows}
               phrases={japanesePhrases}
               reference={japaneseReference}
+              referenceRows={japaneseReferenceRows}
               referenceTitle="Japanese Kana Reference"
               scriptPlaceholder="ここに日本語を入力してください..."
             />
