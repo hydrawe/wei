@@ -73,6 +73,30 @@ export default function Home() {
               keyboardRows={persianKeyboardRows}
               phrases={persianPhrases}
               scriptPlaceholder="متن فارسی را اینجا بنویسید..."
+              keyFeatures={[
+                {
+                  term: "Persian-only letters",
+                  description: 'add "p" (پ), "jv" (چ, "ch"), "zv" (ژ, "zh") and "kv" (گ, hard "g")',
+                },
+                {
+                  term: "Merged sounds",
+                  description:
+                    "several Arabic letters share one Persian pronunciation (e.g. the letters coded s / z / t); the distinct codes preserve the original spelling",
+                },
+                {
+                  term: "Digraphs",
+                  description: "pair a base letter with a second character to mark a distinct Persian letter or sound",
+                },
+                { term: "Shadda", description: "(consonant doubling) doubles the previous consonant" },
+              ]}
+              pronunciationTips={[
+                { code: "q", char: "ق", description: 'identical to "gv" (غ) in Persian: a voiced "gargled" sound' },
+                { code: "gv", char: "غ", description: 'same sound as "q" (ق), deep in the throat' },
+                { code: "xv", char: "خ", description: 'a raspy "kh", like clearing your throat' },
+                { code: "x", char: "ح", description: 'a plain "h", same as "h" (ه)' },
+                { code: "g", char: "ع", description: "a glottal catch in the voice, often silent" },
+                { code: "r", char: "ر", description: "a rolled or tapped r" },
+              ]}
             />
           </TabsContent>
 

@@ -46,7 +46,31 @@ interface ArabicTranscriberProps {
    * English (which has rich corpora) yields far better results.
    */
   pivotChineseThroughEnglish?: boolean
+  /** "Key Features" bullet points in the About section */
+  keyFeatures?: { term: string; description: string }[]
+  /** "Pronunciation Tips" bullet points in the About section */
+  pronunciationTips?: { code: string; char: string; description: string }[]
 }
+
+// Arabic (default) About-section content.
+const arabicKeyFeatures: { term: string; description: string }[] = [
+  { term: "Capital letters", description: "represent emphatic/heavy consonants pronounced further back in the mouth" },
+  {
+    term: "Digraphs",
+    description: 'like "tv", "dv", "sv", "gv", "sc", "dc", "tc", "zc" represent specific sounds',
+  },
+  { term: "Tanwin", description: '(nunation) is represented as "av", "iv", "uv"' },
+  { term: "Shadda", description: "(consonant doubling) doubles the previous consonant" },
+]
+
+const arabicPronunciationTips: { code: string; char: string; description: string }[] = [
+  { code: "g", char: "ع", description: 'like a surprised "a"' },
+  { code: "gv", char: "غ", description: "gargling sound" },
+  { code: "x", char: "ح", description: "like fogging up a window" },
+  { code: "xv", char: "خ", description: "whispered gargle" },
+  { code: "q", char: "ق", description: "deep in the throat" },
+  { code: "r", char: "ر", description: 'like the "t" in American "water"' },
+]
 
 export function ArabicTranscriber({
   scriptName = "Arabic",
@@ -61,6 +85,8 @@ export function ArabicTranscriber({
   phrases = arabicPhrases,
   scriptPlaceholder = "اكتب النص العربي هنا...",
   pivotChineseThroughEnglish = false,
+  keyFeatures = arabicKeyFeatures,
+  pronunciationTips = arabicPronunciationTips,
 }: ArabicTranscriberProps) {
   const [arabicText, setArabicText] = useState("")
   const [latinText, setLatinText] = useState("")
@@ -563,28 +589,19 @@ export function ArabicTranscriber({
           </p>
           <h4>Key Features:</h4>
           <ul>
-            <li>
-              <strong>Capital letters</strong> represent emphatic/heavy
-              consonants pronounced further back in the mouth
-            </li>
-            <li>
-              <strong>Digraphs </strong> like &quot;tv&quot;, &quot;dv&quot;, &quot;sv&quot;, &quot;gv&quot;, &quot;sc&quot;, &quot;dc&quot;, &quot;tc&quot;, &quot;zc&quot; represent specific sounds
-            </li>
-            <li>
-              <strong>Tanwin </strong> (nunation) is represented as &quot;av&quot;, &quot;iv&quot;, &quot;uv&quot;
-            </li>
-            <li>
-              <strong>Shadda</strong> (consonant doubling) doubles the previous consonant
-            </li>
+            {keyFeatures.map((feature, i) => (
+              <li key={i}>
+                <strong>{feature.term} </strong> {feature.description}
+              </li>
+            ))}
           </ul>
           <h4>Pronunciation Tips:</h4>
           <ul>
-            <li><strong>g</strong> (ع) - like a surprised &quot;a&quot;</li>
-            <li><strong>gv</strong> (غ) - gargling sound</li>
-            <li><strong>x</strong> (ح) - like fogging up a window</li>
-            <li><strong>xv</strong> (خ) - whispered gargle</li>
-            <li><strong>q</strong> (ق) - deep in the throat</li>
-            <li><strong>r</strong> (ر) - like the &quot;t&quot; in American &quot;water&quot;</li>
+            {pronunciationTips.map((tip, i) => (
+              <li key={i}>
+                <strong>{tip.code}</strong> ({tip.char}) - {tip.description}
+              </li>
+            ))}
           </ul>
           <p className="mt-4">
             Learn more at{" "}
