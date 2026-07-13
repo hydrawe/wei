@@ -15,13 +15,6 @@ import {
 } from "@/lib/persian-mapping"
 import { transcribePersianIpa, persianIpa } from "@/lib/ipa-mapping"
 import {
-  transcribeKorean,
-  transcribeKoreanLatin,
-  koreanKeyboardRows,
-  koreanPhrases,
-  koreanReference,
-} from "@/lib/korean-mapping"
-import {
   transcribeJapanese,
   transcribeJapaneseLatin,
   japaneseKeyboardRows,
@@ -57,10 +50,9 @@ export default function Home() {
         </div>
 
         <Tabs defaultValue="arabic" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 mb-6 h-auto">
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 mb-6 h-auto">
             <TabsTrigger value="arabic">Arabic</TabsTrigger>
             <TabsTrigger value="persian">Persian</TabsTrigger>
-            <TabsTrigger value="korean">Korean</TabsTrigger>
             <TabsTrigger value="japanese">Japanese</TabsTrigger>
             <TabsTrigger value="french">French</TabsTrigger>
             <TabsTrigger value="spanish">Spanish</TabsTrigger>
@@ -85,20 +77,6 @@ export default function Home() {
               keyboardRows={persianKeyboardRows}
               phrases={persianPhrases}
               scriptPlaceholder="متن فارسی را اینجا بنویسید..."
-            />
-          </TabsContent>
-
-          <TabsContent value="korean">
-            <CjkTranscriber
-              scriptName="Korean"
-              langCode="ko"
-              toLatin={transcribeKorean}
-              toScript={transcribeKoreanLatin}
-              keyboardRows={koreanKeyboardRows}
-              phrases={koreanPhrases}
-              reference={koreanReference}
-              referenceTitle="Korean Jamo Reference"
-              scriptPlaceholder="한국어 텍스트를 여기에 입력하세요..."
             />
           </TabsContent>
 
