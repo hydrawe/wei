@@ -65,45 +65,50 @@ const VOWEL: [string, string][] = [
 ]
 
 // --- Final consonants (jongseong), index 1-27 (0 = none) -------------------
-// Every final code ends with "x", which keeps them unambiguous from initials.
+// Final codes reuse the base-consonant letters (no "x" suffix). Compound finals
+// use the concatenation of their two component letters (e.g. "lg" = ㄺ). These
+// codes overlap with the initial-consonant codes, so composition relies on the
+// position-based Hangul IME logic below rather than on unique tokens.
 const TAIL: [string, string][] = [
-  ["gx", "ㄱ"],
-  ["ggx", "ㄲ"],
-  ["gsx", "ㄳ"],
-  ["nx", "ㄴ"],
-  ["njx", "ㄵ"],
-  ["nhx", "ㄶ"],
-  ["dx", "ㄷ"],
-  ["lx", "ㄹ"],
-  ["lgx", "ㄺ"],
-  ["lmx", "ㄻ"],
-  ["lbx", "ㄼ"],
-  ["lsx", "ㄽ"],
-  ["ltx", "ㄾ"],
-  ["lpx", "ㄿ"],
-  ["lhx", "ㅀ"],
-  ["mx", "ㅁ"],
-  ["bx", "ㅂ"],
-  ["bsx", "ㅄ"],
-  ["sx", "ㅅ"],
-  ["ssx", "ㅆ"],
-  ["vx", "ㅇ"],
-  ["jx", "ㅈ"],
-  ["cx", "ㅊ"],
-  ["kx", "ㅋ"],
-  ["tx", "ㅌ"],
-  ["px", "ㅍ"],
-  ["hx", "ㅎ"],
+  ["g", "ㄱ"],
+  ["gg", "ㄲ"],
+  ["gs", "ㄳ"],
+  ["n", "ㄴ"],
+  ["nj", "ㄵ"],
+  ["nh", "ㄶ"],
+  ["d", "ㄷ"],
+  ["l", "ㄹ"],
+  ["lg", "ㄺ"],
+  ["lm", "ㄻ"],
+  ["lb", "ㄼ"],
+  ["ls", "ㄽ"],
+  ["lt", "ㄾ"],
+  ["lp", "ㄿ"],
+  ["lh", "ㅀ"],
+  ["m", "ㅁ"],
+  ["b", "ㅂ"],
+  ["bs", "ㅄ"],
+  ["s", "ㅅ"],
+  ["ss", "ㅆ"],
+  ["v", "ㅇ"],
+  ["j", "ㅈ"],
+  ["c", "ㅊ"],
+  ["k", "ㅋ"],
+  ["t", "ㅌ"],
+  ["p", "ㅍ"],
+  ["h", "ㅎ"],
 ]
 
 const SILENT_LEAD = 11 // ㅇ
 
-// latin code -> { type, index }
-type Token = { type: "L" | "V" | "T"; index: number }
+// Because final-consonant codes now overlap with initial-consonant codes, the
+// tokenizer only recognizes base consonants (LEAD) and vowels. A consonant's
+// role (initial vs. final) is decided by position, and compound finals are
+// formed by combining two consonants, exactly like a real Hangul IME.
+type Token = { type: "L" | "V"; index: number }
 const CODE_MAP = new Map<string, Token>()
 LEAD.forEach(([code], i) => CODE_MAP.set(code, { type: "L", index: i }))
 VOWEL.forEach(([code], i) => CODE_MAP.set(code, { type: "V", index: i }))
-TAIL.forEach(([code], i) => CODE_MAP.set(code, { type: "T", index: i + 1 }))
 
 // index -> latin (for the reverse direction)
 const LEAD_LATIN = LEAD.map(([code]) => code)
@@ -114,6 +119,60 @@ const TAIL_LATIN = ["", ...TAIL.map(([code]) => code)] // 1-based
 const LEAD_JAMO = LEAD.map(([, jamo]) => jamo)
 const VOWEL_JAMO = VOWEL.map(([, jamo]) => jamo)
 const TAIL_JAMO = ["", ...TAIL.map(([, jamo]) => jamo)]
+
+// --- Position-based combining tables ---------------------------------------
+// Built from jamo relationships so index bookkeeping stays correct.
+
+const leadIndexOfJamo = (jamo: string) => LEAD_JAMO.indexOf(jamo)
+const tailIndexOfJamo = (jamo: string) => TAIL_JAMO.indexOf(jamo) // 1-based (0 = none)
+
+// A base consonant (LEAD index) -> its jongseong index, or undefined if it
+// cannot be a final (ㄸ/ㅃ/ㅉ have no final form).
+const LEAD_TO_TAIL = new Map<number, number>()
+LEAD_JAMO.forEach((jamo, i) => {
+  const t = tailIndexOfJamo(jamo)
+  if (t > 0) LEAD_TO_TAIL.set(i, t)
+})
+
+// Compound finals: compound jamo -> [first component, second component].
+const COMPOUND_TAILS: [string, [string, string]][] = [
+  ["ㄳ", ["ㄱ", "ㅅ"]],
+  ["ㄵ", ["ㄴ", "ㅈ"]],
+  ["ㄶ", ["ㄴ", "ㅎ"]],
+  ["ㄺ", ["ㄹ", "ㄱ"]],
+  ["ㄻ", ["ㄹ", "ㅁ"]],
+  ["ㄼ", ["ㄹ", "ㅂ"]],
+  ["ㄽ", ["ㄹ", "ㅅ"]],
+  ["ㄾ", ["ㄹ", "ㅌ"]],
+  ["ㄿ", ["ㄹ", "ㅍ"]],
+  ["ㅀ", ["ㄹ", "ㅎ"]],
+  ["ㅄ", ["ㅂ", "ㅅ"]],
+]
+
+// (currentTailIndex, addedLeadIndex) -> combined compound tail index.
+const COMBINE_TAIL = new Map<string, number>()
+// tailIndex -> { remain, stolenLead }: how a final splits when a vowel follows.
+// For simple finals the whole consonant is stolen (remain = 0). For compound
+// finals only the last component is stolen and the first stays as the final.
+const TAIL_SPLIT = new Map<number, { remain: number; stolenLead: number }>()
+
+// Simple finals: stolen consonant is the same jamo.
+TAIL_JAMO.forEach((jamo, tailIndex) => {
+  if (tailIndex === 0) return
+  const isCompound = COMPOUND_TAILS.some(([c]) => c === jamo)
+  if (!isCompound) {
+    TAIL_SPLIT.set(tailIndex, { remain: 0, stolenLead: leadIndexOfJamo(jamo) })
+  }
+})
+
+// Compound finals: build combine + split entries.
+COMPOUND_TAILS.forEach(([compound, [first, second]]) => {
+  const compoundTail = tailIndexOfJamo(compound)
+  const firstTail = tailIndexOfJamo(first)
+  const secondLead = leadIndexOfJamo(second)
+  COMBINE_TAIL.set(`${firstTail}-${secondLead}`, compoundTail)
+  TAIL_SPLIT.set(compoundTail, { remain: firstTail, stolenLead: secondLead })
+})
 
 const MAX_CODE_LEN = 3
 
@@ -164,23 +223,54 @@ export function transcribeKoreanLatin(text: string): string {
     i += matchLen
 
     if (token.type === "L") {
-      if (L !== null || V !== null || T !== null) flush()
-      L = token.index
-    } else if (token.type === "V") {
-      if (L !== null && V === null && T === null) {
+      // Consonant: decide initial vs. final vs. compound-final by position.
+      const c = token.index
+      if (V === null) {
+        // No vowel yet in the current syllable.
+        if (L === null) {
+          L = c
+        } else {
+          // Two consonants with no vowel between them: emit the first alone.
+          flush()
+          L = c
+        }
+      } else if (T === null) {
+        // Try to attach as a final consonant.
+        const tail = LEAD_TO_TAIL.get(c)
+        if (tail !== undefined) {
+          T = tail
+        } else {
+          // Cannot be a final (ㄸ/ㅃ/ㅉ) -> start a new syllable.
+          flush()
+          L = c
+        }
+      } else {
+        // A final already exists: try to form a compound final.
+        const combined = COMBINE_TAIL.get(`${T}-${c}`)
+        if (combined !== undefined) {
+          T = combined
+        } else {
+          flush()
+          L = c
+        }
+      }
+    } else {
+      // Vowel.
+      if (T !== null) {
+        // A trailing consonant is "stolen" to start the next syllable.
+        const { remain, stolenLead } = TAIL_SPLIT.get(T) ?? { remain: 0, stolenLead: SILENT_LEAD }
+        T = remain === 0 ? null : remain
+        flush()
+        L = stolenLead
+        V = token.index
+      } else if (V === null) {
+        if (L === null) L = SILENT_LEAD
         V = token.index
       } else {
+        // Current syllable already has a vowel: begin a new one.
         flush()
         L = SILENT_LEAD
         V = token.index
-      }
-    } else {
-      // Final consonant
-      if (L !== null && V !== null && T === null) {
-        T = token.index
-      } else {
-        flush()
-        output += TAIL_JAMO[token.index]
       }
     }
   }
@@ -191,6 +281,10 @@ export function transcribeKoreanLatin(text: string): string {
 // Hangul -> Latin, decomposing precomposed syllable blocks.
 export function transcribeKorean(text: string): string {
   let output = ""
+  // Whether the previous syllable ended in a final consonant. If so, a
+  // following silent-ㅇ initial must be written as "v"; otherwise a vowel would
+  // "steal" that final when re-parsed (e.g. 국 + 어 -> keep them separate).
+  let prevHadFinal = false
   for (const ch of text) {
     const code = ch.charCodeAt(0)
     if (code >= HANGUL_BASE && code <= HANGUL_LAST) {
@@ -198,10 +292,14 @@ export function transcribeKorean(text: string): string {
       const T = s % 28
       const V = Math.floor(s / 28) % 21
       const L = Math.floor(s / 28 / 21)
-      // Omit the silent ㅇ initial so 아 -> "a" (not "va")
-      output += (L === SILENT_LEAD ? "" : LEAD_LATIN[L]) + VOWEL_LATIN[V] + (T > 0 ? TAIL_LATIN[T] : "")
+      // Omit the silent ㅇ initial (so 아 -> "a") unless it needs to be kept to
+      // avoid vowel-stealing across a preceding final consonant.
+      const lead = L === SILENT_LEAD && !prevHadFinal ? "" : LEAD_LATIN[L]
+      output += lead + VOWEL_LATIN[V] + (T > 0 ? TAIL_LATIN[T] : "")
+      prevHadFinal = T > 0
     } else {
       output += ch
+      prevHadFinal = false
     }
   }
   return output
