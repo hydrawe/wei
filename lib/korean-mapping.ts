@@ -90,7 +90,7 @@ const TAIL: [string, string][] = [
   ["bs", "ㅄ"],
   ["s", "ㅅ"],
   ["ss", "ㅆ"],
-  ["v", "ㅇ"],
+  ["ng", "ㅇ"], // final ㅇ is the "ng" sound (initial ㅇ is silent, written "v")
   ["j", "ㅈ"],
   ["c", "ㅊ"],
   ["k", "ㅋ"],
@@ -176,6 +176,14 @@ COMPOUND_TAILS.forEach(([compound, [first, second]]) => {
 
 const MAX_CODE_LEN = 3
 
+// Helpers for the special "ng" = final ㅇ handling.
+const N_LEAD_INDEX = leadIndexOfJamo("ㄴ")
+const NG_TAIL_INDEX = tailIndexOfJamo("ㅇ")
+// Every vowel code begins with one of these letters, and no consonant code
+// does, so this is an unambiguous test for "does a vowel start here?".
+const VOWEL_START = new Set("aeiouwy".split(""))
+const startsWithVowel = (text: string, pos: number) => VOWEL_START.has(text[pos])
+
 function compose(L: number | null, V: number | null, T: number | null): string {
   if (L !== null && V !== null) {
     return String.fromCharCode(HANGUL_BASE + (L * 21 + V) * 28 + (T ?? 0))
@@ -225,6 +233,17 @@ export function transcribeKoreanLatin(text: string): string {
     if (token.type === "L") {
       // Consonant: decide initial vs. final vs. compound-final by position.
       const c = token.index
+
+      // Special case: "ng" = final ㅇ. When ㄴ ("n") could attach as a final and
+      // is immediately followed by "g" that does NOT start a new syllable (the
+      // "g" is not followed by a vowel), read "ng" as the final ㅇ instead of
+      // final ㄴ + initial ㄱ.
+      if (c === N_LEAD_INDEX && V !== null && T === null && text[i] === "g" && !startsWithVowel(text, i + 1)) {
+        T = NG_TAIL_INDEX
+        i += 1 // consume the "g" of "ng"
+        continue
+      }
+
       if (V === null) {
         // No vowel yet in the current syllable.
         if (L === null) {
