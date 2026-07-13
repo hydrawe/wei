@@ -31,6 +31,10 @@ interface CjkTranscriberProps {
    * provided, each row renders as a 5-column grid aligned to the a-i-u-e-o
    * vowels; `null` cells mark empty columns. Takes precedence over `reference`. */
   referenceRows?: { description: string; rows: (ReferenceItem | null)[][] }[]
+  /** script -> IPA phonetic transcription, shown as accessible pronunciation notes */
+  toIpa?: (text: string) => string
+  /** script char -> IPA symbol, shown in the letter reference */
+  ipaMap?: Record<string, string>
 }
 
 type Source = "latin" | "script" | "english" | "chinese" | null
@@ -46,6 +50,8 @@ export function CjkTranscriber({
   scriptPlaceholder,
   referenceTitle,
   referenceRows,
+  toIpa,
+  ipaMap,
 }: CjkTranscriberProps) {
   const [scriptText, setScriptText] = useState("")
   const [latinText, setLatinText] = useState("")
@@ -55,10 +61,15 @@ export function CjkTranscriber({
   const [copiedScript, setCopiedScript] = useState(false)
   const [copiedEnglish, setCopiedEnglish] = useState(false)
   const [copiedChinese, setCopiedChinese] = useState(false)
+  const [copiedIpa, setCopiedIpa] = useState(false)
   const [showKeyboard, setShowKeyboard] = useState(true)
   const [isTranslating, setIsTranslating] = useState(false)
   const [source, setSource] = useState<Source>(null)
   const lastProcessedRef = useRef<string>("")
+
+  // IPA phonetic transcription of the current script text, shown as accessible
+  // pronunciation notes so the pronunciation is readable without audio.
+  const ipaText = toIpa && scriptText.trim() ? toIpa(scriptText) : ""
 
   // Group the flat reference list into subsections by their description
   // (e.g. Initial consonant / Vowel / Final consonant), preserving first-seen order.
@@ -84,6 +95,15 @@ export function CjkTranscriber({
       <span className="text-3xl w-10 text-center">{item.char}</span>
       <div className="flex-1 min-w-0">
         <div className="font-mono text-sm font-semibold text-primary">{item.latin}</div>
+        {ipaMap?.[item.char] ? (
+          <span
+            lang="und-fonipa"
+            aria-label={`IPA pronunciation: ${ipaMap[item.char]}`}
+            className="font-mono text-xs text-muted-foreground"
+          >
+            /{ipaMap[item.char]}/
+          </span>
+        ) : null}
       </div>
     </div>
   )
@@ -298,6 +318,32 @@ export function CjkTranscriber({
                 value={scriptText}
                 onChange={(e) => handleScriptChange(e.target.value)}
               />
+              {ipaText && (
+                <div className="rounded-md border bg-muted/50 px-3 py-2">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                      Pronunciation (IPA)
+                    </span>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-6 px-2"
+                      onClick={() => copyToClipboard(`/${ipaText}/`, setCopiedIpa)}
+                    >
+                      {copiedIpa ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
+                      <span className="sr-only">Copy IPA pronunciation</span>
+                    </Button>
+                  </div>
+                  <p
+                    lang="und-fonipa"
+                    aria-label={`IPA pronunciation: ${ipaText}`}
+                    className="mt-1 font-mono text-lg leading-relaxed text-foreground"
+                    dir="ltr"
+                  >
+                    {`/${ipaText}/`}
+                  </p>
+                </div>
+              )}
             </div>
           </div>
 

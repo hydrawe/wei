@@ -17,11 +17,21 @@ import { transcribePersianIpa, persianIpa } from "@/lib/ipa-mapping"
 import {
   transcribeJapanese,
   transcribeJapaneseLatin,
+  transcribeJapaneseIpa,
+  japaneseIpa,
   japaneseKeyboardRows,
   japanesePhrases,
   japaneseReference,
   japaneseReferenceRows,
 } from "@/lib/japanese-mapping"
+import {
+  spanishToIpa,
+  spanishCharIpa,
+  frenchToIpa,
+  frenchCharIpa,
+  portugueseToIpa,
+  portugueseCharIpa,
+} from "@/lib/latin-ipa"
 
 const spanishPhrases = [
   { english: "Spanish (Español)", plain: "Espan0ol" },
@@ -86,6 +96,8 @@ export default function Home() {
               langCode="ja"
               toLatin={transcribeJapanese}
               toScript={transcribeJapaneseLatin}
+              toIpa={transcribeJapaneseIpa}
+              ipaMap={japaneseIpa}
               keyboardRows={japaneseKeyboardRows}
               phrases={japanesePhrases}
               reference={japaneseReference}
@@ -102,6 +114,8 @@ export default function Home() {
               forward={frenchForward}
               placeholder="Tapez le texte français ici..."
               phrases={frenchPhrases}
+              toIpa={frenchToIpa}
+              charIpa={frenchCharIpa}
             />
           </TabsContent>
 
@@ -112,6 +126,8 @@ export default function Home() {
               forward={spanishForward}
               placeholder="Escribe el texto en español aquí..."
               phrases={spanishPhrases}
+              toIpa={spanishToIpa}
+              charIpa={spanishCharIpa}
             />
           </TabsContent>
 
@@ -122,6 +138,8 @@ export default function Home() {
               forward={portugueseForward}
               placeholder="Digite o texto em português aqui..."
               phrases={portuguesePhrases}
+              toIpa={portugueseToIpa}
+              charIpa={portugueseCharIpa}
             />
           </TabsContent>
         </Tabs>
