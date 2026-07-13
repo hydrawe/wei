@@ -1,7 +1,6 @@
 "use client"
 
 import { ArabicTranscriber } from "@/components/arabic-transcriber"
-import { CjkTranscriber } from "@/components/cjk-transcriber"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
   transcribePersian,
@@ -22,17 +21,6 @@ import {
   russianKeyboardRows,
   russianPhrases,
 } from "@/lib/russian-mapping"
-import {
-  transcribeJapanese,
-  transcribeJapaneseLatin,
-  transcribeJapaneseIpa,
-  japaneseIpa,
-  japaneseKeyboardRows,
-  japanesePhrases,
-  japaneseReference,
-  japaneseReferenceRows,
-} from "@/lib/japanese-mapping"
-
 export default function Home() {
   return (
     <main className="min-h-screen py-8 px-4">
@@ -42,11 +30,10 @@ export default function Home() {
         </div>
 
         <Tabs defaultValue="arabic" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 mb-6 h-auto">
+          <TabsList className="grid w-full grid-cols-3 mb-6 h-auto">
             <TabsTrigger value="arabic">Arabic</TabsTrigger>
             <TabsTrigger value="persian">Persian</TabsTrigger>
             <TabsTrigger value="russian">Russian</TabsTrigger>
-            <TabsTrigger value="japanese">Japanese</TabsTrigger>
           </TabsList>
 
           <TabsContent value="arabic">
@@ -132,30 +119,6 @@ export default function Home() {
                 { code: "c", char: "ц", description: 'like "ts" in "cats"' },
                 { code: "r", char: "р", description: "a rolled or trilled r" },
               ]}
-            />
-          </TabsContent>
-
-          <TabsContent value="japanese">
-            <CjkTranscriber
-              scriptName="Japanese"
-              langCode="ja"
-              toLatin={transcribeJapanese}
-              toScript={transcribeJapaneseLatin}
-              toIpa={transcribeJapaneseIpa}
-              ipaMap={japaneseIpa}
-              keyboardRows={japaneseKeyboardRows}
-              keyboardColumns={5}
-              keyboardCase={{
-                lowerCount: 6,
-                lowerLabel: "Hiragana (lowercase)",
-                upperLabel: "Katakana (uppercase)",
-                note: "The keyboard shows hiragana by default. Tap Caps to switch to katakana — uppercase codes produce katakana, lowercase codes produce hiragana.",
-              }}
-              phrases={japanesePhrases}
-              reference={japaneseReference}
-              referenceRows={japaneseReferenceRows}
-              referenceTitle="Japanese Kana Reference"
-              scriptPlaceholder="ここに日本語を入力してください..."
             />
           </TabsContent>
 
