@@ -102,6 +102,7 @@ function keys(pairs: [string, string][]): KeyDef[] {
 }
 
 export const japaneseKeyboardRows: KeyDef[][] = [
+  // Hiragana
   keys(HIRAGANA.slice(0, 5)), // vowels
   keys(HIRAGANA.slice(5, 20)), // k / g / s rows
   keys(HIRAGANA.slice(20, 35)), // z / t / d rows
@@ -109,6 +110,14 @@ export const japaneseKeyboardRows: KeyDef[][] = [
   keys(HIRAGANA.slice(50, 65)), // m / n / r rows
   // y, w, small kana (excluding ん) then ん (n) appended as the last key
   keys([...HIRAGANA.slice(65, 70), ...HIRAGANA.slice(71), HIRAGANA[70]]),
+  // Katakana
+  keys(KATAKANA.slice(0, 5)), // vowels
+  keys(KATAKANA.slice(5, 20)), // k / g / s rows
+  keys(KATAKANA.slice(20, 35)), // z / t / d rows
+  keys(KATAKANA.slice(35, 50)), // h / b / p rows
+  keys(KATAKANA.slice(50, 65)), // m / n / r rows
+  // y, w, small kana (excluding ン), prolonged mark (ー), then ン (n) last
+  keys([...KATAKANA.slice(65, 70), ...KATAKANA.slice(71, 80), KATAKANA[80], KATAKANA[70]]),
 ]
 
 // --- Letter reference -------------------------------------------------------
