@@ -9,12 +9,12 @@ import { scriptToLatin, latinToScript, type KeyDef, type Phrase } from "./arabic
 export const russianMapping: Record<string, string> = {
   // Vowels
   а: "a",
-  е: "e",
+  е: "ye",
   о: "o",
   у: "u",
   и: "i",
   э: "eh",
-  ё: "ye",
+  ё: "yo",
   ю: "yu",
   я: "ya",
   // Consonants
@@ -65,12 +65,12 @@ export function transcribeRussianLatin(text: string): string {
 // Cyrillic letter -> short description shown in the letter reference
 export const russianDescriptions: Record<string, string> = {
   а: 'A - a (like "a" in "father")',
-  е: 'Ye - e (like "ye" in "yes")',
+  е: 'Ye - ye (like "ye" in "yes")',
   о: 'O - o (like "o" in "more")',
   у: 'U - u (like "oo" in "boot")',
   и: 'I - i (like "ee" in "see")',
   э: 'E - eh (like "e" in "met")',
-  ё: 'Yo - ye (like "yo" in "yonder")',
+  ё: 'Yo - yo (like "yo" in "yonder")',
   ю: 'Yu - yu (like "u" in "use")',
   я: 'Ya - ya (like "ya" in "yard")',
   б: "Be - b",
