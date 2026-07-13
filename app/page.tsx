@@ -2,6 +2,7 @@
 
 import { ArabicTranscriber } from "@/components/arabic-transcriber"
 import { AccentTranscriber } from "@/components/accent-transcriber"
+import { CjkTranscriber } from "@/components/cjk-transcriber"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { spanishForward, frenchForward, portugueseForward } from "@/lib/accent-mapping"
 import {
@@ -13,6 +14,20 @@ import {
   persianPhrases,
 } from "@/lib/persian-mapping"
 import { transcribePersianIpa, persianIpa } from "@/lib/ipa-mapping"
+import {
+  transcribeKorean,
+  transcribeKoreanLatin,
+  koreanKeyboardRows,
+  koreanPhrases,
+  koreanReference,
+} from "@/lib/korean-mapping"
+import {
+  transcribeJapanese,
+  transcribeJapaneseLatin,
+  japaneseKeyboardRows,
+  japanesePhrases,
+  japaneseReference,
+} from "@/lib/japanese-mapping"
 
 const spanishPhrases = [
   { english: "Spanish (Español)", plain: "Espan0ol" },
@@ -41,9 +56,11 @@ export default function Home() {
         </div>
 
         <Tabs defaultValue="arabic" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-5 mb-6 h-auto">
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 mb-6 h-auto">
             <TabsTrigger value="arabic">Arabic</TabsTrigger>
             <TabsTrigger value="persian">Persian</TabsTrigger>
+            <TabsTrigger value="korean">Korean</TabsTrigger>
+            <TabsTrigger value="japanese">Japanese</TabsTrigger>
             <TabsTrigger value="french">French</TabsTrigger>
             <TabsTrigger value="spanish">Spanish</TabsTrigger>
             <TabsTrigger value="portuguese">Portuguese</TabsTrigger>
@@ -67,6 +84,34 @@ export default function Home() {
               keyboardRows={persianKeyboardRows}
               phrases={persianPhrases}
               scriptPlaceholder="متن فارسی را اینجا بنویسید..."
+            />
+          </TabsContent>
+
+          <TabsContent value="korean">
+            <CjkTranscriber
+              scriptName="Korean"
+              langCode="ko"
+              toLatin={transcribeKorean}
+              toScript={transcribeKoreanLatin}
+              keyboardRows={koreanKeyboardRows}
+              phrases={koreanPhrases}
+              reference={koreanReference}
+              referenceTitle="Korean Jamo Reference"
+              scriptPlaceholder="한국어 텍스트를 여기에 입력하세요..."
+            />
+          </TabsContent>
+
+          <TabsContent value="japanese">
+            <CjkTranscriber
+              scriptName="Japanese"
+              langCode="ja"
+              toLatin={transcribeJapanese}
+              toScript={transcribeJapaneseLatin}
+              keyboardRows={japaneseKeyboardRows}
+              phrases={japanesePhrases}
+              reference={japaneseReference}
+              referenceTitle="Japanese Kana Reference"
+              scriptPlaceholder="ここに日本語を入力してください..."
             />
           </TabsContent>
 
