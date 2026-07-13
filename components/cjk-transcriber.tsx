@@ -28,9 +28,9 @@ interface CjkTranscriberProps {
   /** Title for the letter reference card */
   referenceTitle: string
   /** Optional row-based reference layout (e.g. the Japanese gojūon table). When
-   * provided, each row renders as a 5-column grid so full a-i-u-e-o rows align
-   * and short rows occupy fewer columns. Takes precedence over `reference`. */
-  referenceRows?: { description: string; rows: ReferenceItem[][] }[]
+   * provided, each row renders as a 5-column grid aligned to the a-i-u-e-o
+   * vowels; `null` cells mark empty columns. Takes precedence over `reference`. */
+  referenceRows?: { description: string; rows: (ReferenceItem | null)[][] }[]
 }
 
 type Source = "latin" | "script" | "english" | "chinese" | null
@@ -464,9 +464,9 @@ export function CjkTranscriber({
         </CardHeader>
         <CardContent className="space-y-8">
           {referenceRows
-            ? // Row layout (e.g. Japanese gojūon): each row is its own 5-column
-              // grid so full a-i-u-e-o rows align, while short rows (ya/yu/yo,
-              // wa/wo, small kana) simply occupy fewer columns.
+            ? // Row layout (e.g. Japanese gojūon): each row is a 5-column grid
+              // aligned to the a-i-u-e-o vowels; `null` cells leave a column
+              // empty so kana like ya/yu/yo sit under a/u/o.
               referenceRows.map((section) => (
                 <div key={section.description}>
                   <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
@@ -475,7 +475,9 @@ export function CjkTranscriber({
                   <div className="space-y-2">
                     {section.rows.map((row, rowIndex) => (
                       <div key={rowIndex} className="grid grid-cols-5 gap-2">
-                        {row.map(renderReferenceCell)}
+                        {row.map((cell, cellIndex) =>
+                          cell ? renderReferenceCell(cell, cellIndex) : <div key={cellIndex} aria-hidden />,
+                        )}
                       </div>
                     ))}
                   </div>

@@ -121,22 +121,33 @@ export const japaneseReference: ReferenceItem[] = [
   { char: "ー", latin: "x", description: "Long vowel mark" },
 ]
 
-// Row-based reference for the gojūon table layout. The first 65 kana are the
-// complete a-i-u-e-o rows (13 rows of 5). The remaining groups are irregular
-// (ya/yu/yo, wa/wo/n, small kana, compound y-kana) and each get their own row,
-// so they are not forced to fill five columns.
-function kanaRows(pairs: [string, string][], description: string): ReferenceItem[][] {
+// Row-based reference for the gojūon table layout. Each row has 5 columns
+// aligned to the a-i-u-e-o vowels; `null` marks an empty column so irregular
+// rows sit under the correct vowel (e.g. ya/yu/yo in the a/u/o columns).
+type RefCell = ReferenceItem | null
+function kanaRows(pairs: [string, string][], description: string): RefCell[][] {
   const toItem = ([code, kana]: [string, string]): ReferenceItem => ({ char: kana, latin: code, description })
-  const rows: ReferenceItem[][] = []
+  const at = (index: number): RefCell => (pairs[index] ? toItem(pairs[index]) : null)
+  const rows: RefCell[][] = []
+
+  // 13 complete a-i-u-e-o rows (a … ro), indices 0-64.
   for (let i = 0; i < 65; i += 5) rows.push(pairs.slice(i, i + 5).map(toItem))
-  rows.push(pairs.slice(65, 68).map(toItem)) // ya yu yo
-  rows.push(pairs.slice(68, 71).map(toItem)) // wa wo n
-  rows.push(pairs.slice(71, 77).map(toItem)) // small kana
-  rows.push(pairs.slice(77, 80).map(toItem)) // ia iu io (compound)
+
+  // ya(65) yu(66) yo(67) -> a, u, o columns.
+  rows.push([at(65), null, at(66), null, at(67)])
+  // wa(68) wo(69) -> a, o columns; n(70) on its own row.
+  rows.push([at(68), null, null, null, at(69)])
+  rows.push([at(70)])
+  // Small vowels ac ic uc ec oc (71-75) fill the 5 columns; q(76) on its own row.
+  rows.push(pairs.slice(71, 76).map(toItem))
+  rows.push([at(76)])
+  // Small ya/yu/yo: ia(77) iu(78) io(79) -> a, u, o columns.
+  rows.push([at(77), null, at(78), null, at(79)])
+
   return rows
 }
 
-export const japaneseReferenceRows: { description: string; rows: ReferenceItem[][] }[] = [
+export const japaneseReferenceRows: { description: string; rows: RefCell[][] }[] = [
   { description: "Hiragana", rows: kanaRows(HIRAGANA, "Hiragana") },
   { description: "Katakana", rows: kanaRows(KATAKANA, "Katakana") },
   { description: "Long vowel mark", rows: [[{ char: "ー", latin: "x", description: "Long vowel mark" }]] },
