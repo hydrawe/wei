@@ -35,6 +35,10 @@ interface CjkTranscriberProps {
   toIpa?: (text: string) => string
   /** script char -> IPA symbol, shown in the letter reference */
   ipaMap?: Record<string, string>
+  /** When set, the keyboard renders each row as a fixed N-column grid on all
+   * screen sizes (e.g. 5 for the Japanese gojūon a-i-u-e-o layout). Defaults to
+   * a responsive wrapping layout. */
+  keyboardColumns?: number
 }
 
 type Source = "latin" | "script" | "english" | "chinese" | null
@@ -52,6 +56,7 @@ export function CjkTranscriber({
   referenceRows,
   toIpa,
   ipaMap,
+  keyboardColumns,
 }: CjkTranscriberProps) {
   const [scriptText, setScriptText] = useState("")
   const [latinText, setLatinText] = useState("")
@@ -89,17 +94,17 @@ export function CjkTranscriber({
   const renderReferenceCell = (item: ReferenceItem, index: number) => (
     <div
       key={`${item.char}-${item.latin}-${index}`}
-      className="flex items-center gap-3 p-3 rounded-lg border bg-card hover:bg-accent/50 transition-colors cursor-pointer"
+      className="flex flex-col sm:flex-row items-center gap-0.5 sm:gap-3 p-1.5 sm:p-3 rounded-lg border bg-card hover:bg-accent/50 transition-colors cursor-pointer text-center sm:text-left"
       onClick={() => appendLatin(item.latin)}
     >
-      <span className="text-3xl w-10 text-center">{item.char}</span>
+      <span className="text-2xl sm:text-3xl sm:w-10 text-center shrink-0 leading-none">{item.char}</span>
       <div className="flex-1 min-w-0">
-        <div className="font-mono text-sm font-semibold text-primary">{item.latin}</div>
+        <div className="font-mono text-xs sm:text-sm font-semibold text-primary truncate">{item.latin}</div>
         {ipaMap?.[item.char] ? (
           <span
             lang="und-fonipa"
             aria-label={`IPA pronunciation: ${ipaMap[item.char]}`}
-            className="font-mono text-xs text-muted-foreground"
+            className="font-mono text-[10px] sm:text-xs text-muted-foreground truncate block"
           >
             /{ipaMap[item.char]}/
           </span>
@@ -461,13 +466,27 @@ export function CjkTranscriber({
             {showKeyboard && (
               <div className="p-2 sm:p-4 border rounded-lg bg-muted/30 space-y-1.5 sm:space-y-2">
                 {keyboardRows.map((row, rowIndex) => (
-                  <div key={rowIndex} className="flex flex-wrap gap-1 sm:gap-1.5 justify-center">
+                  <div
+                    key={rowIndex}
+                    className={
+                      keyboardColumns
+                        ? "grid gap-1 sm:gap-1.5 mx-auto max-w-md"
+                        : "flex flex-wrap gap-1 sm:gap-1.5 justify-center"
+                    }
+                    style={
+                      keyboardColumns
+                        ? { gridTemplateColumns: `repeat(${keyboardColumns}, minmax(0, 1fr))` }
+                        : undefined
+                    }
+                  >
                     {row.map((key) => (
                       <Button
                         key={key.latin}
                         variant="outline"
                         size="sm"
-                        className="min-w-10 sm:min-w-11 h-12 sm:h-14 flex flex-col items-center justify-center gap-0.5 px-1.5 sm:px-2.5"
+                        className={`h-12 sm:h-14 flex flex-col items-center justify-center gap-0.5 px-1 sm:px-2.5 ${
+                          keyboardColumns ? "min-w-0 w-full" : "min-w-10 sm:min-w-11"
+                        }`}
                         onClick={() => appendLatin(key.latin)}
                       >
                         <span className="font-mono text-xs sm:text-sm font-semibold">{key.label}</span>
