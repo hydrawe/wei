@@ -85,6 +85,7 @@ export default function Home() {
               toIpa={transcribeJapaneseIpa}
               ipaMap={japaneseIpa}
               keyboardRows={japaneseKeyboardRows}
+              keyboardColumns={5}
               phrases={japanesePhrases}
               reference={japaneseReference}
               referenceRows={japaneseReferenceRows}
