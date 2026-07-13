@@ -137,10 +137,11 @@ function kanaRows(pairs: [string, string][], description: string): RefCell[][] {
   rows.push([at(65), null, at(66), null, at(67)])
   // Small ya/yu/yo: ia(77) iu(78) io(79) -> a, u, o columns.
   rows.push([at(77), null, at(78), null, at(79)])
-  // Small vowels ac ic uc ec oc (71-75) fill the 5 columns.
-  rows.push(pairs.slice(71, 76).map(toItem))
   // wa(68) wo(69) -> a, o columns.
   rows.push([at(68), null, null, null, at(69)])
+  // Small vowels ac ic uc ec oc (71-75) fill the 5 columns. Kept last so that
+  // "oc" sits directly before the n / sokuon subsection (oc -> n -> q).
+  rows.push(pairs.slice(71, 76).map(toItem))
 
   return rows
 }
@@ -165,3 +166,83 @@ export const japanesePhrases: Phrase[] = [
   { english: "Thank you", arabic: "ありがとう", latin: transcribeJapanese("ありがとう") },
   { english: "Japanese", arabic: "にほんご", latin: transcribeJapanese("にほんご") },
 ]
+
+// --- IPA phonetic transcription ---------------------------------------------
+// Per-kana IPA using standard Tokyo-dialect values. Both hiragana and katakana
+// share the same sounds, so the map is keyed by the kana character.
+const KANA_IPA_PAIRS: [string, string][] = [
+  ["あ", "a"], ["い", "i"], ["う", "ɯ"], ["え", "e"], ["お", "o"],
+  ["か", "ka"], ["き", "ki"], ["く", "kɯ"], ["け", "ke"], ["こ", "ko"],
+  ["が", "ɡa"], ["ぎ", "ɡi"], ["ぐ", "ɡɯ"], ["げ", "ɡe"], ["ご", "ɡo"],
+  ["さ", "sa"], ["し", "ɕi"], ["す", "sɯ"], ["せ", "se"], ["そ", "so"],
+  ["ざ", "dza"], ["じ", "dʑi"], ["ず", "dzɯ"], ["ぜ", "dze"], ["ぞ", "dzo"],
+  ["た", "ta"], ["ち", "tɕi"], ["つ", "tsɯ"], ["て", "te"], ["と", "to"],
+  ["だ", "da"], ["ぢ", "dʑi"], ["づ", "dzɯ"], ["で", "de"], ["ど", "do"],
+  ["は", "ha"], ["ひ", "çi"], ["ふ", "ɸɯ"], ["へ", "he"], ["ほ", "ho"],
+  ["ば", "ba"], ["び", "bi"], ["ぶ", "bɯ"], ["べ", "be"], ["ぼ", "bo"],
+  ["ぱ", "pa"], ["ぴ", "pi"], ["ぷ", "pɯ"], ["ぺ", "pe"], ["ぽ", "po"],
+  ["ま", "ma"], ["み", "mi"], ["む", "mɯ"], ["め", "me"], ["も", "mo"],
+  ["な", "na"], ["に", "ɲi"], ["ぬ", "nɯ"], ["ね", "ne"], ["の", "no"],
+  ["ら", "ɾa"], ["り", "ɾi"], ["る", "ɾɯ"], ["れ", "ɾe"], ["ろ", "ɾo"],
+  ["や", "ja"], ["ゆ", "jɯ"], ["よ", "jo"],
+  ["わ", "wa"], ["を", "o"], ["ん", "ɴ"],
+  ["ぁ", "a"], ["ぃ", "i"], ["ぅ", "ɯ"], ["ぇ", "e"], ["ぉ", "o"],
+  ["ゃ", "ja"], ["ゅ", "jɯ"], ["ょ", "jo"],
+]
+
+// Katakana share sounds with hiragana: derive their IPA from the code pairing.
+const HIRA_BY_CODE = new Map(HIRAGANA.map(([code, kana]) => [code.toLowerCase(), kana]))
+export const japaneseIpa: Record<string, string> = {}
+for (const [kana, ipa] of KANA_IPA_PAIRS) japaneseIpa[kana] = ipa
+for (const [code, kana] of KATAKANA) {
+  const hira = HIRA_BY_CODE.get(code.toLowerCase())
+  if (hira && japaneseIpa[hira] !== undefined) japaneseIpa[kana] = japaneseIpa[hira]
+}
+
+// Small y-kana that palatalize the preceding consonant (きゃ -> kʲa).
+const SMALL_Y: Record<string, string> = { "ゃ": "a", "ゅ": "ɯ", "ょ": "o", "ャ": "a", "ュ": "ɯ", "ョ": "o" }
+const isSokuon = (ch: string) => ch === "っ" || ch === "ッ"
+const isLongMark = (ch: string) => ch === "ー"
+
+// Kana -> IPA. Handles palatalization, gemination (っ), long vowels (ー) and
+// the syllabic nasal (ん), so the pronunciation reads naturally.
+export function transcribeJapaneseIpa(text: string): string {
+  let out = ""
+  const chars = [...text]
+
+  for (let i = 0; i < chars.length; i++) {
+    const ch = chars[i]
+    const next = chars[i + 1]
+
+    if (isSokuon(ch)) {
+      // Geminate: double the first consonant of the next syllable.
+      const nextIpa = next ? japaneseIpa[next] : undefined
+      const m = nextIpa?.match(/^[^aeiouɯ]+/)
+      if (m) out += m[0]
+      continue
+    }
+
+    if (isLongMark(ch)) {
+      out += "ː"
+      continue
+    }
+
+    const ipa = japaneseIpa[ch]
+    if (ipa === undefined) {
+      out += ch
+      continue
+    }
+
+    // Palatalize when followed by a small y-kana (e.g. き + ゃ -> kʲa).
+    if (next && SMALL_Y[next]) {
+      const base = ipa.replace(/[aeiouɯ]$/, "")
+      out += base + "ʲ" + SMALL_Y[next]
+      i++
+      continue
+    }
+
+    out += ipa
+  }
+
+  return out
+}

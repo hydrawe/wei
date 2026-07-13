@@ -17,9 +17,21 @@ interface AccentTranscriberProps {
   forward: Record<string, string>
   placeholder: string
   phrases: { english: string; plain: string }[]
+  /** accented text -> IPA phonetic transcription (approximate grapheme-to-phoneme) */
+  toIpa?: (text: string) => string
+  /** accented char -> IPA symbol, shown in the character reference */
+  charIpa?: Record<string, string>
 }
 
-export function AccentTranscriber({ language, langCode, forward, placeholder, phrases }: AccentTranscriberProps) {
+export function AccentTranscriber({
+  language,
+  langCode,
+  forward,
+  placeholder,
+  phrases,
+  toIpa,
+  charIpa,
+}: AccentTranscriberProps) {
   const [plainText, setPlainText] = useState("")
   const [accentedText, setAccentedText] = useState("")
   const [englishText, setEnglishText] = useState("")
@@ -28,6 +40,7 @@ export function AccentTranscriber({ language, langCode, forward, placeholder, ph
   const [copiedAccented, setCopiedAccented] = useState(false)
   const [copiedEnglish, setCopiedEnglish] = useState(false)
   const [copiedChinese, setCopiedChinese] = useState(false)
+  const [copiedIpa, setCopiedIpa] = useState(false)
   const [showKeyboard, setShowKeyboard] = useState(true)
   const [isTranslating, setIsTranslating] = useState(false)
   // Tracks which field the user last edited so we know the translation direction
@@ -35,6 +48,10 @@ export function AccentTranscriber({ language, langCode, forward, placeholder, ph
   const lastProcessedRef = useRef<string>("")
 
   const reference = buildReference(forward)
+
+  // Approximate IPA of the current accented text, shown as a readable
+  // pronunciation guide (accessible to screen readers, no audio required).
+  const ipaText = toIpa && accentedText.trim() ? toIpa(accentedText) : ""
 
   const fetchTranslation = async (text: string, pair: string): Promise<string> => {
     try {
@@ -235,6 +252,32 @@ export function AccentTranscriber({ language, langCode, forward, placeholder, ph
                 value={accentedText}
                 onChange={(e) => handleAccentedChange(e.target.value)}
               />
+              {ipaText && (
+                <div className="rounded-md border bg-muted/50 px-3 py-2">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                      Pronunciation (IPA, approximate)
+                    </span>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-6 px-2"
+                      onClick={() => copyToClipboard(`/${ipaText}/`, setCopiedIpa)}
+                    >
+                      {copiedIpa ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
+                      <span className="sr-only">Copy IPA pronunciation</span>
+                    </Button>
+                  </div>
+                  <p
+                    lang="und-fonipa"
+                    aria-label={`IPA pronunciation: ${ipaText}`}
+                    className="mt-1 font-mono text-lg leading-relaxed text-foreground"
+                    dir="ltr"
+                  >
+                    {`/${ipaText}/`}
+                  </p>
+                </div>
+              )}
             </div>
           </div>
 
@@ -390,7 +433,18 @@ export function AccentTranscriber({ language, langCode, forward, placeholder, ph
                 onClick={() => handleAccentedChange(accentedText + key.char)}
               >
                 <span className="text-2xl w-8 text-center">{key.char}</span>
-                <div className="font-mono text-sm font-semibold text-primary">{key.code}</div>
+                <div className="min-w-0">
+                  <div className="font-mono text-sm font-semibold text-primary">{key.code}</div>
+                  {charIpa?.[key.char] ? (
+                    <span
+                      lang="und-fonipa"
+                      aria-label={`IPA pronunciation: ${charIpa[key.char]}`}
+                      className="font-mono text-xs text-muted-foreground"
+                    >
+                      /{charIpa[key.char]}/
+                    </span>
+                  ) : null}
+                </div>
               </div>
             ))}
           </div>
