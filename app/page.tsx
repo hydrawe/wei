@@ -1,10 +1,8 @@
 "use client"
 
 import { ArabicTranscriber } from "@/components/arabic-transcriber"
-import { AccentTranscriber } from "@/components/accent-transcriber"
 import { CjkTranscriber } from "@/components/cjk-transcriber"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { spanishForward, frenchForward } from "@/lib/accent-mapping"
 import {
   transcribePersian,
   transcribePersianLatin,
@@ -24,19 +22,6 @@ import {
   japaneseReference,
   japaneseReferenceRows,
 } from "@/lib/japanese-mapping"
-import { spanishToIpa, spanishCharIpa, frenchToIpa, frenchCharIpa } from "@/lib/latin-ipa"
-
-const spanishPhrases = [
-  { english: "Spanish (Español)", plain: "Espan0ol" },
-  { english: "Goodbye (Adiós)", plain: "Adio2s" },
-  { english: "How (Cómo)", plain: "Co2mo" },
-]
-
-const frenchPhrases = [
-  { english: "Summer (Été)", plain: "E2te2" },
-  { english: "Hospital (Hôpital)", plain: "Ho3pital" },
-  { english: "Boy (Garçon)", plain: "Garc5on" },
-]
 
 export default function Home() {
   return (
@@ -47,12 +32,10 @@ export default function Home() {
         </div>
 
         <Tabs defaultValue="arabic" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 mb-6 h-auto">
+          <TabsList className="grid w-full grid-cols-3 mb-6 h-auto">
             <TabsTrigger value="arabic">Arabic</TabsTrigger>
             <TabsTrigger value="persian">Persian</TabsTrigger>
             <TabsTrigger value="japanese">Japanese</TabsTrigger>
-            <TabsTrigger value="french">French</TabsTrigger>
-            <TabsTrigger value="spanish">Spanish</TabsTrigger>
           </TabsList>
 
           <TabsContent value="arabic">
@@ -118,29 +101,6 @@ export default function Home() {
             />
           </TabsContent>
 
-          <TabsContent value="french">
-            <AccentTranscriber
-              language="French"
-              langCode="fr"
-              forward={frenchForward}
-              placeholder="Tapez le texte français ici..."
-              phrases={frenchPhrases}
-              toIpa={frenchToIpa}
-              charIpa={frenchCharIpa}
-            />
-          </TabsContent>
-
-          <TabsContent value="spanish">
-            <AccentTranscriber
-              language="Spanish"
-              langCode="es"
-              forward={spanishForward}
-              placeholder="Escribe el texto en español aquí..."
-              phrases={spanishPhrases}
-              toIpa={spanishToIpa}
-              charIpa={spanishCharIpa}
-            />
-          </TabsContent>
         </Tabs>
       </div>
     </main>
