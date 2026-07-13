@@ -13,7 +13,7 @@ export const russianMapping: Record<string, string> = {
   о: "o",
   у: "u",
   и: "i",
-  ы: "yh",
+  ы: "yi",
   э: "e",
   ё: "yo",
   ю: "yu",
@@ -70,7 +70,7 @@ export const russianDescriptions: Record<string, string> = {
   о: 'O - o (like "o" in "more")',
   у: 'U - u (like "oo" in "boot")',
   и: 'I - i (like "ee" in "see")',
-  ы: 'Yery - yh (like "i" in "bill", further back)',
+  ы: 'Yery - yi (like "i" in "bill", further back)',
   э: 'E - e (like "e" in "met")',
   ё: 'Yo - yo (like "yo" in "yonder")',
   ю: 'Yu - yu (like "u" in "use")',
@@ -153,7 +153,7 @@ export function transcribeRussianIpa(text: string): string {
 const key = (cyrillic: string): KeyDef => ({ latin: russianMapping[cyrillic], arabic: cyrillic, label: russianMapping[cyrillic] })
 
 export const russianKeyboardRows: KeyDef[][] = [
-  ["а", "о", "у", "и", "ы", "э", "е", "ё", "ю", "я"].map(key), // vowels: plain then yotated (ye/yo/yu/ya)
+  ["а", "о", "у", "и", "э", "ы", "е", "ё", "ю", "я"].map(key), // vowels: plain then yotated (ye/yo/yu/ya)
   ["б", "в", "г", "д", "ж", "з", "й", "к", "л", "м", "н"].map(key), // consonants
   ["п", "р", "с", "т", "ф", "х", "ц", "ч", "ш", "щ"].map(key), // consonants
   ["ь", "ъ"].map(key), // soft / hard signs
