@@ -139,17 +139,23 @@ function kanaRows(pairs: [string, string][], description: string): RefCell[][] {
   rows.push([at(77), null, at(78), null, at(79)])
   // Small vowels ac ic uc ec oc (71-75) fill the 5 columns.
   rows.push(pairs.slice(71, 76).map(toItem))
-  // wa(68) wo(69) -> a, o columns; n(70) on its own row.
+  // wa(68) wo(69) -> a, o columns.
   rows.push([at(68), null, null, null, at(69)])
-  rows.push([at(70)])
-  rows.push([at(76)]) // q (sokuon helper) on its own row
 
   return rows
 }
 
+// n(70) and q(76 = sokuon helper) grouped into their own subsection per script.
+function specialRow(pairs: [string, string][], description: string): RefCell[][] {
+  const toItem = ([code, kana]: [string, string]): ReferenceItem => ({ char: kana, latin: code, description })
+  return [[toItem(pairs[70]), toItem(pairs[76])]]
+}
+
 export const japaneseReferenceRows: { description: string; rows: RefCell[][] }[] = [
   { description: "Hiragana", rows: kanaRows(HIRAGANA, "Hiragana") },
+  { description: "Hiragana — n / sokuon", rows: specialRow(HIRAGANA, "Hiragana") },
   { description: "Katakana", rows: kanaRows(KATAKANA, "Katakana") },
+  { description: "Katakana — n / sokuon", rows: specialRow(KATAKANA, "Katakana") },
   { description: "Long vowel mark", rows: [[{ char: "ー", latin: "x", description: "Long vowel mark" }]] },
 ]
 
