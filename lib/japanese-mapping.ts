@@ -121,6 +121,27 @@ export const japaneseReference: ReferenceItem[] = [
   { char: "ー", latin: "x", description: "Long vowel mark" },
 ]
 
+// Row-based reference for the gojūon table layout. The first 65 kana are the
+// complete a-i-u-e-o rows (13 rows of 5). The remaining groups are irregular
+// (ya/yu/yo, wa/wo/n, small kana, compound y-kana) and each get their own row,
+// so they are not forced to fill five columns.
+function kanaRows(pairs: [string, string][], description: string): ReferenceItem[][] {
+  const toItem = ([code, kana]: [string, string]): ReferenceItem => ({ char: kana, latin: code, description })
+  const rows: ReferenceItem[][] = []
+  for (let i = 0; i < 65; i += 5) rows.push(pairs.slice(i, i + 5).map(toItem))
+  rows.push(pairs.slice(65, 68).map(toItem)) // ya yu yo
+  rows.push(pairs.slice(68, 71).map(toItem)) // wa wo n
+  rows.push(pairs.slice(71, 77).map(toItem)) // small kana
+  rows.push(pairs.slice(77, 80).map(toItem)) // ia iu io (compound)
+  return rows
+}
+
+export const japaneseReferenceRows: { description: string; rows: ReferenceItem[][] }[] = [
+  { description: "Hiragana", rows: kanaRows(HIRAGANA, "Hiragana") },
+  { description: "Katakana", rows: kanaRows(KATAKANA, "Katakana") },
+  { description: "Long vowel mark", rows: [[{ char: "ー", latin: "x", description: "Long vowel mark" }]] },
+]
+
 // --- Common phrases ---------------------------------------------------------
 export const japanesePhrases: Phrase[] = [
   { english: "Hello", arabic: "こんにちは", latin: transcribeJapanese("こんにちは") },

@@ -27,8 +27,10 @@ interface CjkTranscriberProps {
   scriptPlaceholder: string
   /** Title for the letter reference card */
   referenceTitle: string
-  /** Fixed number of columns for the reference grid (e.g. 5 for the Japanese gojūon table). Defaults to a responsive layout. */
-  referenceColumns?: 5
+  /** Optional row-based reference layout (e.g. the Japanese gojūon table). When
+   * provided, each row renders as a 5-column grid so full a-i-u-e-o rows align
+   * and short rows occupy fewer columns. Takes precedence over `reference`. */
+  referenceRows?: { description: string; rows: ReferenceItem[][] }[]
 }
 
 type Source = "latin" | "script" | "english" | "chinese" | null
@@ -43,7 +45,7 @@ export function CjkTranscriber({
   reference,
   scriptPlaceholder,
   referenceTitle,
-  referenceColumns,
+  referenceRows,
 }: CjkTranscriberProps) {
   const [scriptText, setScriptText] = useState("")
   const [latinText, setLatinText] = useState("")
@@ -72,6 +74,19 @@ export function CjkTranscriber({
     }
     return sections
   }, [reference])
+
+  const renderReferenceCell = (item: ReferenceItem, index: number) => (
+    <div
+      key={`${item.char}-${item.latin}-${index}`}
+      className="flex items-center gap-3 p-3 rounded-lg border bg-card hover:bg-accent/50 transition-colors cursor-pointer"
+      onClick={() => appendLatin(item.latin)}
+    >
+      <span className="text-3xl w-10 text-center">{item.char}</span>
+      <div className="flex-1 min-w-0">
+        <div className="font-mono text-sm font-semibold text-primary">{item.latin}</div>
+      </div>
+    </div>
+  )
 
   const fetchTranslation = async (text: string, pair: string): Promise<string> => {
     try {
@@ -448,33 +463,34 @@ export function CjkTranscriber({
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-8">
-          {referenceSections.map((section) => (
-            <div key={section.description}>
-              <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-                {section.description}
-              </h3>
-              <div
-                className={
-                  referenceColumns === 5
-                    ? "grid grid-cols-5 gap-2"
-                    : "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3"
-                }
-              >
-                {section.items.map((item, index) => (
-                  <div
-                    key={`${item.char}-${item.latin}-${index}`}
-                    className="flex items-center gap-3 p-3 rounded-lg border bg-card hover:bg-accent/50 transition-colors cursor-pointer"
-                    onClick={() => appendLatin(item.latin)}
-                  >
-                    <span className="text-3xl w-10 text-center">{item.char}</span>
-                    <div className="flex-1 min-w-0">
-                      <div className="font-mono text-sm font-semibold text-primary">{item.latin}</div>
-                    </div>
+          {referenceRows
+            ? // Row layout (e.g. Japanese gojūon): each row is its own 5-column
+              // grid so full a-i-u-e-o rows align, while short rows (ya/yu/yo,
+              // wa/wo, small kana) simply occupy fewer columns.
+              referenceRows.map((section) => (
+                <div key={section.description}>
+                  <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+                    {section.description}
+                  </h3>
+                  <div className="space-y-2">
+                    {section.rows.map((row, rowIndex) => (
+                      <div key={rowIndex} className="grid grid-cols-5 gap-2">
+                        {row.map(renderReferenceCell)}
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
-            </div>
-          ))}
+                </div>
+              ))
+            : referenceSections.map((section) => (
+                <div key={section.description}>
+                  <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+                    {section.description}
+                  </h3>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+                    {section.items.map(renderReferenceCell)}
+                  </div>
+                </div>
+              ))}
         </CardContent>
       </Card>
     </div>
