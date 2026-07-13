@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, useMemo } from "react"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -54,6 +54,21 @@ export function CjkTranscriber({
   const [isTranslating, setIsTranslating] = useState(false)
   const [source, setSource] = useState<Source>(null)
   const lastProcessedRef = useRef<string>("")
+
+  // Group the flat reference list into subsections by their description
+  // (e.g. Initial consonant / Vowel / Final consonant), preserving first-seen order.
+  const referenceSections = useMemo(() => {
+    const sections: { description: string; items: ReferenceItem[] }[] = []
+    for (const item of reference) {
+      let section = sections.find((s) => s.description === item.description)
+      if (!section) {
+        section = { description: item.description, items: [] }
+        sections.push(section)
+      }
+      section.items.push(item)
+    }
+    return sections
+  }, [reference])
 
   const fetchTranslation = async (text: string, pair: string): Promise<string> => {
     try {
@@ -429,22 +444,28 @@ export function CjkTranscriber({
             Complete mapping of {scriptName} characters to their Latin transliteration codes
           </CardDescription>
         </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-            {reference.map((item, index) => (
-              <div
-                key={`${item.char}-${item.latin}-${index}`}
-                className="flex items-center gap-3 p-3 rounded-lg border bg-card hover:bg-accent/50 transition-colors cursor-pointer"
-                onClick={() => appendLatin(item.latin)}
-              >
-                <span className="text-3xl w-10 text-center">{item.char}</span>
-                <div className="flex-1 min-w-0">
-                  <div className="font-mono text-sm font-semibold text-primary">{item.latin}</div>
-                  <div className="text-xs text-muted-foreground truncate">{item.description}</div>
-                </div>
+        <CardContent className="space-y-8">
+          {referenceSections.map((section) => (
+            <div key={section.description}>
+              <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+                {section.description}
+              </h3>
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+                {section.items.map((item, index) => (
+                  <div
+                    key={`${item.char}-${item.latin}-${index}`}
+                    className="flex items-center gap-3 p-3 rounded-lg border bg-card hover:bg-accent/50 transition-colors cursor-pointer"
+                    onClick={() => appendLatin(item.latin)}
+                  >
+                    <span className="text-3xl w-10 text-center">{item.char}</span>
+                    <div className="flex-1 min-w-0">
+                      <div className="font-mono text-sm font-semibold text-primary">{item.latin}</div>
+                    </div>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
         </CardContent>
       </Card>
     </div>
