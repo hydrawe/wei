@@ -216,7 +216,7 @@ export const koreanKeyboardRows: KeyDef[][] = [
   // Remaining basic initials + double consonants
   [
     ...LEAD.slice(11).map(([code, jamo]) => ({ latin: code, arabic: jamo, label: code })),
-    ...LEAD.filter(([code]) => ["gg", "dd", "bb", "ss", "jj"].includes(code)).map(([code, jamo]) => ({
+    ...LEAD.filter(([code]) => ["gg", "dd", "bb", "ss"].includes(code)).map(([code, jamo]) => ({
       latin: code,
       arabic: jamo,
       label: code,
