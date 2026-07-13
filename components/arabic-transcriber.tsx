@@ -40,6 +40,12 @@ interface ArabicTranscriberProps {
   phrases?: Phrase[]
   /** Placeholder for the script textarea */
   scriptPlaceholder?: string
+  /** Writing direction of the script textarea. Defaults to "rtl" (Arabic/Persian);
+   * set to "ltr" for left-to-right scripts like Cyrillic. */
+  scriptDir?: "rtl" | "ltr"
+  /** Show the Arabic diacritic/tanwin keys (a, i, u, av, iv, uv) on the keyboard.
+   * Defaults to true; set to false for scripts without them (e.g. Russian). */
+  showDiacritics?: boolean
   /**
    * Route script<->Chinese translations through English. MyMemory has almost
    * no direct corpus for some pairs (e.g. Persian<->Chinese), so pivoting via
@@ -84,6 +90,8 @@ export function ArabicTranscriber({
   keyboardRows = arabicKeyboardRows,
   phrases = arabicPhrases,
   scriptPlaceholder = "اكتب النص العربي هنا...",
+  scriptDir = "rtl",
+  showDiacritics = true,
   pivotChineseThroughEnglish = false,
   keyFeatures = arabicKeyFeatures,
   pronunciationTips = arabicPronunciationTips,
@@ -323,8 +331,10 @@ export function ArabicTranscriber({
               <Textarea
                 id="arabic-input"
                 placeholder={scriptPlaceholder}
-                className="min-h-32 !text-[30px] text-right font-arabic !leading-normal"
-                dir="rtl"
+                className={`min-h-32 !text-[30px] !leading-normal ${
+                  scriptDir === "rtl" ? "text-right font-arabic" : "text-left"
+                }`}
+                dir={scriptDir}
                 value={arabicText}
                 onChange={(e) => handleArabicChange(e.target.value)}
               />
@@ -499,60 +509,64 @@ export function ArabicTranscriber({
                 ))}
                 {/* Bottom row with diacritics, space, and delete */}
                 <div className="flex flex-wrap gap-1 sm:gap-1.5 justify-center mt-2 sm:mt-2.5">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="min-w-10 sm:min-w-11 h-12 sm:h-14 flex flex-col items-center justify-center gap-0.5 px-1.5 sm:px-2.5"
-                    onClick={() => handleKeyPress('َ', 'a')}
-                  >
-                    <span className="font-mono text-xs sm:text-sm font-semibold">a</span>
-                    <span className="text-base sm:text-xl font-arabic">َ</span>
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="min-w-10 sm:min-w-11 h-12 sm:h-14 flex flex-col items-center justify-center gap-0.5 px-1.5 sm:px-2.5"
-                    onClick={() => handleKeyPress('ِ', 'i')}
-                  >
-                    <span className="font-mono text-xs sm:text-sm font-semibold">i</span>
-                    <span className="text-base sm:text-xl font-arabic">ِ</span>
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="min-w-10 sm:min-w-11 h-12 sm:h-14 flex flex-col items-center justify-center gap-0.5 px-1.5 sm:px-2.5"
-                    onClick={() => handleKeyPress('ُ', 'u')}
-                  >
-                    <span className="font-mono text-xs sm:text-sm font-semibold">u</span>
-                    <span className="text-base sm:text-xl font-arabic">ُ</span>
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="min-w-10 sm:min-w-11 h-12 sm:h-14 flex flex-col items-center justify-center gap-0.5 px-1.5 sm:px-2.5"
-                    onClick={() => handleKeyPress('ً', 'av')}
-                  >
-                    <span className="font-mono text-xs sm:text-sm font-semibold">av</span>
-                    <span className="text-base sm:text-xl font-arabic">ً</span>
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="min-w-10 sm:min-w-11 h-12 sm:h-14 flex flex-col items-center justify-center gap-0.5 px-1.5 sm:px-2.5"
-                    onClick={() => handleKeyPress('ٍ', 'iv')}
-                  >
-                    <span className="font-mono text-xs sm:text-sm font-semibold">iv</span>
-                    <span className="text-base sm:text-xl font-arabic">ٍ</span>
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="min-w-10 sm:min-w-11 h-12 sm:h-14 flex flex-col items-center justify-center gap-0.5 px-1.5 sm:px-2.5"
-                    onClick={() => handleKeyPress('ٌ', 'uv')}
-                  >
-                    <span className="font-mono text-xs sm:text-sm font-semibold">uv</span>
-                    <span className="text-base sm:text-xl font-arabic">ٌ</span>
-                  </Button>
+                  {showDiacritics && (
+                    <>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="min-w-10 sm:min-w-11 h-12 sm:h-14 flex flex-col items-center justify-center gap-0.5 px-1.5 sm:px-2.5"
+                        onClick={() => handleKeyPress('َ', 'a')}
+                      >
+                        <span className="font-mono text-xs sm:text-sm font-semibold">a</span>
+                        <span className="text-base sm:text-xl font-arabic">َ</span>
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="min-w-10 sm:min-w-11 h-12 sm:h-14 flex flex-col items-center justify-center gap-0.5 px-1.5 sm:px-2.5"
+                        onClick={() => handleKeyPress('ِ', 'i')}
+                      >
+                        <span className="font-mono text-xs sm:text-sm font-semibold">i</span>
+                        <span className="text-base sm:text-xl font-arabic">ِ</span>
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="min-w-10 sm:min-w-11 h-12 sm:h-14 flex flex-col items-center justify-center gap-0.5 px-1.5 sm:px-2.5"
+                        onClick={() => handleKeyPress('ُ', 'u')}
+                      >
+                        <span className="font-mono text-xs sm:text-sm font-semibold">u</span>
+                        <span className="text-base sm:text-xl font-arabic">ُ</span>
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="min-w-10 sm:min-w-11 h-12 sm:h-14 flex flex-col items-center justify-center gap-0.5 px-1.5 sm:px-2.5"
+                        onClick={() => handleKeyPress('ً', 'av')}
+                      >
+                        <span className="font-mono text-xs sm:text-sm font-semibold">av</span>
+                        <span className="text-base sm:text-xl font-arabic">ً</span>
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="min-w-10 sm:min-w-11 h-12 sm:h-14 flex flex-col items-center justify-center gap-0.5 px-1.5 sm:px-2.5"
+                        onClick={() => handleKeyPress('ٍ', 'iv')}
+                      >
+                        <span className="font-mono text-xs sm:text-sm font-semibold">iv</span>
+                        <span className="text-base sm:text-xl font-arabic">ٍ</span>
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="min-w-10 sm:min-w-11 h-12 sm:h-14 flex flex-col items-center justify-center gap-0.5 px-1.5 sm:px-2.5"
+                        onClick={() => handleKeyPress('ٌ', 'uv')}
+                      >
+                        <span className="font-mono text-xs sm:text-sm font-semibold">uv</span>
+                        <span className="text-base sm:text-xl font-arabic">ٌ</span>
+                      </Button>
+                    </>
+                  )}
                   <Button
                     variant="outline"
                     size="sm"

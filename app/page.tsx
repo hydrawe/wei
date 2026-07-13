@@ -13,6 +13,16 @@ import {
 } from "@/lib/persian-mapping"
 import { transcribePersianIpa, persianIpa } from "@/lib/ipa-mapping"
 import {
+  transcribeRussian,
+  transcribeRussianLatin,
+  transcribeRussianIpa,
+  russianIpa,
+  russianMapping,
+  russianDescriptions,
+  russianKeyboardRows,
+  russianPhrases,
+} from "@/lib/russian-mapping"
+import {
   transcribeJapanese,
   transcribeJapaneseLatin,
   transcribeJapaneseIpa,
@@ -32,9 +42,10 @@ export default function Home() {
         </div>
 
         <Tabs defaultValue="arabic" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 mb-6 h-auto">
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 mb-6 h-auto">
             <TabsTrigger value="arabic">Arabic</TabsTrigger>
             <TabsTrigger value="persian">Persian</TabsTrigger>
+            <TabsTrigger value="russian">Russian</TabsTrigger>
             <TabsTrigger value="japanese">Japanese</TabsTrigger>
           </TabsList>
 
@@ -79,6 +90,47 @@ export default function Home() {
                 { code: "x", char: "ح", description: 'a plain "h", same as "h" (ه)' },
                 { code: "g", char: "ع", description: "a glottal catch in the voice, often silent" },
                 { code: "r", char: "ر", description: "a rolled or tapped r" },
+              ]}
+            />
+          </TabsContent>
+
+          <TabsContent value="russian">
+            <ArabicTranscriber
+              scriptName="Russian"
+              langCode="ru"
+              scriptDir="ltr"
+              showDiacritics={false}
+              toLatin={transcribeRussian}
+              toScript={transcribeRussianLatin}
+              toIpa={transcribeRussianIpa}
+              ipaMap={russianIpa}
+              mapping={russianMapping}
+              descriptions={russianDescriptions}
+              keyboardRows={russianKeyboardRows}
+              phrases={russianPhrases}
+              scriptPlaceholder="Введите русский текст здесь..."
+              keyFeatures={[
+                {
+                  term: "Digraphs",
+                  description: '"zh" (ж), "ch" (ч), "xh" (ш) and "sh" (щ) each represent a single Cyrillic letter',
+                },
+                {
+                  term: "Yotated vowels",
+                  description: '"yu" (ю), "ya" (я) and "ye" (ё) start with a "y" glide',
+                },
+                {
+                  term: "Soft & hard signs",
+                  description: '"q" (ь) softens the previous consonant; "qh" (ъ) is a silent hard separator',
+                },
+                { term: "One-to-one", description: "most Latin codes map directly to a single Cyrillic letter" },
+              ]}
+              pronunciationTips={[
+                { code: "x", char: "х", description: 'like the "ch" in Scottish "loch"' },
+                { code: "zh", char: "ж", description: 'like the "s" in "measure"' },
+                { code: "xh", char: "ш", description: 'a hard "sh" as in "shoe"' },
+                { code: "sh", char: "щ", description: 'a softer, longer "sh"' },
+                { code: "c", char: "ц", description: 'like "ts" in "cats"' },
+                { code: "r", char: "р", description: "a rolled or trilled r" },
               ]}
             />
           </TabsContent>
