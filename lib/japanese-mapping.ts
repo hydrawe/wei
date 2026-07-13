@@ -137,10 +137,11 @@ function kanaRows(pairs: [string, string][], description: string): RefCell[][] {
   rows.push([at(65), null, at(66), null, at(67)])
   // Small ya/yu/yo: ia(77) iu(78) io(79) -> a, u, o columns.
   rows.push([at(77), null, at(78), null, at(79)])
-  // Small vowels ac ic uc ec oc (71-75) fill the 5 columns.
-  rows.push(pairs.slice(71, 76).map(toItem))
   // wa(68) wo(69) -> a, o columns.
   rows.push([at(68), null, null, null, at(69)])
+  // Small vowels ac ic uc ec oc (71-75) fill the 5 columns. Kept last so that
+  // "oc" sits directly before the n / sokuon subsection (oc -> n -> q).
+  rows.push(pairs.slice(71, 76).map(toItem))
 
   return rows
 }
