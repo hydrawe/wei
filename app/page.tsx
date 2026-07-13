@@ -4,7 +4,7 @@ import { ArabicTranscriber } from "@/components/arabic-transcriber"
 import { AccentTranscriber } from "@/components/accent-transcriber"
 import { CjkTranscriber } from "@/components/cjk-transcriber"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { spanishForward, frenchForward, portugueseForward } from "@/lib/accent-mapping"
+import { spanishForward, frenchForward } from "@/lib/accent-mapping"
 import {
   transcribePersian,
   transcribePersianLatin,
@@ -24,14 +24,7 @@ import {
   japaneseReference,
   japaneseReferenceRows,
 } from "@/lib/japanese-mapping"
-import {
-  spanishToIpa,
-  spanishCharIpa,
-  frenchToIpa,
-  frenchCharIpa,
-  portugueseToIpa,
-  portugueseCharIpa,
-} from "@/lib/latin-ipa"
+import { spanishToIpa, spanishCharIpa, frenchToIpa, frenchCharIpa } from "@/lib/latin-ipa"
 
 const spanishPhrases = [
   { english: "Spanish (Español)", plain: "Espan0ol" },
@@ -45,12 +38,6 @@ const frenchPhrases = [
   { english: "Boy (Garçon)", plain: "Garc5on" },
 ]
 
-const portuguesePhrases = [
-  { english: "Bread (Pão)", plain: "Pa0o" },
-  { english: "Coffee (Café)", plain: "Cafe2" },
-  { english: "Heart (Coração)", plain: "Corac5a0o" },
-]
-
 export default function Home() {
   return (
     <main className="min-h-screen py-8 px-4">
@@ -60,13 +47,12 @@ export default function Home() {
         </div>
 
         <Tabs defaultValue="arabic" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 mb-6 h-auto">
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 mb-6 h-auto">
             <TabsTrigger value="arabic">Arabic</TabsTrigger>
             <TabsTrigger value="persian">Persian</TabsTrigger>
             <TabsTrigger value="japanese">Japanese</TabsTrigger>
             <TabsTrigger value="french">French</TabsTrigger>
             <TabsTrigger value="spanish">Spanish</TabsTrigger>
-            <TabsTrigger value="portuguese">Portuguese</TabsTrigger>
           </TabsList>
 
           <TabsContent value="arabic">
@@ -128,18 +114,6 @@ export default function Home() {
               phrases={spanishPhrases}
               toIpa={spanishToIpa}
               charIpa={spanishCharIpa}
-            />
-          </TabsContent>
-
-          <TabsContent value="portuguese">
-            <AccentTranscriber
-              language="Portuguese"
-              langCode="pt"
-              forward={portugueseForward}
-              placeholder="Digite o texto em português aqui..."
-              phrases={portuguesePhrases}
-              toIpa={portugueseToIpa}
-              charIpa={portugueseCharIpa}
             />
           </TabsContent>
         </Tabs>
