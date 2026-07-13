@@ -6,6 +6,15 @@ import { CjkTranscriber } from "@/components/cjk-transcriber"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { spanishForward, frenchForward, portugueseForward } from "@/lib/accent-mapping"
 import {
+  transcribePersian,
+  transcribePersianLatin,
+  persianMapping,
+  persianDescriptions,
+  persianKeyboardRows,
+  persianPhrases,
+} from "@/lib/persian-mapping"
+import { transcribePersianIpa, persianIpa } from "@/lib/ipa-mapping"
+import {
   transcribeJapanese,
   transcribeJapaneseLatin,
   transcribeJapaneseIpa,
@@ -51,8 +60,9 @@ export default function Home() {
         </div>
 
         <Tabs defaultValue="arabic" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 mb-6 h-auto">
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 mb-6 h-auto">
             <TabsTrigger value="arabic">Arabic</TabsTrigger>
+            <TabsTrigger value="persian">Persian</TabsTrigger>
             <TabsTrigger value="japanese">Japanese</TabsTrigger>
             <TabsTrigger value="french">French</TabsTrigger>
             <TabsTrigger value="spanish">Spanish</TabsTrigger>
@@ -61,6 +71,23 @@ export default function Home() {
 
           <TabsContent value="arabic">
             <ArabicTranscriber />
+          </TabsContent>
+
+          <TabsContent value="persian">
+            <ArabicTranscriber
+              scriptName="Persian"
+              langCode="fa"
+              pivotChineseThroughEnglish
+              toLatin={transcribePersian}
+              toScript={transcribePersianLatin}
+              toIpa={transcribePersianIpa}
+              ipaMap={persianIpa}
+              mapping={persianMapping}
+              descriptions={persianDescriptions}
+              keyboardRows={persianKeyboardRows}
+              phrases={persianPhrases}
+              scriptPlaceholder="متن فارسی را اینجا بنویسید..."
+            />
           </TabsContent>
 
           <TabsContent value="japanese">
