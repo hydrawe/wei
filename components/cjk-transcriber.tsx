@@ -39,6 +39,19 @@ interface CjkTranscriberProps {
    * screen sizes (e.g. 5 for the Japanese gojūon a-i-u-e-o layout). Defaults to
    * a responsive wrapping layout. */
   keyboardColumns?: number
+  /** Enables a Caps toggle that splits `keyboardRows` into a lowercase set
+   * (shown by default) and an uppercase set. Used by Japanese to switch between
+   * hiragana (lowercase) and katakana (uppercase) without showing every key. */
+  keyboardCase?: {
+    /** Number of leading rows that make up the lowercase set; the rest are uppercase */
+    lowerCount: number
+    /** Label for the lowercase set, e.g. "Hiragana" */
+    lowerLabel: string
+    /** Label for the uppercase set, e.g. "Katakana" */
+    upperLabel: string
+    /** Short helper note shown below the keyboard */
+    note?: string
+  }
 }
 
 type Source = "latin" | "script" | "english" | "chinese" | null
@@ -57,6 +70,7 @@ export function CjkTranscriber({
   toIpa,
   ipaMap,
   keyboardColumns,
+  keyboardCase,
 }: CjkTranscriberProps) {
   const [scriptText, setScriptText] = useState("")
   const [latinText, setLatinText] = useState("")
@@ -68,9 +82,19 @@ export function CjkTranscriber({
   const [copiedChinese, setCopiedChinese] = useState(false)
   const [copiedIpa, setCopiedIpa] = useState(false)
   const [showKeyboard, setShowKeyboard] = useState(true)
+  const [caps, setCaps] = useState(false)
   const [isTranslating, setIsTranslating] = useState(false)
   const [source, setSource] = useState<Source>(null)
   const lastProcessedRef = useRef<string>("")
+
+  // When a case split is configured, only show one half of the keyboard at a
+  // time: the lowercase set (e.g. hiragana) by default, or the uppercase set
+  // (e.g. katakana) when Caps is on.
+  const displayedRows = keyboardCase
+    ? caps
+      ? keyboardRows.slice(keyboardCase.lowerCount)
+      : keyboardRows.slice(0, keyboardCase.lowerCount)
+    : keyboardRows
 
   // IPA phonetic transcription of the current script text, shown as accessible
   // pronunciation notes so the pronunciation is readable without audio.
@@ -465,7 +489,23 @@ export function CjkTranscriber({
             </div>
             {showKeyboard && (
               <div className="p-2 sm:p-4 border rounded-lg bg-muted/30 space-y-1.5 sm:space-y-2">
-                {keyboardRows.map((row, rowIndex) => (
+                {keyboardCase && (
+                  <div className="flex items-center justify-center gap-2 pb-1">
+                    <Button
+                      variant={caps ? "default" : "outline"}
+                      size="sm"
+                      className="h-10 sm:h-11 px-3 sm:px-4 text-xs sm:text-sm"
+                      aria-pressed={caps}
+                      onClick={() => setCaps((c) => !c)}
+                    >
+                      ⇪ Caps
+                    </Button>
+                    <span className="text-xs sm:text-sm font-medium text-muted-foreground">
+                      {caps ? keyboardCase.upperLabel : keyboardCase.lowerLabel}
+                    </span>
+                  </div>
+                )}
+                {displayedRows.map((row, rowIndex) => (
                   <div
                     key={rowIndex}
                     className={
@@ -513,6 +553,9 @@ export function CjkTranscriber({
                     Del
                   </Button>
                 </div>
+                {keyboardCase?.note && (
+                  <p className="text-xs text-muted-foreground text-center pt-1 text-pretty">{keyboardCase.note}</p>
+                )}
               </div>
             )}
           </div>

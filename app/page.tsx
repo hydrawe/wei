@@ -93,6 +93,12 @@ export default function Home() {
               ipaMap={japaneseIpa}
               keyboardRows={japaneseKeyboardRows}
               keyboardColumns={5}
+              keyboardCase={{
+                lowerCount: 6,
+                lowerLabel: "Hiragana (lowercase)",
+                upperLabel: "Katakana (uppercase)",
+                note: "The keyboard shows hiragana by default. Tap Caps to switch to katakana — uppercase codes produce katakana, lowercase codes produce hiragana.",
+              }}
               phrases={japanesePhrases}
               reference={japaneseReference}
               referenceRows={japaneseReferenceRows}
