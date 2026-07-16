@@ -1,6 +1,7 @@
 "use client"
 
 import { ArabicTranscriber } from "@/components/arabic-transcriber"
+import { CjkTranscriber } from "@/components/cjk-transcriber"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
   transcribePersian,
@@ -21,6 +22,13 @@ import {
   russianKeyboardRows,
   russianPhrases,
 } from "@/lib/russian-mapping"
+import {
+  transcribeKorean,
+  transcribeKoreanLatin,
+  koreanKeyboardRows,
+  koreanReference,
+  koreanPhrases,
+} from "@/lib/korean-mapping"
 export default function Home() {
   return (
     <main className="min-h-screen py-8 px-4">
@@ -30,10 +38,11 @@ export default function Home() {
         </div>
 
         <Tabs defaultValue="arabic" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 mb-6 h-auto">
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 mb-6 h-auto">
             <TabsTrigger value="arabic">Arabic</TabsTrigger>
             <TabsTrigger value="persian">Persian</TabsTrigger>
             <TabsTrigger value="russian">Russian</TabsTrigger>
+            <TabsTrigger value="korean">Korean</TabsTrigger>
           </TabsList>
 
           <TabsContent value="arabic">
@@ -119,6 +128,20 @@ export default function Home() {
                 { code: "c", char: "ц", description: 'like "ts" in "cats"' },
                 { code: "r", char: "р", description: "a rolled or trilled r" },
               ]}
+            />
+          </TabsContent>
+
+          <TabsContent value="korean">
+            <CjkTranscriber
+              scriptName="Korean"
+              langCode="ko"
+              toLatin={transcribeKorean}
+              toScript={transcribeKoreanLatin}
+              keyboardRows={koreanKeyboardRows}
+              phrases={koreanPhrases}
+              reference={koreanReference}
+              referenceTitle="Korean Jamo Reference"
+              scriptPlaceholder="여기에 한국어를 입력하세요..."
             />
           </TabsContent>
 
