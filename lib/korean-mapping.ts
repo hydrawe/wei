@@ -79,7 +79,7 @@ const VOWEL: [string, string][] = [
 const TAIL: [string, string][] = [
   ["q", "ㄱ"],
   ["qq", "ㄲ"],
-  ["sq", "ㄳ"],
+  ["qz", "ㄳ"],
   ["v", "ㄴ"],
   ["jv", "ㄵ"],
   ["hv", "ㄶ"],
