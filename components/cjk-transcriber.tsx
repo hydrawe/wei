@@ -124,15 +124,18 @@ export function CjkTranscriber({
       <span className="text-2xl sm:text-3xl sm:w-10 text-center shrink-0 leading-none">{item.char}</span>
       <div className="flex-1 min-w-0">
         <div className="font-mono text-xs sm:text-sm font-semibold text-primary truncate">{item.latin}</div>
-        {ipaMap?.[item.char] ? (
-          <span
-            lang="und-fonipa"
-            aria-label={`IPA pronunciation: ${ipaMap[item.char]}`}
-            className="font-mono text-[10px] sm:text-xs text-muted-foreground truncate block"
-          >
-            /{ipaMap[item.char]}/
-          </span>
-        ) : null}
+        {(() => {
+          const ipa = item.ipa ?? ipaMap?.[item.char]
+          return ipa ? (
+            <span
+              lang="und-fonipa"
+              aria-label={`IPA pronunciation: ${ipa}`}
+              className="font-mono text-[10px] sm:text-xs text-muted-foreground truncate block"
+            >
+              /{ipa}/
+            </span>
+          ) : null
+        })()}
       </div>
     </div>
   )

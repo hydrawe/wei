@@ -25,6 +25,7 @@ import {
 import {
   transcribeKorean,
   transcribeKoreanLatin,
+  transcribeKoreanIpa,
   koreanKeyboardRows,
   koreanReference,
   koreanPhrases,
@@ -137,6 +138,7 @@ export default function Home() {
               langCode="ko"
               toLatin={transcribeKorean}
               toScript={transcribeKoreanLatin}
+              toIpa={transcribeKoreanIpa}
               keyboardRows={koreanKeyboardRows}
               phrases={koreanPhrases}
               reference={koreanReference}
