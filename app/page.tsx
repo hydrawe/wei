@@ -23,6 +23,16 @@ import {
   russianPhrases,
 } from "@/lib/russian-mapping"
 import {
+  transcribeUkrainian,
+  transcribeUkrainianLatin,
+  transcribeUkrainianIpa,
+  ukrainianIpa,
+  ukrainianMapping,
+  ukrainianDescriptions,
+  ukrainianKeyboardRows,
+  ukrainianPhrases,
+} from "@/lib/ukrainian-mapping"
+import {
   transcribeKorean,
   transcribeKoreanLatin,
   transcribeKoreanIpa,
@@ -39,10 +49,11 @@ export default function Home() {
         </div>
 
         <Tabs defaultValue="arabic" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 mb-6 h-auto">
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-5 mb-6 h-auto">
             <TabsTrigger value="arabic">Arabic</TabsTrigger>
             <TabsTrigger value="persian">Persian</TabsTrigger>
             <TabsTrigger value="russian">Russian</TabsTrigger>
+            <TabsTrigger value="ukrainian">Ukrainian</TabsTrigger>
             <TabsTrigger value="korean">Korean</TabsTrigger>
           </TabsList>
 
@@ -127,6 +138,50 @@ export default function Home() {
                 { code: "xh", char: "ш", description: 'a hard "sh" as in "shoe"' },
                 { code: "sh", char: "щ", description: 'a softer, longer "sh"' },
                 { code: "c", char: "ц", description: 'like "ts" in "cats"' },
+                { code: "r", char: "р", description: "a rolled or trilled r" },
+              ]}
+            />
+          </TabsContent>
+
+          <TabsContent value="ukrainian">
+            <ArabicTranscriber
+              scriptName="Ukrainian"
+              langCode="uk"
+              scriptDir="ltr"
+              showDiacritics={false}
+              toLatin={transcribeUkrainian}
+              toScript={transcribeUkrainianLatin}
+              toIpa={transcribeUkrainianIpa}
+              ipaMap={ukrainianIpa}
+              mapping={ukrainianMapping}
+              descriptions={ukrainianDescriptions}
+              keyboardRows={ukrainianKeyboardRows}
+              phrases={ukrainianPhrases}
+              scriptPlaceholder="Введіть український текст тут..."
+              keyFeatures={[
+                {
+                  term: "Ukrainian-only letters",
+                  description: '"gh" (ґ, hard g), "eh" (є), "ih" (і) and "yh" (ї) are specific to Ukrainian',
+                },
+                {
+                  term: "Digraphs",
+                  description: '"zh" (ж), "ch" (ч), "xh" (ш) and "sh" (щ) each represent a single Cyrillic letter',
+                },
+                {
+                  term: "Yotated vowels",
+                  description: '"yu" (ю), "ya" (я), "ye" (е) and "eh" (є) carry a "y" glide',
+                },
+                {
+                  term: "Soft & hard signs",
+                  description: '"q" (ь) softens the previous consonant; "qh" (ъ) is a silent hard separator',
+                },
+              ]}
+              pronunciationTips={[
+                { code: "g", char: "г", description: 'a voiced "h", like the "h" in "aha" (not a hard g)' },
+                { code: "gh", char: "ґ", description: 'the hard g, as in "go"' },
+                { code: "x", char: "х", description: 'like the "ch" in Scottish "loch"' },
+                { code: "zh", char: "ж", description: 'like the "s" in "measure"' },
+                { code: "v", char: "в", description: 'between an English "v" and "w"' },
                 { code: "r", char: "р", description: "a rolled or trilled r" },
               ]}
             />
