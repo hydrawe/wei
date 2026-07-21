@@ -116,8 +116,8 @@ export const japaneseKeyboardRows: KeyDef[][] = [
   keys(KATAKANA.slice(20, 35)), // z / t / d rows
   keys(KATAKANA.slice(35, 50)), // h / b / p rows
   keys(KATAKANA.slice(50, 65)), // m / n / r rows
-  // y, w, small kana (excluding ン), ン (n), then prolonged mark (ー) as the last key
-  keys([...KATAKANA.slice(65, 70), ...KATAKANA.slice(71, 80), KATAKANA[70], KATAKANA[80]]),
+  // y, w, small kana (excluding ン), ン (n), then prolonged mark (ー, uppercase "X") as the last key
+  keys([...KATAKANA.slice(65, 70), ...KATAKANA.slice(71, 80), KATAKANA[70], KATAKANA[81]]),
 ]
 
 // --- Letter reference -------------------------------------------------------
@@ -128,7 +128,7 @@ export const japaneseReference: ReferenceItem[] = [
     latin: code,
     description: "Katakana",
   })),
-  { char: "ー", latin: "x", description: "Long vowel mark" },
+  { char: "ー", latin: "X", description: "Long vowel mark (katakana)" },
 ]
 
 // Row-based reference for the gojūon table layout. Each row has 5 columns
@@ -167,7 +167,7 @@ export const japaneseReferenceRows: { description: string; rows: RefCell[][] }[]
   { description: "Hiragana — n / sokuon", rows: specialRow(HIRAGANA, "Hiragana") },
   { description: "Katakana", rows: kanaRows(KATAKANA, "Katakana") },
   { description: "Katakana — n / sokuon", rows: specialRow(KATAKANA, "Katakana") },
-  { description: "Long vowel mark", rows: [[{ char: "ー", latin: "x", description: "Long vowel mark" }]] },
+  { description: "Long vowel mark", rows: [[{ char: "ー", latin: "X", description: "Long vowel mark (katakana)" }]] },
 ]
 
 // --- Common phrases ---------------------------------------------------------
