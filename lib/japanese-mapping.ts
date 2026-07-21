@@ -116,8 +116,8 @@ export const japaneseKeyboardRows: KeyDef[][] = [
   keys(KATAKANA.slice(20, 35)), // z / t / d rows
   keys(KATAKANA.slice(35, 50)), // h / b / p rows
   keys(KATAKANA.slice(50, 65)), // m / n / r rows
-  // y, w, small kana (excluding ン), ン (n), then prolonged mark (ー) as the last key
-  keys([...KATAKANA.slice(65, 70), ...KATAKANA.slice(71, 80), KATAKANA[70], KATAKANA[80]]),
+  // y, w, small kana (excluding ン), ン (n), then prolonged mark (ー, uppercase "X") as the last key
+  keys([...KATAKANA.slice(65, 70), ...KATAKANA.slice(71, 80), KATAKANA[70], KATAKANA[81]]),
 ]
 
 // --- Letter reference -------------------------------------------------------
