@@ -128,7 +128,7 @@ export const japaneseReference: ReferenceItem[] = [
     latin: code,
     description: "Katakana",
   })),
-  { char: "ー", latin: "x", description: "Long vowel mark" },
+  { char: "ー", latin: "X", description: "Long vowel mark (katakana)" },
 ]
 
 // Row-based reference for the gojūon table layout. Each row has 5 columns
@@ -167,7 +167,7 @@ export const japaneseReferenceRows: { description: string; rows: RefCell[][] }[]
   { description: "Hiragana — n / sokuon", rows: specialRow(HIRAGANA, "Hiragana") },
   { description: "Katakana", rows: kanaRows(KATAKANA, "Katakana") },
   { description: "Katakana — n / sokuon", rows: specialRow(KATAKANA, "Katakana") },
-  { description: "Long vowel mark", rows: [[{ char: "ー", latin: "x", description: "Long vowel mark" }]] },
+  { description: "Long vowel mark", rows: [[{ char: "ー", latin: "X", description: "Long vowel mark (katakana)" }]] },
 ]
 
 // --- Common phrases ---------------------------------------------------------
