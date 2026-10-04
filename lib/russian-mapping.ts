@@ -4,6 +4,7 @@
 // scriptToLatin / latinToScript helpers with an EMPTY consonant set.
 
 import { scriptToLatin, latinToScript, type KeyDef, type Phrase } from "./arabic-mapping"
+import type { ReferenceItem } from "./korean-mapping"
 
 // Cyrillic letter -> Latin code
 export const russianMapping: Record<string, string> = {
@@ -12,8 +13,8 @@ export const russianMapping: Record<string, string> = {
   е: "ye",
   о: "o",
   у: "u",
-  и: "i",
-  ы: "yi",
+  и: "yi",
+  ы: "i",
   э: "e",
   ё: "yo",
   ю: "yu",
@@ -69,8 +70,8 @@ export const russianDescriptions: Record<string, string> = {
   е: 'Ye - ye (like "ye" in "yes")',
   о: 'O - o (like "o" in "more")',
   у: 'U - u (like "oo" in "boot")',
-  и: 'I - i (like "ee" in "see")',
-  ы: 'Yery - yi (like "i" in "bill", further back)',
+  и: 'I - yi (like "ee" in "see")',
+  ы: 'Yery - i (like "i" in "bill", further back)',
   э: 'E - e (like "e" in "met")',
   ё: 'Yo - yo (like "yo" in "yonder")',
   ю: 'Yu - yu (like "u" in "use")',
@@ -153,13 +154,54 @@ export function transcribeRussianIpa(text: string): string {
 const key = (cyrillic: string): KeyDef => ({ latin: russianMapping[cyrillic], arabic: cyrillic, label: russianMapping[cyrillic] })
 
 export const russianKeyboardRows: KeyDef[][] = [
-  ["а", "у", "э", "о", "и", "я", "ю", "е", "ё", "ы"].map(key), // vowels: a, u, e, o, i, ya, yu, ye, yo, yi
+  ["а", "у", "э", "о", "ы", "и", "я", "ю", "е", "ё"].map(key), // vowels: a, u, e, o, i, ya, yu, ye, yo, yi
   ["б", "в", "г", "д", "ж", "з", "й", "к", "л", "м", "н"].map(key), // consonants
   ["п", "р", "с", "т", "ф", "х", "ц", "ч", "ш", "щ"].map(key), // consonants
   ["ь", "ъ"].map(key), // soft / hard signs
 ]
 
 // Common Russian phrases (latin derived from the script for consistency)
+export const russianReference = Object.entries(russianMapping).map(([char, latin]) => ({
+  char,
+  latin,
+  description: russianDescriptions[char],
+  ipa: russianIpa[char],
+}))
+
+const russianReferenceItem = (latin: string): ReferenceItem => {
+  const char = Object.entries(russianMapping).find(([, code]) => code === latin)?.[0] ?? ""
+  return { char, latin, description: russianDescriptions[char] ?? "", ipa: russianIpa[char] }
+}
+const russianRow = (...codes: string[]): (ReferenceItem | null)[] => [
+  ...codes.map(russianReferenceItem),
+  ...Array.from({ length: Math.max(0, 5 - codes.length) }, () => null),
+]
+
+export const russianReferenceRows: { description: string; rows: (ReferenceItem | null)[][] }[] = [
+  {
+    description: "Hard vowels",
+    rows: [russianRow("a", "o", "u", "i", "e")],
+  },
+  {
+    description: "Soft vowels",
+    rows: [russianRow("ya", "yo", "yu", "yi", "ye")],
+  },
+  {
+    description: "Consonants",
+    rows: [
+      russianRow("x", "b", "v", "g", "d"),
+      russianRow("j", "k", "l", "m", "n"),
+      russianRow("p", "r", "t", "f", "z"),
+      russianRow("z", "c", "s", "zh", "ch"),
+      russianRow("xh", "sh"),
+    ],
+  },
+  {
+    description: "Other special letters and signs",
+    rows: [russianRow("q", "qh")],
+  },
+]
+
 export const russianPhrases: Phrase[] = [
   { english: "Hello", arabic: "Привет", latin: transcribeRussian("Привет") },
   { english: "Thank you", arabic: "Спасибо", latin: transcribeRussian("Спасибо") },
