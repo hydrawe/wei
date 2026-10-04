@@ -180,13 +180,13 @@ const russianRow = (...codes: string[]): (ReferenceItem | null)[] => [
 export const russianReferenceRows: { description: string; rows: (ReferenceItem | null)[][] }[] = [
   {
     description: "Vowels",
-    rows: [russianRow("ye", "yo", "e", "o", "u"), russianRow("yu", "ya", "yi")],
+    rows: [russianRow("a", "ye", "yo", "e", "o"), russianRow("u", "yu", "ya", "yi")],
   },
   {
     description: "Consonants",
     rows: [
-      russianRow("a", "x", "b", "v", "g"),
-      russianRow("d", "j", "k", "l", "m"),
+      russianRow("x", "b", "v", "g", "d"),
+      russianRow("j", "k", "l", "m", "n"),
       russianRow("n", "p", "r", "t", "f"),
       russianRow("z", "c", "s", "zh", "ch"),
       russianRow("xh", "sh"),
