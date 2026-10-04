@@ -179,22 +179,22 @@ const russianRow = (...codes: string[]): (ReferenceItem | null)[] => [
 
 export const russianReferenceRows: { description: string; rows: (ReferenceItem | null)[][] }[] = [
   {
-    description: "Vowels and vowel variants",
-    rows: [russianRow("ye", "yo", "e")],
+    description: "Vowels",
+    rows: [russianRow("ye", "yo", "e", "o", "u"), russianRow("yu", "ya", "yi")],
   },
   {
-    description: "Core letters",
+    description: "Consonants",
     rows: [
-      russianRow("a", "o", "x", "b", "v"),
-      russianRow("g", "d", "i", "j", "k"),
-      russianRow("l", "m", "n", "p", "r"),
-      russianRow("t", "u", "f", "z", "c"),
-      russianRow("s"),
+      russianRow("a", "x", "b", "v", "g"),
+      russianRow("d", "j", "k", "l", "m"),
+      russianRow("n", "p", "r", "t", "f"),
+      russianRow("z", "c", "s", "zh", "ch"),
+      russianRow("xh", "sh"),
     ],
   },
   {
-    description: "Special letters and signs",
-    rows: [russianRow("zh", "ch", "xh", "sh", "yu"), russianRow("ya", "yi", "q", "qh")],
+    description: "Other special letters and signs",
+    rows: [russianRow("q", "qh")],
   },
 ]
 
