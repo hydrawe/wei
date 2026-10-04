@@ -4,14 +4,6 @@ import { ArabicTranscriber } from "@/components/arabic-transcriber"
 import { CjkTranscriber } from "@/components/cjk-transcriber"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
-  transcribeKorean,
-  transcribeKoreanLatin,
-  transcribeKoreanIpa,
-  koreanKeyboardRows,
-  koreanReference,
-  koreanPhrases,
-} from "@/lib/korean-mapping"
-import {
   transcribeJapanese,
   transcribeJapaneseLatin,
   transcribeJapaneseIpa,
@@ -32,29 +24,13 @@ export default function Home() {
         </div>
 
         <Tabs defaultValue="arabic" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 mb-6 h-auto">
+          <TabsList className="grid w-full grid-cols-2 mb-6 h-auto">
             <TabsTrigger value="arabic">Arabic</TabsTrigger>
-            <TabsTrigger value="korean">Korean</TabsTrigger>
             <TabsTrigger value="japanese">Japanese</TabsTrigger>
           </TabsList>
 
           <TabsContent value="arabic">
             <ArabicTranscriber />
-          </TabsContent>
-
-          <TabsContent value="korean">
-            <CjkTranscriber
-              scriptName="Korean"
-              langCode="ko"
-              toLatin={transcribeKorean}
-              toScript={transcribeKoreanLatin}
-              toIpa={transcribeKoreanIpa}
-              keyboardRows={koreanKeyboardRows}
-              phrases={koreanPhrases}
-              reference={koreanReference}
-              referenceTitle="Korean Jamo Reference"
-              scriptPlaceholder="여기에 한국어를 입력하세요..."
-            />
           </TabsContent>
 
           <TabsContent value="japanese">
