@@ -14,6 +14,14 @@ import {
   japaneseReferenceRows,
 } from "@/lib/japanese-mapping"
 import { transcribeJapaneseWithKanji, toKanaReading } from "@/lib/japanese-kanji"
+import {
+  transcribeRussian,
+  transcribeRussianLatin,
+  transcribeRussianIpa,
+  russianKeyboardRows,
+  russianPhrases,
+  russianReference,
+} from "@/lib/russian-mapping"
 
 export default function Home() {
   return (
@@ -24,9 +32,10 @@ export default function Home() {
         </div>
 
         <Tabs defaultValue="arabic" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 mb-6 h-auto">
+          <TabsList className="grid w-full grid-cols-3 mb-6 h-auto">
             <TabsTrigger value="arabic">Arabic</TabsTrigger>
             <TabsTrigger value="japanese">Japanese</TabsTrigger>
+            <TabsTrigger value="russian">Russian</TabsTrigger>
           </TabsList>
 
           <TabsContent value="arabic">
@@ -56,6 +65,21 @@ export default function Home() {
               referenceRows={japaneseReferenceRows}
               referenceTitle="Japanese Kana Reference"
               scriptPlaceholder="ここに日本語を入力してください..."
+            />
+          </TabsContent>
+
+          <TabsContent value="russian">
+            <CjkTranscriber
+              scriptName="Russian"
+              langCode="ru"
+              toLatin={transcribeRussian}
+              toScript={transcribeRussianLatin}
+              toIpa={transcribeRussianIpa}
+              keyboardRows={russianKeyboardRows}
+              phrases={russianPhrases}
+              reference={russianReference}
+              referenceTitle="Russian Cyrillic Reference"
+              scriptPlaceholder="Введите русский текст здесь..."
             />
           </TabsContent>
 

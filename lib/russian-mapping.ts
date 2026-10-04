@@ -160,6 +160,13 @@ export const russianKeyboardRows: KeyDef[][] = [
 ]
 
 // Common Russian phrases (latin derived from the script for consistency)
+export const russianReference = Object.entries(russianMapping).map(([char, latin]) => ({
+  char,
+  latin,
+  description: russianDescriptions[char],
+  ipa: russianIpa[char],
+}))
+
 export const russianPhrases: Phrase[] = [
   { english: "Hello", arabic: "Привет", latin: transcribeRussian("Привет") },
   { english: "Thank you", arabic: "Спасибо", latin: transcribeRussian("Спасибо") },
