@@ -13,8 +13,8 @@ export const russianMapping: Record<string, string> = {
   е: "ye",
   о: "o",
   у: "u",
-  и: "i",
-  ы: "yi",
+  и: "yi",
+  ы: "i",
   э: "e",
   ё: "yo",
   ю: "yu",
@@ -70,8 +70,8 @@ export const russianDescriptions: Record<string, string> = {
   е: 'Ye - ye (like "ye" in "yes")',
   о: 'O - o (like "o" in "more")',
   у: 'U - u (like "oo" in "boot")',
-  и: 'I - i (like "ee" in "see")',
-  ы: 'Yery - yi (like "i" in "bill", further back)',
+  и: 'I - yi (like "ee" in "see")',
+  ы: 'Yery - i (like "i" in "bill", further back)',
   э: 'E - e (like "e" in "met")',
   ё: 'Yo - yo (like "yo" in "yonder")',
   ю: 'Yu - yu (like "u" in "use")',
@@ -179,8 +179,12 @@ const russianRow = (...codes: string[]): (ReferenceItem | null)[] => [
 
 export const russianReferenceRows: { description: string; rows: (ReferenceItem | null)[][] }[] = [
   {
-    description: "Vowels",
-    rows: [russianRow("a", "ye", "yo", "e", "o"), russianRow("u", "yu", "ya", "yi", "i")],
+    description: "Hard vowels",
+    rows: [russianRow("a", "o", "u", "i", "e")],
+  },
+  {
+    description: "Soft vowels",
+    rows: [russianRow("ya", "yo", "yu", "yi", "ye")],
   },
   {
     description: "Consonants",
