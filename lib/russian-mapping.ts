@@ -4,6 +4,7 @@
 // scriptToLatin / latinToScript helpers with an EMPTY consonant set.
 
 import { scriptToLatin, latinToScript, type KeyDef, type Phrase } from "./arabic-mapping"
+import type { ReferenceItem } from "./korean-mapping"
 
 // Cyrillic letter -> Latin code
 export const russianMapping: Record<string, string> = {
@@ -166,6 +167,36 @@ export const russianReference = Object.entries(russianMapping).map(([char, latin
   description: russianDescriptions[char],
   ipa: russianIpa[char],
 }))
+
+const russianReferenceItem = (latin: string): ReferenceItem => {
+  const char = Object.entries(russianMapping).find(([, code]) => code === latin)?.[0] ?? ""
+  return { char, latin, description: russianDescriptions[char] ?? "", ipa: russianIpa[char] }
+}
+const russianRow = (...codes: string[]): (ReferenceItem | null)[] => [
+  ...codes.map(russianReferenceItem),
+  ...Array.from({ length: Math.max(0, 5 - codes.length) }, () => null),
+]
+
+export const russianReferenceRows: { description: string; rows: (ReferenceItem | null)[][] }[] = [
+  {
+    description: "Vowels and vowel variants",
+    rows: [russianRow("ye", "yo", "e")],
+  },
+  {
+    description: "Core letters",
+    rows: [
+      russianRow("a", "o", "x", "b", "v"),
+      russianRow("g", "d", "i", "j", "k"),
+      russianRow("l", "m", "n", "p", "r"),
+      russianRow("t", "u", "f", "z", "c"),
+      russianRow("s"),
+    ],
+  },
+  {
+    description: "Special letters and signs",
+    rows: [russianRow("zh", "ch", "xh", "sh", "yu"), russianRow("ya", "yi", "q", "qh")],
+  },
+]
 
 export const russianPhrases: Phrase[] = [
   { english: "Hello", arabic: "Привет", latin: transcribeRussian("Привет") },

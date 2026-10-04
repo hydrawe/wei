@@ -21,6 +21,7 @@ import {
   russianKeyboardRows,
   russianPhrases,
   russianReference,
+  russianReferenceRows,
 } from "@/lib/russian-mapping"
 
 export default function Home() {
@@ -78,6 +79,7 @@ export default function Home() {
               keyboardRows={russianKeyboardRows}
               phrases={russianPhrases}
               reference={russianReference}
+              referenceRows={russianReferenceRows}
               referenceTitle="Russian Cyrillic Reference"
               scriptPlaceholder="Введите русский текст здесь..."
             />
