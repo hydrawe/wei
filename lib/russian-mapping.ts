@@ -189,11 +189,11 @@ export const russianReferenceRows: { description: string; rows: (ReferenceItem |
   {
     description: "Consonants",
     rows: [
-      russianRow("x", "b", "v", "g", "d"),
-      russianRow("j", "k", "l", "m", "n"),
-      russianRow("p", "r", "t", "f", "z"),
-      russianRow("z", "c", "s", "zh", "ch"),
-      russianRow("xh", "sh"),
+      russianRow("b", "v", "g", "d", "j"),
+      russianRow("k", "l", "m", "n", "p"),
+      russianRow("r", "t", "f", "z", "c"),
+      russianRow("s", "x", "zh", "ch", "xh"),
+      russianRow("sh"),
     ],
   },
   {
