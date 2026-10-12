@@ -154,7 +154,7 @@ export function transcribeRussianIpa(text: string): string {
 const key = (cyrillic: string): KeyDef => ({ latin: russianMapping[cyrillic], arabic: cyrillic, label: russianMapping[cyrillic] })
 
 export const russianKeyboardRows: KeyDef[][] = [
-  ["а", "у", "э", "о", "ы", "и", "я", "ю", "е", "ё"].map(key), // vowels: a, u, e, o, i, ya, yu, ye, yo, yi
+  ["а", "э", "ы", "о", "у", "я", "е", "и", "ё", "ю"].map(key), // vowels: a, e, i, o, u, ya, ye, yi, yo, yu
   ["б", "в", "г", "д", "ж", "з", "й", "к", "л", "м", "н"].map(key), // consonants
   ["п", "р", "с", "т", "ф", "х", "ц", "ч", "ш", "щ"].map(key), // consonants
   ["ь", "ъ"].map(key), // soft / hard signs
