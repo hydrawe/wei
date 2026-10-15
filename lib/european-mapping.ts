@@ -52,7 +52,10 @@ const spanishEntries: [string, string][] = [
 export const transcribeSpanish = identity
 export const transcribeSpanishLatin = (text: string) => replaceCodes(text, spanishEntries)
 export const transcribeSpanishIpa = ipa
-export const spanishKeyboardRows = makeMapping(spanishEntries)
+export const spanishKeyboardRows = makeMapping([
+  ["u1", "ü"],
+  ...spanishEntries.filter(([latin]) => latin !== "u1"),
+])
 export const spanishReference = makeReference(spanishEntries, "Spanish letter")
 export const spanishPhrases: Phrase[] = [
   { english: "Hello", arabic: "Hola", latin: "Hola" },
