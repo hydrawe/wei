@@ -31,6 +31,11 @@ import {
   koreanPhrases,
   koreanReference,
 } from "@/lib/korean-mapping"
+import {
+  transcribeGerman, transcribeGermanLatin, transcribeGermanIpa, germanKeyboardRows, germanPhrases, germanReference,
+  transcribeFrench, transcribeFrenchLatin, transcribeFrenchIpa, frenchKeyboardRows, frenchPhrases, frenchReference,
+  transcribeSpanish, transcribeSpanishLatin, transcribeSpanishIpa, spanishKeyboardRows, spanishPhrases, spanishReference,
+} from "@/lib/european-mapping"
 
 export default function Home() {
   return (
@@ -41,11 +46,14 @@ export default function Home() {
         </div>
 
         <Tabs defaultValue="arabic" className="w-full">
-          <TabsList className="grid w-full grid-cols-4 mb-6 h-auto">
+          <TabsList className="grid w-full grid-cols-7 mb-6 h-auto">
             <TabsTrigger value="arabic">Arabic</TabsTrigger>
             <TabsTrigger value="japanese">Japanese</TabsTrigger>
             <TabsTrigger value="korean">Korean</TabsTrigger>
             <TabsTrigger value="russian">Russian</TabsTrigger>
+            <TabsTrigger value="german">German</TabsTrigger>
+            <TabsTrigger value="french">French</TabsTrigger>
+            <TabsTrigger value="spanish">Spanish</TabsTrigger>
           </TabsList>
 
           <TabsContent value="arabic">
@@ -95,19 +103,16 @@ export default function Home() {
 
           <TabsContent value="russian">
             <CjkTranscriber
-              scriptName="Russian"
-              langCode="ru"
-              toLatin={transcribeRussian}
-              toScript={transcribeRussianLatin}
-              toIpa={transcribeRussianIpa}
-              keyboardRows={russianKeyboardRows}
-              phrases={russianPhrases}
-              reference={russianReference}
-              referenceRows={russianReferenceRows}
-              referenceTitle="Russian Cyrillic Reference"
+              scriptName="Russian" langCode="ru" toLatin={transcribeRussian} toScript={transcribeRussianLatin}
+              toIpa={transcribeRussianIpa} keyboardRows={russianKeyboardRows} phrases={russianPhrases}
+              reference={russianReference} referenceRows={russianReferenceRows} referenceTitle="Russian Cyrillic Reference"
               scriptPlaceholder="Введите русский текст здесь..."
             />
           </TabsContent>
+
+          <TabsContent value="german"><CjkTranscriber scriptName="German" langCode="de" toLatin={transcribeGerman} toScript={transcribeGermanLatin} toIpa={transcribeGermanIpa} keyboardRows={germanKeyboardRows} phrases={germanPhrases} reference={germanReference} referenceTitle="German Alphabet Reference" scriptPlaceholder="Geben Sie hier deutschen Text ein..." /></TabsContent>
+          <TabsContent value="french"><CjkTranscriber scriptName="French" langCode="fr" toLatin={transcribeFrench} toScript={transcribeFrenchLatin} toIpa={transcribeFrenchIpa} keyboardRows={frenchKeyboardRows} phrases={frenchPhrases} reference={frenchReference} referenceTitle="French Alphabet Reference" scriptPlaceholder="Saisissez du texte français ici..." /></TabsContent>
+          <TabsContent value="spanish"><CjkTranscriber scriptName="Spanish" langCode="es" toLatin={transcribeSpanish} toScript={transcribeSpanishLatin} toIpa={transcribeSpanishIpa} keyboardRows={spanishKeyboardRows} phrases={spanishPhrases} reference={spanishReference} referenceTitle="Spanish Alphabet Reference" scriptPlaceholder="Escriba texto en español aquí..." /></TabsContent>
 
         </Tabs>
       </div>
