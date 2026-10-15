@@ -23,6 +23,14 @@ import {
   russianReference,
   russianReferenceRows,
 } from "@/lib/russian-mapping"
+import {
+  transcribeKorean,
+  transcribeKoreanLatin,
+  transcribeKoreanIpa,
+  koreanKeyboardRows,
+  koreanPhrases,
+  koreanReference,
+} from "@/lib/korean-mapping"
 
 export default function Home() {
   return (
@@ -33,9 +41,10 @@ export default function Home() {
         </div>
 
         <Tabs defaultValue="arabic" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 mb-6 h-auto">
+          <TabsList className="grid w-full grid-cols-4 mb-6 h-auto">
             <TabsTrigger value="arabic">Arabic</TabsTrigger>
             <TabsTrigger value="japanese">Japanese</TabsTrigger>
+            <TabsTrigger value="korean">Korean</TabsTrigger>
             <TabsTrigger value="russian">Russian</TabsTrigger>
           </TabsList>
 
@@ -66,6 +75,21 @@ export default function Home() {
               referenceRows={japaneseReferenceRows}
               referenceTitle="Japanese Kana Reference"
               scriptPlaceholder="ここに日本語を入力してください..."
+            />
+          </TabsContent>
+
+          <TabsContent value="korean">
+            <CjkTranscriber
+              scriptName="Korean"
+              langCode="ko"
+              toLatin={transcribeKorean}
+              toScript={transcribeKoreanLatin}
+              toIpa={transcribeKoreanIpa}
+              keyboardRows={koreanKeyboardRows}
+              phrases={koreanPhrases}
+              reference={koreanReference}
+              referenceTitle="Korean Jamo Reference"
+              scriptPlaceholder="여기에 한국어를 입력하세요..."
             />
           </TabsContent>
 
