@@ -46,14 +46,14 @@ export default function Home() {
         </div>
 
         <Tabs defaultValue="arabic" className="w-full">
-          <TabsList className="grid w-full grid-cols-7 mb-6 h-auto">
-            <TabsTrigger value="arabic">Arabic</TabsTrigger>
-            <TabsTrigger value="japanese">Japanese</TabsTrigger>
-            <TabsTrigger value="korean">Korean</TabsTrigger>
-            <TabsTrigger value="russian">Russian</TabsTrigger>
-            <TabsTrigger value="german">German</TabsTrigger>
-            <TabsTrigger value="french">French</TabsTrigger>
-            <TabsTrigger value="spanish">Spanish</TabsTrigger>
+          <TabsList className="mb-6 grid h-auto w-full grid-cols-2 gap-1 p-1 sm:grid-cols-4 lg:grid-cols-7">
+            <TabsTrigger className="min-h-9 px-2 text-xs sm:text-sm" value="arabic">Arabic</TabsTrigger>
+            <TabsTrigger className="min-h-9 px-2 text-xs sm:text-sm" value="japanese">Japanese</TabsTrigger>
+            <TabsTrigger className="min-h-9 px-2 text-xs sm:text-sm" value="korean">Korean</TabsTrigger>
+            <TabsTrigger className="min-h-9 px-2 text-xs sm:text-sm" value="russian">Russian</TabsTrigger>
+            <TabsTrigger className="min-h-9 px-2 text-xs sm:text-sm" value="german">German</TabsTrigger>
+            <TabsTrigger className="min-h-9 px-2 text-xs sm:text-sm" value="french">French</TabsTrigger>
+            <TabsTrigger className="min-h-9 px-2 text-xs sm:text-sm" value="spanish">Spanish</TabsTrigger>
           </TabsList>
 
           <TabsContent value="arabic">
