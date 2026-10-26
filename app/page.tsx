@@ -15,15 +15,6 @@ import {
 } from "@/lib/japanese-mapping"
 import { transcribeJapaneseWithKanji, toKanaReading } from "@/lib/japanese-kanji"
 import {
-  transcribeRussian,
-  transcribeRussianLatin,
-  transcribeRussianIpa,
-  russianKeyboardRows,
-  russianPhrases,
-  russianReference,
-  russianReferenceRows,
-} from "@/lib/russian-mapping"
-import {
   transcribeKorean,
   transcribeKoreanLatin,
   transcribeKoreanIpa,
@@ -35,6 +26,7 @@ import {
   transcribeGerman, transcribeGermanLatin, transcribeGermanIpa, germanKeyboardRows, germanPhrases, germanReference,
   transcribeFrench, transcribeFrenchLatin, transcribeFrenchIpa, frenchKeyboardRows, frenchPhrases, frenchReference,
   transcribeSpanish, transcribeSpanishLatin, transcribeSpanishIpa, spanishKeyboardRows, spanishPhrases, spanishReference,
+  transcribePortuguese, transcribePortugueseLatin, transcribePortugueseIpa, portugueseKeyboardRows, portuguesePhrases, portugueseReference,
 } from "@/lib/european-mapping"
 
 export default function Home() {
@@ -50,7 +42,7 @@ export default function Home() {
             <TabsTrigger className="min-h-9 px-2 text-xs sm:text-sm" value="arabic">Arabic</TabsTrigger>
             <TabsTrigger className="min-h-9 px-2 text-xs sm:text-sm" value="japanese">Japanese</TabsTrigger>
             <TabsTrigger className="min-h-9 px-2 text-xs sm:text-sm" value="korean">Korean</TabsTrigger>
-            <TabsTrigger className="min-h-9 px-2 text-xs sm:text-sm" value="russian">Russian</TabsTrigger>
+            <TabsTrigger className="min-h-9 px-2 text-xs sm:text-sm" value="portuguese">Portuguese</TabsTrigger>
             <TabsTrigger className="min-h-9 px-2 text-xs sm:text-sm" value="german">German</TabsTrigger>
             <TabsTrigger className="min-h-9 px-2 text-xs sm:text-sm" value="french">French</TabsTrigger>
             <TabsTrigger className="min-h-9 px-2 text-xs sm:text-sm" value="spanish">Spanish</TabsTrigger>
@@ -101,12 +93,12 @@ export default function Home() {
             />
           </TabsContent>
 
-          <TabsContent value="russian">
+          <TabsContent value="portuguese">
             <CjkTranscriber
-              scriptName="Russian" langCode="ru" toLatin={transcribeRussian} toScript={transcribeRussianLatin}
-              toIpa={transcribeRussianIpa} keyboardRows={russianKeyboardRows} phrases={russianPhrases}
-              reference={russianReference} referenceRows={russianReferenceRows} referenceTitle="Russian Cyrillic Reference"
-              scriptPlaceholder="Введите русский текст здесь..."
+              scriptName="Portuguese" langCode="pt" toLatin={transcribePortuguese} toScript={transcribePortugueseLatin}
+              toIpa={transcribePortugueseIpa} keyboardRows={portugueseKeyboardRows} phrases={portuguesePhrases}
+              reference={portugueseReference} referenceTitle="Portuguese Alphabet Reference"
+              scriptPlaceholder="Digite texto em português aqui..."
             />
           </TabsContent>
 

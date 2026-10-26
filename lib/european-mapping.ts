@@ -61,3 +61,18 @@ export const spanishPhrases: Phrase[] = [
   { english: "Hello", arabic: "Hola", latin: "Hola" },
   { english: "Thank you", arabic: "Gracias", latin: "Gracias" },
 ]
+
+const portugueseEntries: [string, string][] = [
+  ["u1", "ü"], ["a2", "á"], ["o2", "ó"], ["e2", "é"], ["i2", "í"], ["u2", "ú"],
+  ["a3", "â"], ["o3", "ô"], ["e3", "ê"], ["a4", "à"], ["a5", "ã"], ["o5", "õ"], ["c5", "ç"],
+  ...[..."abcdefghijklmnopqrstuvwxyz"].map((char) => [char, char] as [string, string]),
+]
+export const transcribePortuguese = identity
+export const transcribePortugueseLatin = (text: string) => replaceCodes(text, portugueseEntries)
+export const transcribePortugueseIpa = ipa
+export const portugueseKeyboardRows = makeMapping(portugueseEntries)
+export const portugueseReference = makeReference(portugueseEntries, "Portuguese letter")
+export const portuguesePhrases: Phrase[] = [
+  { english: "Hello", arabic: "Olá", latin: "Olá" },
+  { english: "Thank you", arabic: "Obrigado", latin: "Obrigado" },
+]
