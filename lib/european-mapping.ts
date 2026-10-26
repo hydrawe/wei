@@ -8,7 +8,7 @@ const makeReference = (entries: [string, string][], description: string): Refere
   entries.map(([latin, char]) => ({ char, latin, description }))
 const replaceCodes = (text: string, entries: [string, string][]) => {
   return [...entries].sort(([a], [b]) => b.length - a.length).reduce(
-    (value, [latin, char]) => value.split(latin).join(char),
+    (value, [latin, char]) => value.replace(new RegExp(latin.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "gi"), char),
     text,
   )
 }
