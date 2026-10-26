@@ -475,7 +475,7 @@ export function CjkTranscriber({
               <Textarea
                 id="cjk-latin-input"
                 placeholder="Type Latin transliteration here..."
-                className="min-h-32 !text-[20px] font-mono !leading-normal !tracking-normal whitespace-pre-wrap"
+                className="min-h-32 !text-[20px] font-mono !leading-normal whitespace-pre-wrap"
                 value={latinText}
                 onChange={(e) => handleLatinChange(e.target.value)}
               />
