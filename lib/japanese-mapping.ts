@@ -54,7 +54,7 @@ const KATAKANA: [string, string][] = [
 const ALL: [string, string][] = [...HIRAGANA, ...KATAKANA]
 
 // latin code -> kana
-const CODE_TO_KANA = new Map<string, string>(ALL.map(([code, kana]) => [code.toLowerCase(), kana]))
+const CODE_TO_KANA = new Map<string, string>(ALL)
 // kana -> latin code (first definition wins; kana are unique across the set)
 const KANA_TO_CODE = new Map<string, string>()
 for (const [code, kana] of ALL) {
@@ -104,7 +104,7 @@ export function transcribeJapaneseLatin(text: string): string {
     let matched = false
     for (let len = MAX_CODE_LEN; len >= 1; len--) {
       const sub = text.slice(i, i + len)
-      const kana = CODE_TO_KANA.get(sub.toLowerCase())
+      const kana = CODE_TO_KANA.get(sub)
       if (kana) {
         output += kana
         i += len
@@ -219,7 +219,7 @@ const KANA_IPA_PAIRS: [string, string][] = [
   ["が", "ɡa"], ["ぎ", "ɡi"], ["ぐ", "ɡɯ"], ["げ", "ɡe"], ["ご", "ɡo"],
   ["さ", "sa"], ["し", "ɕi"], ["す", "sɯ"], ["せ", "se"], ["そ", "so"],
   ["ざ", "dza"], ["じ", "dʑi"], ["ず", "dzɯ"], ["ぜ", "dze"], ["ぞ", "dzo"],
-  ["た", "ta"], ["ち", "tɕi"], ["つ", "tsɯ"], ["て", "te"], ["と", "to"],
+  ["た", "ta"], ["ち", "tɕi"], ["つ", "tsɯ"], ["て", "te"], ["��", "to"],
   ["だ", "da"], ["ぢ", "dʑi"], ["づ", "dzɯ"], ["で", "de"], ["ど", "do"],
   ["は", "ha"], ["ひ", "çi"], ["ふ", "ɸɯ"], ["へ", "he"], ["ほ", "ho"],
   ["ば", "ba"], ["び", "bi"], ["ぶ", "bɯ"], ["べ", "be"], ["ぼ", "bo"],
