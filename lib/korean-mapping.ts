@@ -173,7 +173,7 @@ export function transcribeKoreanLatin(text: string): string {
     let token: Token | null = null
     let matchLen = 0
     for (let len = MAX_CODE_LEN; len >= 1; len--) {
-      const entry = CODE_MAP.get(text.slice(i, i + len))
+      const entry = CODE_MAP.get(text.slice(i, i + len).toLowerCase())
       if (entry) {
         token = entry
         matchLen = len
@@ -186,7 +186,7 @@ export function transcribeKoreanLatin(text: string): string {
       // by transcribeKorean to disambiguate a syllable boundary — consume it and
       // close the current syllable rather than treating it as a literal. No jamo
       // or vowel code begins with "y", so this is never a real token.
-      if (text[i] === "y" && V !== null && T === null) {
+      if (text[i].toLowerCase() === "y" && V !== null && T === null) {
         flush()
         i++
         continue
@@ -203,7 +203,7 @@ export function transcribeKoreanLatin(text: string): string {
     // Several requested final codes intentionally overlap initial codes (g, n,
     // r, etc.). Interpret a shared code by syllable position: before a vowel it
     // is the initial; after a vowel it is the final. This preserves both maps.
-    const matchedCode = text.slice(i - matchLen, i)
+    const matchedCode = text.slice(i - matchLen, i).toLowerCase()
     const sharedInitial = LEAD_CODE_INDEX.get(matchedCode)
     if (token.type === "T" && V === null && sharedInitial !== undefined) {
       token = { type: "L", index: sharedInitial }
