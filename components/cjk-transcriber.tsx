@@ -667,7 +667,7 @@ export function CjkTranscriber({
                 </div>
                 <Textarea
                   id="cjk-chinese-input"
-                  placeholder="在��输入中文..."
+                  placeholder="请输入中文..."
                   className="min-h-24 !text-[18px] !leading-normal"
                   value={chineseText}
                   onChange={(e) => handleChineseChange(e.target.value)}
