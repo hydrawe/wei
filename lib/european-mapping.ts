@@ -14,12 +14,16 @@ const replaceCodes = (text: string, entries: [string, string][]) => {
 }
 const identity = (text: string) => text
 const ipa = (text: string) => text
+const replaceChars = (text: string, entries: [string, string][]) => {
+  const reverse = new Map(entries.filter(([latin, char]) => latin.length > 1).map(([latin, char]) => [char, latin]))
+  return [...reverse.entries()].reduce((value, [char, latin]) => value.split(char).join(latin), text)
+}
 
 const germanEntries: [string, string][] = [
   ["a1", "ä"], ["o1", "ö"], ["u1", "ü"], ["s5", "ß"],
   ...[..."abcdefghijklmnopqrstuvwxyz"].map((char) => [char, char] as [string, string]),
 ]
-export const transcribeGerman = identity
+export const transcribeGerman = (text: string) => replaceChars(text, germanEntries)
 export const transcribeGermanLatin = (text: string) => replaceCodes(text, germanEntries)
 export const transcribeGermanIpa = ipa
 export const germanKeyboardRows = makeMapping(germanEntries)
@@ -35,7 +39,7 @@ const frenchEntries: [string, string][] = [
   ["e4", "è"], ["a4", "à"], ["u4", "ù"], ["c5", "ç"], ["ae", "æ"], ["oe", "œ"],
   ...[..."abcdefghijklmnopqrstuvwxyz"].map((char) => [char, char] as [string, string]),
 ]
-export const transcribeFrench = identity
+export const transcribeFrench = (text: string) => replaceChars(text, frenchEntries)
 export const transcribeFrenchLatin = (text: string) => replaceCodes(text, frenchEntries)
 export const transcribeFrenchIpa = ipa
 export const frenchKeyboardRows = makeMapping(frenchEntries)
@@ -49,7 +53,7 @@ const spanishEntries: [string, string][] = [
   ["a2", "á"], ["e2", "é"], ["i2", "í"], ["o2", "ó"], ["u2", "ú"], ["u1", "ü"], ["n5", "ñ"],
   ...[..."abcdefghijklmnopqrstuvwxyz"].map((char) => [char, char] as [string, string]),
 ]
-export const transcribeSpanish = identity
+export const transcribeSpanish = (text: string) => replaceChars(text, spanishEntries)
 export const transcribeSpanishLatin = (text: string) => replaceCodes(text, spanishEntries)
 export const transcribeSpanishIpa = ipa
 export const spanishKeyboardRows = makeMapping([
@@ -67,7 +71,7 @@ const portugueseEntries: [string, string][] = [
   ["a3", "â"], ["o3", "ô"], ["e3", "ê"], ["a4", "à"], ["a5", "ã"], ["o5", "õ"], ["c5", "ç"],
   ...[..."abcdefghijklmnopqrstuvwxyz"].map((char) => [char, char] as [string, string]),
 ]
-export const transcribePortuguese = identity
+export const transcribePortuguese = (text: string) => replaceChars(text, portugueseEntries)
 export const transcribePortugueseLatin = (text: string) => replaceCodes(text, portugueseEntries)
 export const transcribePortugueseIpa = ipa
 export const portugueseKeyboardRows = makeMapping(portugueseEntries)
