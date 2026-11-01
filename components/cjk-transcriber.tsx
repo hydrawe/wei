@@ -237,13 +237,21 @@ export function CjkTranscriber({
       setVocabularyRows([])
       return () => { cancelled = true }
     }
-    Promise.all(sourceUnits.map(async (unit) => ({
-      source: unit,
-      latin: toLatinAsync ? await toLatinAsync(unit) : toLatin(unit),
-      english: await fetchTranslation(unit, `${langCode}|en`),
-      role: "modifier",
-    }))).then((rows) => {
+    fetch("/api/arabic-nouns", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text: scriptText, language: scriptName }),
+    }).then((response) => response.json()).then(async (data) => {
+      const analyzed = Array.isArray(data?.vocabulary) ? data.vocabulary : []
+      const rows = await Promise.all(analyzed.map(async (row: { arabic: string; translation: string; role?: string }) => ({
+        source: row.arabic,
+        latin: toLatinAsync ? await toLatinAsync(row.arabic) : toLatin(row.arabic),
+        english: row.translation,
+        role: row.role ?? "modifier",
+      })))
       if (!cancelled) setVocabularyRows(rows.filter((row) => row.english))
+    }).catch(() => {
+      if (!cancelled) setVocabularyRows([])
     })
     return () => { cancelled = true }
   }, [scriptText, englishText, langCode, sourceUnits, toLatin, toLatinAsync])
