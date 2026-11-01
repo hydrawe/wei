@@ -10,6 +10,7 @@ const chunkSchema = z.object({
   vocabulary: z.array(z.object({
     arabic: z.string(),
     translation: z.string(),
+    role: z.enum(["subject", "predicate", "object", "complement", "modifier"]).default("modifier"),
   })).default([]),
 })
 
@@ -96,7 +97,7 @@ export async function POST(request: Request) {
       model: gateway("openai/gpt-4.1-mini"),
       maxRetries: 1,
       maxOutputTokens: 1200,
-      system: 'You are an Arabic sentence analyst. Return ONLY valid JSON in this exact shape: {"chunks":[{"text":"...","translation":"...","attribute":"..."}],"vocabulary":[{"arabic":"...","translation":"..."}]}. The vocabulary array must contain each distinct Arabic word in its original left-to-right reading order, with its direct contextual English meaning. Never align vocabulary by English word position. Segment the full sentence into only meaningful, coherent grammatical constituents. Do not split merely to satisfy a word limit, and do not return an entire sentence or clause as one chunk when it contains multiple roles. Keep each chunk intact as the smallest natural unit that expresses one function: subject noun phrase, verb phrase, direct object noun phrase, prepositional phrase, purpose phrase, adverbial phrase, adjective phrase, conjunction, or subordinate clause component. Chunk length is flexible; coherence and grammatical function matter more than word count. Preserve every word and punctuation mark exactly once and in order. Translate each component accurately in context and label its grammatical role. Only use a one-word chunk for an independent particle, conjunction, or punctuation mark.',
+      system: 'You are an Arabic sentence analyst. Return ONLY valid JSON in this exact shape: {"chunks":[{"text":"...","translation":"...","attribute":"..."}],"vocabulary":[{"arabic":"...","translation":"..."}]}. The vocabulary array must contain each distinct Arabic word in its original left-to-right reading order, with its direct contextual English meaning and one grammatical role: subject, predicate, object, complement, or modifier. Use modifier for particles, articles, adjectives, adverbs, and words that do not fit another role. Never align vocabulary by English word position. Segment the full sentence into only meaningful, coherent grammatical constituents. Do not split merely to satisfy a word limit, and do not return an entire sentence or clause as one chunk when it contains multiple roles. Keep each chunk intact as the smallest natural unit that expresses one function: subject noun phrase, verb phrase, direct object noun phrase, prepositional phrase, purpose phrase, adverbial phrase, adjective phrase, conjunction, or subordinate clause component. Chunk length is flexible; coherence and grammatical function matter more than word count. Preserve every word and punctuation mark exactly once and in order. Translate each component accurately in context and label its grammatical role. Only use a one-word chunk for an independent particle, conjunction, or punctuation mark.',
       prompt: text,
     })
     const json = generatedText.match(/\{[\s\S]*\}/)?.[0]
