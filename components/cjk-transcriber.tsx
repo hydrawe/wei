@@ -310,6 +310,7 @@ export function CjkTranscriber({
   // newer edit.
   useEffect(() => {
     if (!toLatinAsync) return
+    if (source === "latin") return
     if (!scriptText.trim()) return
     let cancelled = false
     toLatinAsync(scriptText)
@@ -324,7 +325,7 @@ export function CjkTranscriber({
     return () => {
       cancelled = true
     }
-  }, [scriptText, toLatinAsync])
+  }, [scriptText, source, toLatinAsync])
 
   // Resolve the script into a phonetic (kana) form for IPA. Shows the raw script
   // immediately, then upgrades once the analyzer resolves kanji readings.
