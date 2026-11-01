@@ -633,7 +633,7 @@ export function ArabicTranscriber({
                 </div>
                 <Textarea
                   id="chinese-input"
-                  placeholder="在此输入中文..."
+                  placeholder="请输入中文..."
                   className="min-h-24 !text-[18px] !leading-normal"
                   value={chineseText}
                   onChange={(e) => handleChineseChange(e.target.value)}
