@@ -90,7 +90,7 @@ export function CjkTranscriber({
   const [latinText, setLatinText] = useState("")
   const [englishText, setEnglishText] = useState("")
   const [chineseText, setChineseText] = useState("")
-  const [vocabularyRows, setVocabularyRows] = useState<{ source: string; latin: string; english: string }[]>([])
+  const [vocabularyRows, setVocabularyRows] = useState<{ source: string; latin: string; english: string; role: string }[]>([])
   const [copiedLatin, setCopiedLatin] = useState(false)
   const [copiedScript, setCopiedScript] = useState(false)
   const [copiedEnglish, setCopiedEnglish] = useState(false)
@@ -237,12 +237,21 @@ export function CjkTranscriber({
       setVocabularyRows([])
       return () => { cancelled = true }
     }
-    Promise.all(sourceUnits.map(async (unit) => ({
-      source: unit,
-      latin: toLatinAsync ? await toLatinAsync(unit) : toLatin(unit),
-      english: await fetchTranslation(unit, `${langCode}|en`),
-    }))).then((rows) => {
+    fetch("/api/arabic-nouns", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text: scriptText, language: scriptName }),
+    }).then((response) => response.json()).then(async (data) => {
+      const analyzed = Array.isArray(data?.vocabulary) ? data.vocabulary : []
+      const rows = await Promise.all(analyzed.map(async (row: { arabic: string; translation: string; role?: string }) => ({
+        source: row.arabic,
+        latin: toLatinAsync ? await toLatinAsync(row.arabic) : toLatin(row.arabic),
+        english: row.translation,
+        role: row.role ?? "modifier",
+      })))
       if (!cancelled) setVocabularyRows(rows.filter((row) => row.english))
+    }).catch(() => {
+      if (!cancelled) setVocabularyRows([])
     })
     return () => { cancelled = true }
   }, [scriptText, englishText, langCode, sourceUnits, toLatin, toLatinAsync])
@@ -685,15 +694,16 @@ export function CjkTranscriber({
               <div className="overflow-x-auto rounded-md border bg-background">
                 <table className="w-full text-sm">
                   <thead className="border-b bg-muted/40 text-left text-xs text-muted-foreground">
-                    <tr><th className="px-3 py-2 font-medium">{scriptName}</th><th className="px-3 py-2 font-medium">Wei</th><th className="px-3 py-2 font-medium">English</th></tr>
+                    <tr><th className="px-3 py-2 font-medium">{scriptName}</th><th className="px-3 py-2 font-medium">Wei</th><th className="px-3 py-2 font-medium">English</th><th className="px-3 py-2 font-medium">Role</th></tr>
                   </thead>
                   <tbody className="divide-y">
                     {vocabularyRows.map((row, index) => (
                       <tr key={`${row.source}-${index}`}>
                         <td lang={langCode} className="px-3 py-2 text-base">{row.source}</td>
                         <td className="px-3 py-2 font-mono text-xs">{row.latin}</td>
-                        <td className="px-3 py-2">{row.english}</td>
-                      </tr>
+<td className="px-3 py-2">{row.english}</td>
+  <td className="px-3 py-2 capitalize text-muted-foreground">{row.role}</td>
+  </tr>
                     ))}
                   </tbody>
                 </table>

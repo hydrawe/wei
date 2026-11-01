@@ -105,7 +105,7 @@ export function ArabicTranscriber({
   const [copiedEnglish, setCopiedEnglish] = useState(false)
   const [copiedChinese, setCopiedChinese] = useState(false)
   const [copiedIpa, setCopiedIpa] = useState(false)
-  const [vocabularyRows, setVocabularyRows] = useState<{ arabic: string; translation: string }[]>([])
+  const [vocabularyRows, setVocabularyRows] = useState<{ arabic: string; translation: string; role: string }[]>([])
   const [showKeyboard, setShowKeyboard] = useState(true)
   const [isTranslating, setIsTranslating] = useState(false)
   // Tracks which field the user last edited so we know the translation direction
@@ -171,27 +171,14 @@ export function ArabicTranscriber({
     let cancelled = false
     const timer = setTimeout(async () => {
       try {
-        const response = await fetch("/api/arabic-nouns", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ text }),
-        })
-        const data = await response.json()
-        if (!response.ok) throw new Error(data?.error || "Analysis failed")
-
-        // Map each Arabic word independently in source order. Do not align
-        // against the translated sentence, whose English word order differs.
-        const arabicWords = text.match(/[\u0600-\u06ff]+/gu) ?? []
-        const uniqueWords = arabicWords.filter((word, index, list) => list.indexOf(word) === index)
-        const translatedWords = await Promise.all(
-          uniqueWords.map(async (arabic) => ({
-            arabic,
-            translation: await fetchTranslation(arabic, "ar|en"),
-          })),
-        )
-        if (!cancelled) {
-          setVocabularyRows(translatedWords.filter((row) => row.translation))
-        }
+  const response = await fetch("/api/arabic-nouns", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ text, language: "Arabic" }),
+  })
+  const data = await response.json()
+  const rows = Array.isArray(data?.vocabulary) ? data.vocabulary : []
+  if (!cancelled) setVocabularyRows(rows.filter((row: { translation?: string }) => row.translation))
       } catch {
         if (!cancelled) setVocabularyRows([])
       }
@@ -483,15 +470,16 @@ export function ArabicTranscriber({
                   <div className="overflow-x-auto rounded-md border bg-background">
                     <table className="w-full text-sm">
                       <thead className="border-b bg-muted/40 text-left text-xs text-muted-foreground">
-                        <tr><th className="px-3 py-2 font-medium">Arabic</th><th className="px-3 py-2 font-medium">Wei</th><th className="px-3 py-2 font-medium">English</th></tr>
+                        <tr><th className="px-3 py-2 font-medium">Arabic</th><th className="px-3 py-2 font-medium">Wei</th><th className="px-3 py-2 font-medium">English</th><th className="px-3 py-2 font-medium">Role</th></tr>
                       </thead>
                       <tbody className="divide-y">
                         {vocabularyRows.map((row, index) => (
                           <tr key={`${row.arabic}-${index}`}>
                             <td lang="ar" dir="rtl" className="px-3 py-2 text-base">{row.arabic}</td>
                             <td className="px-3 py-2 font-mono text-xs">{toLatin(row.arabic)}</td>
-                            <td className="px-3 py-2">{row.translation}</td>
-                          </tr>
+<td className="px-3 py-2">{row.translation}</td>
+  <td className="px-3 py-2 capitalize text-muted-foreground">{row.role}</td>
+  </tr>
                         ))}
                       </tbody>
                     </table>
