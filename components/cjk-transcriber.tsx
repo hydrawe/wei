@@ -252,7 +252,7 @@ export function CjkTranscriber({
         return {
           source: unit,
           latin: toLatinAsync ? await toLatinAsync(unit) : toLatin(unit),
-          english: row?.translation || "Translation pending",
+          english: row ? (row.translation ?? "") : "Translation pending",
           role: row?.role ?? "modifier",
         }
       }))
@@ -714,14 +714,13 @@ export function CjkTranscriber({
               <div className="overflow-x-auto rounded-md border bg-background">
                 <table className="w-full text-sm">
                   <thead className="border-b bg-muted/40 text-left text-xs text-muted-foreground">
-                    <tr><th className="px-3 py-2 font-medium">{scriptName}</th><th className="px-3 py-2 font-medium">Wei</th><th className="px-3 py-2 font-medium">English</th><th className="px-3 py-2 font-medium">Role</th></tr>
+                    <tr><th className="px-3 py-2 font-medium">{scriptName}</th><th className="px-3 py-2 font-medium">English</th><th className="px-3 py-2 font-medium">Role</th></tr>
                   </thead>
                   <tbody className="divide-y">
                     {vocabularyRows.map((row, index) => (
                       <tr key={`${row.source}-${index}`}>
-                        <td lang={langCode} className="px-3 py-2 text-base">{row.source}</td>
-                        <td className="px-3 py-2 font-mono text-xs">{row.latin}</td>
-<td className="px-3 py-2">{row.english}</td>
+<td lang={langCode} className="px-3 py-2 text-base">{row.source}</td>
+                        <td className="px-3 py-2">{row.english}</td>
   <td className="px-3 py-2 capitalize text-muted-foreground">{row.role}</td>
   </tr>
                     ))}
