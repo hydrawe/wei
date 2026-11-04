@@ -247,8 +247,8 @@ export function CjkTranscriber({
     }).then((response) => response.json()).then(async (data) => {
       const analyzed = Array.isArray(data?.vocabulary) ? data.vocabulary : []
       const analyzedBySource = new Map(analyzed.map((row: { arabic: string; translation?: string; role?: string }) => [row.arabic, row]))
-      const rows = await Promise.all(sourceUnits.map(async (unit) => {
-        const row = analyzedBySource.get(unit) as { translation?: string; role?: string } | undefined
+      const rows = await Promise.all(sourceUnits.map(async (unit, index) => {
+        const row = (analyzedBySource.get(unit) ?? analyzed[index]) as { translation?: string; role?: string } | undefined
         return {
           source: unit,
           latin: toLatinAsync ? await toLatinAsync(unit) : toLatin(unit),
