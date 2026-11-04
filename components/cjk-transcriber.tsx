@@ -233,7 +233,7 @@ export function CjkTranscriber({
   // Translate each source-language unit independently, preserving source order.
   useEffect(() => {
     let cancelled = false
-    if (!scriptText.trim() || !englishText.trim() || sourceUnits.length === 0) {
+    if (!scriptText.trim() || sourceUnits.length === 0) {
       setVocabularyRows([])
       return () => { cancelled = true }
     }
@@ -254,7 +254,7 @@ export function CjkTranscriber({
       if (!cancelled) setVocabularyRows([])
     })
     return () => { cancelled = true }
-  }, [scriptText, englishText, langCode, sourceUnits, toLatin, toLatinAsync])
+  }, [scriptText, langCode, scriptName, sourceUnits, toLatin, toLatinAsync])
 
   // Bidirectional translation: the edited field drives the other three
   useEffect(() => {
