@@ -246,19 +246,29 @@ export function CjkTranscriber({
       body: JSON.stringify({ text: scriptText, language: scriptName }),
     }).then((response) => response.json()).then(async (data) => {
       const analyzed = Array.isArray(data?.vocabulary) ? data.vocabulary : []
-      const rows = await Promise.all(analyzed.map(async (row: { arabic: string; translation: string; role?: string }) => ({
-        source: row.arabic,
-        latin: toLatinAsync ? await toLatinAsync(row.arabic) : toLatin(row.arabic),
-        english: row.translation,
-        role: row.role ?? "modifier",
-      })))
+      const analyzedBySource = new Map(analyzed.map((row: { arabic: string; translation?: string; role?: string }) => [row.arabic, row]))
+      const rows = await Promise.all(sourceUnits.map(async (unit) => {
+        const row = analyzedBySource.get(unit) as { translation?: string; role?: string } | undefined
+        return {
+          source: unit,
+          latin: toLatinAsync ? await toLatinAsync(unit) : toLatin(unit),
+          english: row?.translation || "Translation pending",
+          role: row?.role ?? "modifier",
+        }
+      }))
       if (!cancelled) {
-        setVocabularyRows(rows.filter((row) => row.english))
+        setVocabularyRows(rows)
         setIsAnalyzingVocabulary(false)
       }
-    }).catch(() => {
+    }).catch(async () => {
+      const rows = await Promise.all(sourceUnits.map(async (unit) => ({
+        source: unit,
+        latin: toLatinAsync ? await toLatinAsync(unit) : toLatin(unit),
+        english: "Translation pending",
+        role: "modifier",
+      })))
       if (!cancelled) {
-        setVocabularyRows([])
+        setVocabularyRows(rows)
         setIsAnalyzingVocabulary(false)
       }
     })
