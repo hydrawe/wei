@@ -52,7 +52,7 @@ function heuristicVocabulary(text: string) {
   )
   return words.filter((word, index, list) => list.indexOf(word) === index).map((arabic) => ({
     arabic,
-    translation: normalizedTranslations.get(normalizeArabic(arabic)) ?? "See sentence translation",
+    translation: normalizedTranslations.get(normalizeArabic(arabic)) ?? "",
   }))
 }
 

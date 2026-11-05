@@ -105,7 +105,7 @@ export function ArabicTranscriber({
   const [copiedEnglish, setCopiedEnglish] = useState(false)
   const [copiedChinese, setCopiedChinese] = useState(false)
   const [copiedIpa, setCopiedIpa] = useState(false)
-  const [vocabularyRows, setVocabularyRows] = useState<{ arabic: string; translation: string; role: string }[]>([])
+  const [vocabularyRows, setVocabularyRows] = useState<{ arabic: string; translation: string }[]>([])
   const [showKeyboard, setShowKeyboard] = useState(true)
   const [isTranslating, setIsTranslating] = useState(false)
   // Tracks which field the user last edited so we know the translation direction
@@ -177,10 +177,19 @@ export function ArabicTranscriber({
   body: JSON.stringify({ text, language: "Arabic" }),
   })
   const data = await response.json()
-  const rows = Array.isArray(data?.vocabulary) ? data.vocabulary : []
+  const analyzedRows = Array.isArray(data?.vocabulary) ? data.vocabulary : []
+  const rows = await Promise.all(analyzedRows.map(async (row: { arabic: string; translation?: string }) => ({
+    ...row,
+    translation: row.translation || await fetchTranslation(row.arabic, "ar|en"),
+  })))
   if (!cancelled) setVocabularyRows(rows)
       } catch {
-        if (!cancelled) setVocabularyRows([])
+        const words = text.match(/[\u0600-\u06ff]+/gu) ?? []
+        const rows = await Promise.all(words.map(async (arabic) => ({
+          arabic,
+          translation: await fetchTranslation(arabic, "ar|en"),
+        })))
+        if (!cancelled) setVocabularyRows(rows)
       }
     }, 800)
     return () => {
