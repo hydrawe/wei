@@ -252,7 +252,7 @@ export function CjkTranscriber({
         return {
           source: unit,
           latin: toLatinAsync ? await toLatinAsync(unit) : toLatin(unit),
-          english: row ? (row.translation ?? "") : "Translation pending",
+          english: row ? (row.translation ?? "") : await fetchTranslation(unit, `${langCode}|en`),
           role: row?.role ?? "modifier",
         }
       }))
@@ -264,7 +264,7 @@ export function CjkTranscriber({
       const rows = await Promise.all(sourceUnits.map(async (unit) => ({
         source: unit,
         latin: toLatinAsync ? await toLatinAsync(unit) : toLatin(unit),
-        english: "Translation pending",
+        english: await fetchTranslation(unit, `${langCode}|en`),
         role: "modifier",
       })))
       if (!cancelled) {
