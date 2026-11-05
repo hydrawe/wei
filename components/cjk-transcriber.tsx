@@ -708,21 +708,20 @@ export function CjkTranscriber({
             <section aria-labelledby="cjk-vocabulary-heading" className="space-y-3 rounded-lg border bg-muted/20 p-4">
               <div>
                 <h2 id="cjk-vocabulary-heading" className="text-sm font-semibold">Vocabulary mapping</h2>
-                <p className="text-xs text-muted-foreground">Each {scriptName} unit mapped to Wei, English, and sentence role in source order</p>
+                <p className="text-xs text-muted-foreground">Each {scriptName} unit mapped to its contextual English meaning in source order</p>
                 {isAnalyzingVocabulary && <p className="text-xs text-muted-foreground">Analyzing sentence roles and translations…</p>}
               </div>
               <div className="overflow-x-auto rounded-md border bg-background">
                 <table className="w-full text-sm">
                   <thead className="border-b bg-muted/40 text-left text-xs text-muted-foreground">
-                    <tr><th className="px-3 py-2 font-medium">{scriptName}</th><th className="px-3 py-2 font-medium">English</th><th className="px-3 py-2 font-medium">Role</th></tr>
+                    <tr><th className="px-3 py-2 font-medium">{scriptName}</th><th className="px-3 py-2 font-medium">English</th></tr>
                   </thead>
                   <tbody className="divide-y">
                     {vocabularyRows.map((row, index) => (
                       <tr key={`${row.source}-${index}`}>
 <td lang={langCode} className="px-3 py-2 text-base">{row.source}</td>
                         <td className="px-3 py-2">{row.english}</td>
-  <td className="px-3 py-2 capitalize text-muted-foreground">{row.role}</td>
-  </tr>
+</tr>
                     ))}
                   </tbody>
                 </table>

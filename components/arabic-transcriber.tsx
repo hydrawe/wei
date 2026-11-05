@@ -470,15 +470,14 @@ export function ArabicTranscriber({
                   <div className="overflow-x-auto rounded-md border bg-background">
                     <table className="w-full text-sm">
                       <thead className="border-b bg-muted/40 text-left text-xs text-muted-foreground">
-                        <tr><th className="px-3 py-2 font-medium">Arabic</th><th className="px-3 py-2 font-medium">English</th><th className="px-3 py-2 font-medium">Role</th></tr>
+                        <tr><th className="px-3 py-2 font-medium">Arabic</th><th className="px-3 py-2 font-medium">English</th></tr>
                       </thead>
                       <tbody className="divide-y">
                         {vocabularyRows.map((row, index) => (
                           <tr key={`${row.arabic}-${index}`}>
                             <td lang="ar" dir="rtl" className="px-3 py-2 text-base">{row.arabic}</td>
 <td className="px-3 py-2">{row.translation}</td>
-  <td className="px-3 py-2 capitalize text-muted-foreground">{row.role}</td>
-  </tr>
+</tr>
                         ))}
                       </tbody>
                     </table>
